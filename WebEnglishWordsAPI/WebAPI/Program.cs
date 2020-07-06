@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using BusinessLogic.Manager;
+using DataAccess.EF;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog;
@@ -31,6 +35,17 @@ namespace EnglishWords
                 logger.Info("Init main.");
 
                 var host = CreateHostBuilder(args).Build();
+
+                using (var serviceScope = host.Services.CreateScope())
+                {
+                    var services = serviceScope.ServiceProvider;
+
+                    var options = services.GetRequiredService<DbContextOptions<CurrentDbContext>>();
+
+                    var dataManager = services.GetRequiredService<IDataManager>();
+                    
+                    dataManager.InitializeDb(options);
+                }                
 
                 host.Run();
             }
