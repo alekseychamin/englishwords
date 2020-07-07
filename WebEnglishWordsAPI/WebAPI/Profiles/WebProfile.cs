@@ -13,7 +13,11 @@ namespace WebAPI.Profiles
         public WebProfile()
         {
             //BL <-> View
-            CreateMap<EnglishWordBL, EnglishWordView>().ReverseMap();
+            CreateMap<EnglishWordBL, EnglishWordView>()
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(source => source.Category.Name))
+                .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(source => source.CreateDate.ToShortDateString()));
+            CreateMap<EnglishWordView, EnglishWordBL>();
+
             CreateMap<CategoryBL, CategoryView>().ReverseMap();
 
             //Create <-> BL

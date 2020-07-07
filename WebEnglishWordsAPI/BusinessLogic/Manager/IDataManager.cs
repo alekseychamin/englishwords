@@ -1,4 +1,5 @@
-﻿using DataAccess.EF;
+﻿using BusinessLogic.Model;
+using DataAccess.EF;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,9 @@ namespace BusinessLogic.Manager
     public interface IDataManager
     {
         void InitializeDb(DbContextOptions<CurrentDbContext> options);
+        
         int AddEnglishWordsToDb();
+
+        EnglishWordBL GetRandomEnglishWord();
     }
 }

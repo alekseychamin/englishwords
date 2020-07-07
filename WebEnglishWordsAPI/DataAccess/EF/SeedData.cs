@@ -19,11 +19,17 @@ namespace DataAccess.EF
         }
         public bool Initialize(DbContextOptions<CurrentDbContext> options)
         {
+            _logger.LogInformation("Initializing DB...");
+
             using (var db = new CurrentDbContext(options))
             {
                 //TryToDeleteDb(db);
 
-                return TryToCreateDb(db);
+                var result = TryToCreateDb(db);
+
+                _logger.LogInformation("Finished to initialize DB");
+
+                return result;
             }
         }
 

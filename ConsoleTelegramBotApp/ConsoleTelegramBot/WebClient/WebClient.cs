@@ -1,0 +1,41 @@
+﻿using NLog;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleTelegramBot
+{
+    public class WebClient : IWebClient
+    {
+        private readonly HttpClient _client = new HttpClient();
+        private readonly ILogger _logger;
+
+        public WebClient(ILogger logger)
+        {
+            _logger = logger;
+        }
+        
+        public async Task<string> GetRandomWord(string url)
+        {
+            _client.DefaultRequestHeaders.Accept.Clear();
+
+            _client.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
+
+            _client.DefaultRequestHeaders.Add("Telegram-bot", "English words to learn");
+
+            try
+            {
+                return await _client.GetStringAsync(url);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error ocuried");
+                return ex.Message;
+            }
+        }
+    }
+}

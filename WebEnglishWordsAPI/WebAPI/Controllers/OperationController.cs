@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using BusinessLogic.Manager;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using WebAPI.Model;
 
 namespace WebAPI.Controllers
 {
@@ -14,11 +16,13 @@ namespace WebAPI.Controllers
     {
         private readonly IDataManager _dateManager;
         private readonly ILogger<OperationController> _logger;
+        private readonly IMapper _mapper;
 
-        public OperationController(IDataManager dataManager, ILogger<OperationController> logger)
+        public OperationController(IDataManager dataManager, ILogger<OperationController> logger, IMapper mapper)
         {
             _dateManager = dataManager;
             _logger = logger;
+            _mapper = mapper;
         }
         
         [HttpGet("addenglishword")]
@@ -29,6 +33,14 @@ namespace WebAPI.Controllers
             _logger.LogInformation("Added {0} english words", count);
 
             return Ok(new { Title = $"Added {count} english words" });
+        }
+
+        [HttpGet("randomword")]
+        public ActionResult<EnglishWordView> GetRandomEnglishWord()
+        {
+            var itemBL = _dateManager.GetRandomEnglishWord();
+
+            return Ok(_mapper.Map<EnglishWordView>(itemBL));
         }
     }
 }

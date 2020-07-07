@@ -3,6 +3,7 @@ using DataAccess.Model;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace DataAccess.Repository
@@ -37,12 +38,15 @@ namespace DataAccess.Repository
 
         public IEnumerable<EnglishWord> GetAll()
         {
-            return _db.EnglishWords;
+            return _db.EnglishWords
+                      .Include(x => x.Category);
         }
 
         public EnglishWord Read(int id)
         {
-            return _db.EnglishWords.Find(id);
+            return _db.EnglishWords
+                      .Include(x => x.Category)
+                      .Single(x => x.Id == id);
         }
 
         public void SaveChanges()
