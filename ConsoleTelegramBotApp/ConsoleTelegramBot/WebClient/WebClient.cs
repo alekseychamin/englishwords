@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace ConsoleTelegramBot
@@ -17,7 +18,31 @@ namespace ConsoleTelegramBot
         {
             _logger = logger;
         }
-        
+
+        public async Task<string> PostNewWord(string url, object obj)
+        {
+            _client.DefaultRequestHeaders.Accept.Clear();
+
+            _client.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
+
+            _client.DefaultRequestHeaders.Add("Telegram-bot", "English words to learn");
+
+            var objStr = JsonSerializer.Serialize(obj);
+            var content = new StringContent(objStr, Encoding.UTF8, "application/json");
+
+            try
+            {
+                var result = await _client.PostAsync(url, content);
+                return result.Content.ReadAsStringAsync().Result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error ocuried");
+                return ex.Message;
+            }
+        }
+
         public async Task<string> GetRandomWord(string url)
         {
             _client.DefaultRequestHeaders.Accept.Clear();

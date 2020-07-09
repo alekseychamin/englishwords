@@ -8,7 +8,7 @@ namespace ConsoleTelegramBot.Command
     public interface ICommand
     {
         string Name { get; }
-        string Description { get; }
+        string Description { get; }        
 
         Task Execute(long chatId, string text = null);
     }

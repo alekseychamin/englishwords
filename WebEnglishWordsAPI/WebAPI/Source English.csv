@@ -844,8 +844,8 @@ IT;Attributes;;атрибуты;;07.07.2020
 IT;multi-dimensional;;многомерный;;07.07.2020
 IT;jagged;;зубчатый;;07.07.2020
 IT;Initially;;первоначально;;07.07.2020
-IT;compliance;;соблюдение;(Common Language Specification (CLS) compliance -> (Соответствие спецификации общего языка (CLS;07.07.2020
-IT;discourage;;отговаривать, отсоветовать;CLR does support non-zero–based arrays even though their use is discouraged;07.07.2020
+IT;compliance;;соблюдение (Common Language Specification (CLS) compliance -> (Соответствие спецификации общего языка (CLS;;07.07.2020
+IT;discourage;;отговаривать, отсоветовать CLR does support non-zero–based arrays even though their use is discouraged;;07.07.2020
 IT;overhead information;;служебная информация;;07.07.2020
 IT;So far;;до сих пор (До сих пор я приводил примеры);So far, I’ve shown examples;07.07.2020
 IT;sometimes referred;;иногда упоминается;;07.07.2020
@@ -854,3 +854,88 @@ IT;verifiable;;проверяемый, не голословный;;07.07.2020
 IT;insubstantial;;не основательный, не реальный;;07.07.2020
 Films;Hey, Mando, what do you think? Not too shabby, huh?;;Эй, Мандо, что ты считать? Не слишком потертый, а?;;07.07.2020
 IT;This method allows programmers to partially make up for the lack;;Этот метод позволяет программистам частично восполнят недостаток;;07.07.2020
+Films;Our ancestors were very meticulous when it came to documenting;;Наши предки были очень дотошными когда дело дошло до документирования;;08.07.2020
+Films;their knowledge and accomplishments for posterity.;;их знания и достижения для потомков.;;08.07.2020
+Films;I know Jerlamarel can take some getting used to.;;Я знаю, что Джерламарел может привыкнуть.;;08.07.2020
+Films;You can start by taking this shovel.;;Вы можете начать с этой лопаты.;;08.07.2020
+Films;You live in a world of perpetual darkness.;;Вы живете в мире вечной тьмы.;;08.07.2020
+Films;Is there anything inherently dangerous about using Buffer.BlockCopy over Array.Copy?;;Есть ли что-нибудь опасное в использовании Buffer.BlockCopy поверх Array.Copy?;;08.07.2020
+IT;On average;;в среднем;;08.07.2020
+IT;furthermore;;более того;;08.07.2020
+Films;there used to be thousands of people working in Mr Willy Wonka's factory.;;Раньше на фабрике г-на Вилли Вонки работали тысячи людей;;08.07.2020
+Films;Unfortunately, as I alluded to earlier;;К сожалению, как я уже упоминал ранее;;08.07.2020
+IT;for a whole slew of things;;для целого ряда вещей;;08.07.2020
+IT;callback functions are just as useful and pervasive;;функции обратного вызова так же полезны и широко распространены;;08.07.2020
+Films;in 2015, Rosalind Dyer was convicted in the torture and mutilation killings of seven individuals.;;в 2015 году Розалинда Дайер была осуждена за пытки и увечья семи человек.;;08.07.2020
+Films;No way you could've known the toll it was gonna take.;;Вы никак не могли знать, сколько это может стоить.;;08.07.2020
+IT;by code that has ample security/accessibility;;по коду, который имеет достаточную безопасность / доступность;;08.07.2020
+IT;Demystifying Delegates;;раскрытие тонкости использования делегатов;;08.07.2020
+IT;to implement delegates/interfaces;;реализовать делегаты/интерфейсы;;08.07.2020
+IT;efficiently and effectively;;эффективно и результативно/продуктивно и эффективно;;08.07.2020
+IT;I’ll also touch on some additional features;;Я также коснусь некоторых дополнительных функций;;08.07.2020
+IT;I’ll postpone discussing this;;Я отложу обсуждение этого;;08.07.2020
+IT;You can verify that the compiler produces code;;Вы можете проверить, что компилятор создает код;;08.07.2020
+IT;You’ll recall that;;вы помните что;;08.07.2020
+IT;After all of;;После всего;;08.07.2020
+IT;Show consolidated status report reflecting the condition of the three components.;;Показать сводный отчет о состоянии, отражающий состояние трех компонентов.;;08.07.2020
+IT;I can’t believe he had the audacity to ask me for more money!;;Я не могу поверить, что у него хватило смелости попросить у меня больше денег!;;08.07.2020
+IT;the notion of delegates;;понятие делегатов;;08.07.2020
+IT;So, I'm puttin' together a crew to spring him.;;Итак, я собираю команду, чтобы спасти его;;08.07.2020
+IT;It's impressive that this gunship had survived the Empire without being impounded.;;Впечатляет, что этот боевой корабль пережил Империю, не будучи конфискованным.;;08.07.2020
+IT;Most programmers find working with delegates to be cumbersome because the syntax is so strange.;;Большинство программистов считают трудной работу с делегатами, потому что синтаксис очень странный.;;08.07.2020
+IT;Incidentally;;между прочим/при этом;;08.07.2020
+IT;It is also worth noting;;Это также стоит отметить;;08.07.2020
+IT;I was assigning lambda expressions;;я назначал лямбда выражения;;08.07.2020
+IT;This example really shows off;;Этот пример действительно демонстрирует;;08.07.2020
+IT;But, used judiciously, lambda expressions can greatly increase programmer productivity as well as the maintainability of your code.;;Но при правильном использовании лямбда-выражения могут значительно повысить производительность труда программиста, а также поддержку вашего кода.Но, используется разумно,;;08.07.2020
+IT;to start abusing;;начать злоупотреблять;;08.07.2020
+IT;By convention;;условно;;08.07.2020
+Films;a painting full of vibrant reds and blues;;картина, полная ярких красных и синих оттенков;;08.07.2020
+Films;The flower market was bustling with shoppers.;;Цветочный рынок был полон покупателей.;;08.07.2020
+Films;Oh what an adorable little baby!;;О, что за прелестный маленький ребенок!;;08.07.2020
+Films;a perilous journey across the mountains;;опасное путешествие по горам;;08.07.2020
+Films;The house was filthy, with clothes and newspapers strewn everywhere.;;Дом был грязный, везде были разбросаны одежда и газеты.;;08.07.2020
+Films;but hasten to add the company had no right;;но спешить добавить компания не имела права;;08.07.2020
+IT;thereby enabling special features;;тем самым позволяя специальные функции;;08.07.2020
+IT;but wouldn’t it be even more useful;;но разве это не было бы еще полезнее;;08.07.2020
+IT;Microsoft came up with another way;;Microsoft придумала другой способ;;08.07.2020
+IT;For Common Language Specification (CLS) compliance;;Для соответствия спецификации общего языка (CLS);;08.07.2020
+IT;A little later on;;Немного позже;;08.07.2020
+IT;already feared their positions will decline;;уже опасались, что их позиции будут ухудшаться;;08.07.2020
+IT;with patience and affirmation.;;с терпением и утверждением;;08.07.2020
+IT;the enhanced constructor syntax;;усовершенствованный синтаксис конструктора;;08.07.2020
+IT;Ambiguous;;двусмысленный;;08.07.2020
+IT;If you’re performance conscious;;Если вы заботитесь о производительности;;08.07.2020
+IT;that consists of finite vertices and edges;;который состоит из конечных вершин и ребер;;08.07.2020
+IT;A hash function is any function that maps a data set of an arbitrary size to a data set of a fixed size that falls into the hash table.;;Хеш-функция - это любая функция, которая отображает набор данных произвольного размера на набор данных фиксированного размера, который попадает в хеш-таблицу;;08.07.2020
+Films;Water's dripping through in places;;Вода местами капает;;08.07.2020
+Films;the stress will snap it.;;стресс сломает это.;;08.07.2020
+Films;Everything we've ever fought for has been for nothing.;;Все, за что мы когда-либо боролись, было даром;;08.07.2020
+IT;that will execute whenever code is just looking for an attribute;;это будет выполняться всякий раз, когда код просто ищет атрибут;;08.07.2020
+Films;Over time, the ease of defining;;Со временем легкость определения;;08.07.2020
+IT;fit more seamlessly;;походить более плавно;;08.07.2020
+IT;various enhancements;;различные улучшения;;08.07.2020
+Films;and hires a young girl to procure him a witcher.;;и нанимает молодую девушку, чтобы обеспечить его ведьмой;;08.07.2020
+Films;Volatile and powerful.;;Летучий и мощный.;;08.07.2020
+IT;If an exception is inadvertently thrown;;Если случайно возникнет исключение;;08.07.2020
+Films;Until the rooster crowed three times. And that is all.;;Пока петух не кричал три раза. И это все.;;08.07.2020
+IT;The structure you are trapped in will be razed in short order;;Структура, в которой вы оказались в ловушке, будет разрушена в короткие сроки;;08.07.2020
+Films;and your storied lives will come to an unceremonious end.;;и твои легендарные жизни придут к бесцеремонному концу.;;08.07.2020
+Films;This is an important section to absorb;;Это важный раздел для поглощения;;08.07.2020
+Films;that however small the chance might be of striking lucky;;что как бы ни был маловероятен шанс ударить удачи;;08.07.2020
+Films;is when life ceases to surprise you.;;это когда жизнь перестает тебя удивлять.;;08.07.2020
+Films;than making an impulsive commitment for the rest of your life?;;чем сделать импульсивное обязательство на всю оставшуюся жизнь?;;08.07.2020
+Films;Often, it's to atone for a past wrong,;;Часто это для того, чтобы искупить прошлое неправильно,;;08.07.2020
+Films;"""Nice"" is a bit of an understatement.";; это немного преуменьшение;;08.07.2020
+Films;My coworkers don`t pull their weight, i am always picking up the slack.;;Мои коллеги не тянут свой вес, я всегда поправляю слабину;;08.07.2020
+Films;to attain a performance improvement.;;добиться улучшения производительности.;;08.07.2020
+Films;I am only pulling your leg;;Я просто тебя дразню;;08.07.2020
+Films;They think of it as a...career rather than a vocation;;Они думают об этом как ...карьера, а не призвание.;;08.07.2020
+Films;He smiled at them, a small sad smile, and then he shrugged his shoulders and picked up the chocolate bar and held it out to his mother, and said,'Here, Mother, have a bit. We'll share it. I want everybody to taste it.;;Он улыбнулся им с легкой грустной улыбкой, а затем пожал плечами, взял плитку шоколада, протянул ее матери и сказал:«Здесь, мама, немного. Мы поделимся этим. Я хочу, чтобы все попробовали это.;;08.07.2020
+Films;Let's not beat around the bush here, doctor. We need you.;;Давайте не будем биться вокруг куста здесь, доктор. Мы нуждаемся в вас.;;08.07.2020
+IT;explained in the remainder of this chapter;;объяснено в оставшейся части этой главы;;08.07.2020
+Films;Wrong time you pick to saunter;;Неправильное время вы выбираете, чтобы прогуляться;;08.07.2020
+IT;This lack of clarity led me to unwittingly introduce subtlebugs and performance issues into my code.;;Это отсутствие ясности заставило меня невольно представить тонкоеошибки и проблемы с производительностью в моем коде.;;08.07.2020
+Films;It's like, uh, threading the eye of a needle.;;Это какпронизывать игольное ушко;;08.07.2020
+Films;It is important that the feelings are reciprocated;;Важно, чтобы чувства отвечали взаимностью;;08.07.2020
+Films;and likely poses no risk;;и, вероятно, не представляет риска;;08.07.2020

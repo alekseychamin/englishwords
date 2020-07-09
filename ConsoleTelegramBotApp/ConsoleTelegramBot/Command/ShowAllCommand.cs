@@ -11,11 +11,11 @@ namespace ConsoleTelegramBot.Command
 
         public string Description { get; }
 
-        private readonly List<ICommand> _commands;
+        private readonly Dictionary<string, ICommand> _commands;
         private readonly ICommand _sendMessageCommand;
 
         public ShowAllCommand(string name, string description, 
-                              List<ICommand> commands, ICommand sendMessageCommand)
+                              Dictionary<string, ICommand> commands, ICommand sendMessageCommand)
         {
             Name = name;
             Description = description;
@@ -29,7 +29,7 @@ namespace ConsoleTelegramBot.Command
 
             foreach (var command in _commands)
             {
-                result += $"{command.Name} - {command.Description}\n";
+                result += $"{command.Key} - {command.Value.Description}\n";
             }
             
             await _sendMessageCommand.Execute(chatId, result);
