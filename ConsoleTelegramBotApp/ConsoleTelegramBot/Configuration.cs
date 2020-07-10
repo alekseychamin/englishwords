@@ -13,9 +13,9 @@ namespace ConsoleTelegramBot
     public class Configuration : IConfiguration
     {
         public const string BotToken = "1144632945:AAFWHd0Um4WrUMI4Ijm-5pfkoJGK41cxahE";
-        public const string UrlRandomWord = "http://localhost:5000/api/operation/randomword";
+        public const string UrlRandomWord = "http://localhost:5000/api/operation/randomword";        
         public const string UrlCategory = "http://localhost:5000/api/category";
-        public const string UrlCreateWord = "http://localhost:5000/api/englishword";
+        public const string UrlEnglishWord = "http://localhost:5000/api/englishword";
 
         public ILogger Logger { get; }
         public ISendMessageCommand SendMessageCommand { get; }
@@ -42,7 +42,8 @@ namespace ConsoleTelegramBot
             {
                 { "/word", new RandomWordCommand("/word", "show random english word", this) },
                 { "/newword", new NewWordCommand("/newword", "add new english word", this) },
-                { "/categories", new ShowCategoryCommand("/categories", "show categories", this) }
+                { "/editword", new EditWordCommand("/editword", "edit word by id", this) },
+                { "/categories", new ShowCategoryCommand("/categories", "show categories", this) }                
             };
 
             UniqueChatIds = GetListUniqueChatId(ListCommand);

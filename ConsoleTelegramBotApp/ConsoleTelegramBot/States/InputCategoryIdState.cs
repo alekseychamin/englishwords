@@ -1,5 +1,6 @@
 ﻿using ConsoleTelegramBot.Command;
 using ConsoleTelegramBot.Model;
+using ConsoleTelegramBot.Operations;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,15 +11,17 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ConsoleTelegramBot.States
 {
-    public class InputCategoryState : IState
+    public class InputCategoryIdState : IState
     {
         private readonly IConfiguration _configuration;
         private long _chatId;
+        private readonly IState _nextState;
 
-        public InputCategoryState(long chatId, IConfiguration configuration)
+        public InputCategoryIdState(long chatId, IConfiguration configuration, IState nextState)
         {
             _configuration = configuration;
             _chatId = chatId;
+            _nextState = nextState;
         }
         public async Task ChangeState(IUniqueChatId uniqueChatId, string message)
         {
@@ -32,12 +35,12 @@ namespace ConsoleTelegramBot.States
                 return;
             }
 
-            uniqueChatId.State[_chatId] = null;
+            uniqueChatId.State[_chatId] = _nextState; //null;
         }
 
         public async Task Initialize()
         {
-            var listCategories = await GetListCategory();
+            var listCategories = await Operation.GetListCategory(_chatId, _configuration);
 
             if (listCategories.Count == 0)
                 return;
@@ -53,34 +56,6 @@ namespace ConsoleTelegramBot.States
             }
 
             await _configuration.SendMessageCommand.Execute(_chatId, "Input category:", ParseMode.Html, new InlineKeyboardMarkup(listKeyBut));
-        }
-
-        private async Task<List<Category>> GetListCategory()
-        {
-            List<Category> listCategory = new List<Category>();
-
-            var output = await _configuration.WebClient.GetStringFromUrl(Configuration.UrlCategory);
-
-            try
-            {
-                listCategory = JsonSerializer.Deserialize<List<Category>>(output);
-
-                return listCategory;
-            }
-            catch (Exception)
-            {
-                foreach (var uniqueChatId in _configuration.UniqueChatIds)
-                {
-                    if (uniqueChatId.ListChatId.Contains(_chatId))
-                    {
-                        uniqueChatId.RemoveChatId(_chatId);                        
-                    }
-                }
-
-                await _configuration.SendMessageCommand.Execute(_chatId, output, ParseMode.Markdown, new ReplyKeyboardRemove());
-
-                return listCategory;
-            }
         }
     }
 }

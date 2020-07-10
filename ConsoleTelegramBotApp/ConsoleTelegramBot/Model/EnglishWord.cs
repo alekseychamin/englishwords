@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ConsoleTelegramBot
 {
-    public class EnglisWord
+    public class EnglishWord
     {
         public int id { get; set; }
         public string wordPhrase { get; set; }

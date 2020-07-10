@@ -1,4 +1,5 @@
 ﻿using ConsoleTelegramBot.Model;
+using ConsoleTelegramBot.Operations;
 using ConsoleTelegramBot.States;
 using NLog;
 using NLog.Fluent;
@@ -41,7 +42,13 @@ namespace ConsoleTelegramBot.Command
             ListChatId.Add(chatId);
 
             EnglishWordFormUser.Add(chatId, new NewEnglishWord());
-            State.Add(chatId, new InputWordState(chatId, _configuration));
+            
+            State.Add(chatId, new InputWordState(chatId, _configuration, 
+                                new InputTranscriptionState(chatId, _configuration, 
+                                new InputTranslateState(chatId, _configuration,
+                                new InputExampleState(chatId, _configuration,
+                                new InputCategoryIdState(chatId, _configuration,
+                                null))))));
                         
             await State[chatId].Initialize();
         }
@@ -57,7 +64,7 @@ namespace ConsoleTelegramBot.Command
             
             if (State[chatId] == null)
             {
-                await CreateNewWord(chatId);
+                await Operation.CreateNewWord(chatId, EnglishWordFormUser[chatId], _configuration);
 
                 RemoveChatId(chatId);
             }
@@ -68,45 +75,6 @@ namespace ConsoleTelegramBot.Command
             ListChatId.Remove(chatId);
             EnglishWordFormUser.Remove(chatId);
             State.Remove(chatId);
-        }
-
-        private async Task CreateNewWord(long chatId)
-        {
-            var result = await _configuration.WebClient.PostNewWord(Configuration.UrlCreateWord, EnglishWordFormUser[chatId]);
-
-            try
-            {
-                var englishWord = JsonSerializer.Deserialize<EnglisWord>(result);
-
-                if (englishWord.id != 0)
-                {
-                    await _configuration.SendMessageCommand.Execute(chatId, "New word was created", 
-                                                                    ParseMode.Html, new ReplyKeyboardRemove());
-
-                    result = $"*Id:* {englishWord.id}\n\n*WordPhrase*: {englishWord.wordPhrase}\n\n*Transcription:* {englishWord.transcription}\n\n" +
-                             $"*Translate:* {englishWord.translate}\n\n*Example:* {englishWord.example}\n\n*Category:* {englishWord.categoryName}";
-
-                    await _configuration.SendMessageCommand.Execute(chatId, result, ParseMode.Markdown, new ReplyKeyboardRemove());
-                    return;
-                }
-                else
-                {
-                    var validationError = JsonSerializer.Deserialize<ValidationError>(result);
-
-                    string error = string.Empty;
-
-                    error += (validationError.Id is null) ? string.Empty : validationError.Id[0] + "\n";
-                    error += (validationError.WordPhrase is null) ? string.Empty : validationError.WordPhrase[0];
-                    
-                    result = $"New word was not created:\n{error}";
-
-                    await _configuration.SendMessageCommand.Execute(chatId, result, ParseMode.Html, new ReplyKeyboardRemove());
-                    return;
-                }
-            }
-            catch { }
-
-            await _configuration.SendMessageCommand.Execute(chatId, result, ParseMode.Html, new ReplyKeyboardRemove());
         }
     }
 }

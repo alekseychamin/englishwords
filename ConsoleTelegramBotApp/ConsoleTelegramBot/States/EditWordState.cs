@@ -1,4 +1,5 @@
 ﻿using ConsoleTelegramBot.Command;
+using ConsoleTelegramBot.Operations;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,13 +9,13 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ConsoleTelegramBot.States
 {
-    public class InputTranscriptionState : IState
+    public class EditWordState : IState
     {
         private readonly IConfiguration _configuration;
         private long _chatId;
         private readonly IState _nextState;
 
-        public InputTranscriptionState(long chatId, IConfiguration configuration, IState nextState)
+        public EditWordState(long chatId, IConfiguration configuration, IState nextState)
         {
             _configuration = configuration;
             _chatId = chatId;
@@ -23,15 +24,26 @@ namespace ConsoleTelegramBot.States
 
         public async Task ChangeState(IUniqueChatId uniqueChatId, string message)
         {
-            uniqueChatId.EnglishWordFormUser[_chatId].Transcription = message;
+            int answer;
 
-            uniqueChatId.State[_chatId] = _nextState; //new InputTranslateState(_chatId, _configuration);
+            if (int.TryParse(message, out answer))
+            {
+                if (answer == 1)
+                {
+                    uniqueChatId.State[_chatId] = new InputWordState(_chatId, _configuration, this, isInitialize: false);
+                    await uniqueChatId.State[_chatId].Initialize();
+
+                    return;
+                }
+            }
+
+            uniqueChatId.State[_chatId] = _nextState;
             await uniqueChatId.State[_chatId].Initialize();
         }
 
         public async Task Initialize()
         {
-            await _configuration.SendMessageCommand.Execute(_chatId, "Input transcription:", ParseMode.Html, new ReplyKeyboardRemove());
+            await Operation.MakeQuestion(_chatId, "Do you need to edit word?", _configuration);
         }
     }
 }

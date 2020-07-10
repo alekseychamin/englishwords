@@ -46,7 +46,7 @@ namespace DataAccess.Repository
         {
             return _db.EnglishWords
                       .Include(x => x.Category)
-                      .Single(x => x.Id == id);
+                      .SingleOrDefault(x => x.Id == id);
         }
 
         public void SaveChanges()

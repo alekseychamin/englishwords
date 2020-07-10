@@ -16,9 +16,9 @@ namespace WebAPI.Model
 
         public string Example { get; set; }
 
-        public DateTime CreateDate { get; set; } = DateTime.Now;
+        //public DateTime CreateDate { get; set; } = DateTime.Now;
 
-        public int ShowCount { get; set; }
+        //public int ShowCount { get; set; }
         
         public int CategoryId { get; set; }
     }
