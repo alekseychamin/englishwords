@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConsoleTelegramBot.Model;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
@@ -8,7 +9,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ConsoleTelegramBot.Command
 {
-    public class RandomWordCommand : INamedCommand
+    public class ShowCategoryCommand : INamedCommand
     {
         public string Name { get; }
 
@@ -16,7 +17,7 @@ namespace ConsoleTelegramBot.Command
 
         private readonly IConfiguration _configuration;
 
-        public RandomWordCommand(string name, string description, IConfiguration configuration)
+        public ShowCategoryCommand(string name, string description, IConfiguration configuration)
         {
             Name = name;
             Description = description;
@@ -25,26 +26,27 @@ namespace ConsoleTelegramBot.Command
 
         public async Task Execute(long chatId)
         {
-            var result = await _configuration.WebClient.GetStringFromUrl(Configuration.UrlRandomWord);
+            var result = await _configuration.WebClient.GetStringFromUrl(Configuration.UrlCategory);
 
             try
             {
-                var englishWord = JsonSerializer.Deserialize<EnglisWord>(result);
+                var categories = JsonSerializer.Deserialize<List<Category>>(result);
 
-                if (englishWord is null)
+                if (categories is null)
                 {
-                    result = "English word is null";
-                    await _configuration.SendMessageCommand.Execute(chatId, result, 
-                                                                    ParseMode.Html, new ReplyKeyboardRemove());
+                    result = "Categories is null";
+                    await _configuration.SendMessageCommand.Execute(chatId, result, ParseMode.Html, new ReplyKeyboardRemove());
                     return;
                 }
 
-                result = $"*Id:* {englishWord.id}\n\n*WordPhrase*: {englishWord.wordPhrase}\n\n*Transcription:* {englishWord.transcription}\n\n" +
-                         $"*Translate:* {englishWord.translate}\n\n*Example:* {englishWord.example}\n\n*Category:* {englishWord.categoryName}";
+                result = string.Empty;
+                foreach (var category in categories)
+                {
+                    result += $"*Id:* {category.id}\n*CategoryName*: {category.name}\n\n";                    
+                }
 
                 await _configuration.SendMessageCommand.Execute(chatId, result, ParseMode.Markdown, new ReplyKeyboardRemove());
                 return;
-
             }
             catch { }
 

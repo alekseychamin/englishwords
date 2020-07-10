@@ -9,37 +9,28 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ConsoleTelegramBot.Command
 {
-    public class SendMessageCommand : ICommand
+    public class SendMessageCommand : ISendMessageCommand
     {
-        public string Name { get; }
+        private readonly IConfiguration _configuration;        
 
-        public string Description { get; }
-
-        private readonly ITelegramBotClient _bot;
-        private readonly ILogger _logger;
-
-        public SendMessageCommand(string name, string description,
-                                  ITelegramBotClient bot, ILogger logger)
+        public SendMessageCommand(IConfiguration configuration)
         {
-            Name = name;
-            Description = description;
-            _bot = bot;
-            _logger = logger;
+            _configuration = configuration;
         }
         
-        public async Task Execute(long chatId, string text = null)
+        public async Task Execute(long chatId, string text, ParseMode mode, IReplyMarkup replyMarkup)
         {
             if (chatId == -1)
             {
-                _logger.Error("Can`t send message to bot, ChatId is -1");
+                _configuration.Logger.Error("Can`t send message to bot, ChatId is -1");
                 return;
             }
 
-            await _bot.SendTextMessageAsync(
+            await _configuration.Bot.SendTextMessageAsync(
                         chatId: chatId,
-                        parseMode: ParseMode.Markdown,
+                        parseMode: mode,
                         text: text,
-                        replyMarkup: new ReplyKeyboardRemove()
+                        replyMarkup: replyMarkup
              );
         }
     }

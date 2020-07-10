@@ -12,18 +12,11 @@ namespace ConsoleTelegramBot.Updates
 {
     public class TextMessageUpdate : IUpdate
     {
-        private readonly ILogger _logger;
-        private readonly ICommand _showAllCommand;
-        private readonly Dictionary<string, ICommand> _listCommand;
-        private readonly List<IUniqueChatId> _uniqueChatIds;
+        private readonly IConfiguration _configuration;
 
-        public TextMessageUpdate(ICommand showAllCommand, Dictionary<string, ICommand> listCommand,
-                                 ILogger logger, List<IUniqueChatId> uniqueChatIds)
+        public TextMessageUpdate(IConfiguration configuration)
         {
-            _logger = logger;
-            _showAllCommand = showAllCommand;
-            _listCommand = listCommand;
-            _uniqueChatIds = uniqueChatIds;
+            _configuration = configuration;
         }
         public async Task ProcessUpdate(Update update)
         {
@@ -33,12 +26,12 @@ namespace ConsoleTelegramBot.Updates
 
             var text = update.Message.Text;
 
-            _logger.Debug("Message form Telegram: {0} with chatId {1}", text, chatId);
+            _configuration.Logger.Debug("Message form Telegram: {0} with chatId {1}", text, chatId);
 
             if (update.Message.Type != MessageType.Text)
                 return;
 
-            var uniqueChatId = GetUniqueChatId(chatId, _uniqueChatIds);
+            var uniqueChatId = GetUniqueChatId(chatId, _configuration.UniqueChatIds);
 
             if ((uniqueChatId is null) == false)
             {
@@ -49,14 +42,14 @@ namespace ConsoleTelegramBot.Updates
 
             var inputCommand = update.Message.Text.Split(' ').First();
 
-            foreach (var command in _listCommand)
+            foreach (var command in _configuration.ListCommand)
             {
                 if (command.Key.Equals(inputCommand))
                     action = command.Value.Execute(chatId);
             }
 
             if (action is null)
-                action = _showAllCommand.Execute(chatId);
+                action = _configuration.ShowAllCommand.Execute(chatId);
 
             await action;
         }

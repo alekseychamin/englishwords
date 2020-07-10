@@ -20,28 +20,33 @@ namespace ConsoleTelegramBot
     {
         private static long _chatId = -1;
         private static ILogger _logger;
-        private static ICommand _sendMessageCommand;        
+        private static ISendMessageCommand _sendMessageCommand;        
         private static ITelegramBotClient _bot;        
         private static IUpdate _textMessageUpdate;
+        private static IUpdate _callBackQueryUpdate;
         private static IUpdate _uknownUpdate;
+        private static IConfiguration configuration; 
 
         static async Task Main(string[] args)
         {
-            _logger = Configuration.Logger;
+            configuration = new Configuration();
+
+            _logger = configuration.Logger;
             
             _logger.Debug("Init main");
 
-            _bot = Configuration.Bot;            
+            _bot = configuration.Bot;            
 
             var user = await _bot.GetMeAsync();
             Console.Title = user.Username;
 
             var cts = new CancellationTokenSource();
 
-            _textMessageUpdate = Configuration.TextMessageUpdate;
-            _uknownUpdate = Configuration.UnknownMessageUpdate;
+            _textMessageUpdate = configuration.TextMessageUpdate;
+            _callBackQueryUpdate = configuration.CallBackQueryUpdate;
+            _uknownUpdate = configuration.UnknownMessageUpdate;
 
-            _sendMessageCommand = Configuration.SendMessageCommand;                        
+            _sendMessageCommand = configuration.SendMessageCommand;                        
 
             // StartReceiving does not block the caller thread. Receiving is done on the ThreadPool.
             _bot.StartReceiving(
@@ -61,6 +66,7 @@ namespace ConsoleTelegramBot
             var handler = update.Type switch
             {
                 UpdateType.Message => _textMessageUpdate.ProcessUpdate(update),
+                UpdateType.CallbackQuery => _callBackQueryUpdate.ProcessUpdate(update),
                 _ => _uknownUpdate.ProcessUpdate(update)
             };
 
@@ -70,7 +76,7 @@ namespace ConsoleTelegramBot
             }
             catch (Exception ex)
             {
-                _chatId = update.Message.Chat.Id;
+                _chatId = update.Message?.Chat.Id ?? -1;
                 await HandleErrorAsync(bot, ex, cancellationToken);
             }
         }
@@ -85,7 +91,7 @@ namespace ConsoleTelegramBot
 
             _logger.Error(errorMessage);
 
-            await _sendMessageCommand.Execute(_chatId, errorMessage);
+            await _sendMessageCommand.Execute(_chatId, errorMessage, ParseMode.Html, new ReplyKeyboardRemove());
         }
     }
 }

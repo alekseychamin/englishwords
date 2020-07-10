@@ -10,19 +10,18 @@ namespace ConsoleTelegramBot.Updates
 {
     public class UnknownUpdate : IUpdate
     {
-        private readonly ICommand _sendMessageCommand;
-        private readonly ILogger _logger;
+        private readonly IConfiguration _configuration;
 
-        public UnknownUpdate(ICommand sendMessageCommand, ILogger logger)
+        public UnknownUpdate(IConfiguration configuration)
         {
-            _sendMessageCommand = sendMessageCommand;
-            _logger = logger;
+            _configuration = configuration;
         }
-        public async Task ProcessUpdate(Update update)
+        public Task ProcessUpdate(Update update)
         {
-            _logger.Error("Unknown update type: {0}", update.Type);            
+            _configuration.Logger.Error("Unknown update type: {0}", update.Type);
 
-            await _sendMessageCommand.Execute(update.Message.Chat.Id, $"Unknown update type: {update.Type}");
+            return Task.CompletedTask;
+            //await _configuration.SendMessageCommand.Execute(update.Chat.Id, $"Unknown update type: {update.Type}");
         }
     }
 }

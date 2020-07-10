@@ -1,4 +1,5 @@
 ﻿using ConsoleTelegramBot.Command;
+using ConsoleTelegramBot.States;
 using ConsoleTelegramBot.Updates;
 using NLog;
 using System;
@@ -9,45 +10,84 @@ using Telegram.Bot;
 
 namespace ConsoleTelegramBot
 {
-    public static class Configuration
+    public class Configuration : IConfiguration
     {
-        public readonly static string BotToken = "1144632945:AAFWHd0Um4WrUMI4Ijm-5pfkoJGK41cxahE";
-        public readonly static string UrlRandomWord = "http://localhost:5000/api/operation/randomword";
-        public readonly static string UrlCreateWord = "http://localhost:5000/api/englishword";
+        public const string BotToken = "1144632945:AAFWHd0Um4WrUMI4Ijm-5pfkoJGK41cxahE";
+        public const string UrlRandomWord = "http://localhost:5000/api/operation/randomword";
+        public const string UrlCategory = "http://localhost:5000/api/category";
+        public const string UrlCreateWord = "http://localhost:5000/api/englishword";
 
-        public static ILogger Logger { get; }
-        public static ICommand SendMessageCommand { get; }
-        public static ICommand ShowAllCommand { get; }
-        public static ITelegramBotClient Bot { get; }
-        public static IWebClient WebClient { get; }
-        public static IUpdate TextMessageUpdate { get; }
-        public static IUpdate UnknownMessageUpdate { get; }
-        public static Dictionary<string, ICommand> ListCommand { get; }        
+        public ILogger Logger { get; }
+        public ISendMessageCommand SendMessageCommand { get; }
+        public ICommand ShowAllCommand { get; }        
+        public ITelegramBotClient Bot { get; }
+        public IWebClient WebClient { get; }
+        public IUpdate TextMessageUpdate { get; }
+        public IUpdate CallBackQueryUpdate { get; }
+        public IUpdate UnknownMessageUpdate { get; }
+        public Dictionary<string, INamedCommand> ListCommand { get; }
+        public List<IUniqueChatId> UniqueChatIds { get; }
 
-        static Configuration()
+        public Configuration()
         {
             Logger = LogManager.GetCurrentClassLogger();
 
-            Bot = new TelegramBotClient(BotToken);            
-            WebClient = new WebClient(Logger);
-            
-            SendMessageCommand = new SendMessageCommand("sendMessage", null, Bot, Logger);
-            
-            ListCommand = new Dictionary<string, ICommand>
+            Bot = CreateTelegramBot(BotToken);
+            WebClient = CreateWebClient(Logger);
+
+            SendMessageCommand = CreateSendMessageCommand(this);
+            ShowAllCommand = CreateShowAllCommand(this);            
+
+            ListCommand = new Dictionary<string, INamedCommand>
             {
-                { "/word", new RandomWordCommand("/word", "show random english word", WebClient, SendMessageCommand) },
-                { "/newword", new NewWordCommand("/newword", "add new english word", SendMessageCommand, Logger, WebClient) }
+                { "/word", new RandomWordCommand("/word", "show random english word", this) },
+                { "/newword", new NewWordCommand("/newword", "add new english word", this) },
+                { "/categories", new ShowCategoryCommand("/categories", "show categories", this) }
             };
 
-            var listUniqueChatId = GetListUniqueChatId(ListCommand);
+            UniqueChatIds = GetListUniqueChatId(ListCommand);
 
-            ShowAllCommand = new ShowAllCommand("showAllCommand", null, ListCommand, SendMessageCommand);            
-
-            TextMessageUpdate = new TextMessageUpdate(ShowAllCommand, ListCommand, Logger, listUniqueChatId);
-            UnknownMessageUpdate = new UnknownUpdate(SendMessageCommand, Logger);
+            TextMessageUpdate = CreateTextMessageUpdate(this);
+            CallBackQueryUpdate = CreateCallBackQueryUpdate(this);
+            UnknownMessageUpdate = CreateUnknownMessageUpdate(this);
         }
 
-        private static List<IUniqueChatId> GetListUniqueChatId(Dictionary<string, ICommand> listCommand)
+        private ITelegramBotClient CreateTelegramBot(string token)
+        {
+            return new TelegramBotClient(token);
+        }
+
+        private IWebClient CreateWebClient(ILogger logger)
+        {
+            return new WebClient(logger);
+        }
+
+        private ISendMessageCommand CreateSendMessageCommand(IConfiguration configuration)
+        {
+            return new SendMessageCommand(configuration);
+        }
+
+        private ICommand CreateShowAllCommand(IConfiguration configuration)
+        {
+            return new ShowAllCommand(configuration);
+        }
+
+        private IUpdate CreateTextMessageUpdate(IConfiguration configuration)
+        {
+            return new TextMessageUpdate(configuration);
+        }
+
+        private IUpdate CreateCallBackQueryUpdate(IConfiguration configuration)
+        {
+            return new CallBackQueryUpdate(configuration);
+        }
+
+        private IUpdate CreateUnknownMessageUpdate(IConfiguration configuration)
+        {
+            return new UnknownUpdate(configuration);
+        }        
+
+        private List<IUniqueChatId> GetListUniqueChatId(Dictionary<string, INamedCommand> listCommand)
         {
             var listUniqueChatId = new List<IUniqueChatId>();
 

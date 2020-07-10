@@ -38,12 +38,12 @@ namespace ConsoleTelegramBot
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error ocuried");
+                _logger.Error(ex, "Error ocuried");                
                 return ex.Message;
             }
         }
 
-        public async Task<string> GetRandomWord(string url)
+        public async Task<string> GetStringFromUrl(string url)
         {
             _client.DefaultRequestHeaders.Accept.Clear();
 
