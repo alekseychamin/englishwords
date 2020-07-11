@@ -13,19 +13,28 @@ namespace ConsoleTelegramBot.States
         private long _chatId;
         private readonly IConfiguration _configuration;
         private readonly IState _nextState;
+        private bool _isInitialize;
 
-        public InputExampleState(long chatId, IConfiguration configuration, IState nextState)
+        public InputExampleState(long chatId, IConfiguration configuration, IState nextState, bool isInitialize = true)
         {
             _chatId = chatId;
             _configuration = configuration;
             _nextState = nextState;
+            _isInitialize = isInitialize;
         }
         public async Task ChangeState(IUniqueChatId uniqueChatId, string message)
         {
-            uniqueChatId.EnglishWordFormUser[_chatId].Example = message;
+            uniqueChatId.EnglishWordFromUser[_chatId].Example = message;
 
             uniqueChatId.State[_chatId] = _nextState; //new InputCategoryIdState(_chatId, _configuration);
-            await uniqueChatId.State[_chatId].Initialize();
+
+            if (_nextState is null)
+                return;
+
+            if (_isInitialize)
+                await uniqueChatId.State[_chatId].Initialize();
+            else
+                await uniqueChatId.State[_chatId].ChangeState(uniqueChatId, message);
         }
 
         public async Task Initialize()

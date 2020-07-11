@@ -62,7 +62,7 @@ namespace WebAPI.Controllers
             if (!_repositoryBL.Delete(id))
                 return NotFound();
 
-            return NoContent();
+            return Ok($"English word with id: {id} deleted");
         }
 
         // GET api/englishword/5
@@ -103,8 +103,12 @@ namespace WebAPI.Controllers
                 return BadRequest(ModelState);
 
             _repositoryBL.Update(itemBL);
+            
+            itemBL = _repositoryBL.Read(id);
 
-            return NoContent();
+            var itemView = _mapper.Map<EnglishWordView>(itemBL);
+
+            return Ok(itemView);
         }
 
         private void CustomValidateModel(ModelStateDictionary modelState, EnglishWordBL itemBL)

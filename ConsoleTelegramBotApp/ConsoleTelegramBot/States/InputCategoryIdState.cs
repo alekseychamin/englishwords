@@ -16,19 +16,21 @@ namespace ConsoleTelegramBot.States
         private readonly IConfiguration _configuration;
         private long _chatId;
         private readonly IState _nextState;
+        private bool _isInitialize;
 
-        public InputCategoryIdState(long chatId, IConfiguration configuration, IState nextState)
+        public InputCategoryIdState(long chatId, IConfiguration configuration, IState nextState, bool isInitialize = true)
         {
             _configuration = configuration;
             _chatId = chatId;
             _nextState = nextState;
+            _isInitialize = isInitialize;
         }
         public async Task ChangeState(IUniqueChatId uniqueChatId, string message)
         {
             int categoryId;
             
             if (int.TryParse(message, out categoryId))
-                uniqueChatId.EnglishWordFormUser[_chatId].CategoryId = categoryId;
+                uniqueChatId.EnglishWordFromUser[_chatId].CategoryId = categoryId;
             else
             {
                 await _configuration.SendMessageCommand.Execute(_chatId, "CategoryId is invalid", ParseMode.Html, new ReplyKeyboardRemove());
@@ -36,6 +38,14 @@ namespace ConsoleTelegramBot.States
             }
 
             uniqueChatId.State[_chatId] = _nextState; //null;
+
+            if (_nextState is null)
+                return;
+
+            if (_isInitialize)
+                await uniqueChatId.State[_chatId].Initialize();
+            else
+                await uniqueChatId.State[_chatId].ChangeState(uniqueChatId, message);
         }
 
         public async Task Initialize()

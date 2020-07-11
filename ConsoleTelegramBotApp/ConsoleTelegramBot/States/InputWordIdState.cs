@@ -16,12 +16,14 @@ namespace ConsoleTelegramBot.States
         private readonly IConfiguration _configuration;
         private readonly IState _nextState;
         private long _chatId;
+        private bool _isInitialize;
 
-        public InputWordIdState(long chatId, IConfiguration configuration, IState nextState)
+        public InputWordIdState(long chatId, IConfiguration configuration, IState nextState, bool isInitialize = true)
         {
             _chatId = chatId;
             _configuration = configuration;
             _nextState = nextState;
+            _isInitialize = isInitialize;
         }
         public async Task ChangeState(IUniqueChatId uniqueChatId, string message)
         {
@@ -32,11 +34,19 @@ namespace ConsoleTelegramBot.States
 
                 if ((newEnglishWord is null) == false)
                 {
-                    uniqueChatId.EnglishWordFormUser[_chatId] = newEnglishWord;
+                    uniqueChatId.WordId = id;
+                    
+                    uniqueChatId.EnglishWordFromUser[_chatId] = newEnglishWord;
 
                     uniqueChatId.State[_chatId] = _nextState;
 
-                    await uniqueChatId.State[_chatId].Initialize();
+                    if (_nextState is null)
+                        return;
+
+                    if (_isInitialize)
+                        await uniqueChatId.State[_chatId].Initialize();
+                    else
+                        await uniqueChatId.State[_chatId].ChangeState(uniqueChatId, message);
                 }
                 else                
                     await ShowError($"Word with id: {id} not found", uniqueChatId);

@@ -26,7 +26,7 @@ namespace WebAPI.Profiles
 
             //Update <-> BL
             CreateMap<EnglishWordUpdate, EnglishWordBL>()
-                .ForMember(dest => dest.CategoryId, opt => opt.Condition(source => source.CategoryId.HasValue))
+                .ForMember(dest => dest.CategoryId, opt => opt.Condition(source => source.CategoryId.HasValue))                
                 .ForMember(dest => dest.CreateDate, opt => opt.Condition(source => source.CreateDate.HasValue))
                 .ForMember(dest => dest.Example, opt => opt.Condition(source => source.Example != null))
                 .ForMember(dest => dest.ShowCount, opt => opt.Condition(source => source.ShowCount.HasValue))

@@ -9,11 +9,12 @@ namespace ConsoleTelegramBot.Command
 {
     public interface IUniqueChatId : INamedCommand
     {
+        int WordId { get; set; }
         HashSet<long> ListChatId { get; }
 
         Dictionary<long, IState> State { get; }
 
-        Dictionary<long, NewEnglishWord> EnglishWordFormUser { get; }
+        Dictionary<long, NewEnglishWord> EnglishWordFromUser { get; }
 
         Task SaveInfoFromUser(long chatId, string message);
 

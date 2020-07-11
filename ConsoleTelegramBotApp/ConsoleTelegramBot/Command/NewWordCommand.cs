@@ -23,12 +23,14 @@ namespace ConsoleTelegramBot.Command
 
         public string Description { get; }
 
+        public int WordId { get; set; }
+
         private readonly IConfiguration _configuration;
 
         public HashSet<long> ListChatId { get; } = new HashSet<long>();
         public Dictionary<long, IState> State { get; } = new Dictionary<long, IState>();
 
-        public Dictionary<long, NewEnglishWord> EnglishWordFormUser { get; } = new Dictionary<long, NewEnglishWord>();
+        public Dictionary<long, NewEnglishWord> EnglishWordFromUser { get; } = new Dictionary<long, NewEnglishWord>();        
 
         public NewWordCommand(string name, string description, IConfiguration configuration)
         {
@@ -41,7 +43,7 @@ namespace ConsoleTelegramBot.Command
         {
             ListChatId.Add(chatId);
 
-            EnglishWordFormUser.Add(chatId, new NewEnglishWord());
+            EnglishWordFromUser.Add(chatId, new NewEnglishWord());
             
             State.Add(chatId, new InputWordState(chatId, _configuration, 
                                 new InputTranscriptionState(chatId, _configuration, 
@@ -64,7 +66,7 @@ namespace ConsoleTelegramBot.Command
             
             if (State[chatId] == null)
             {
-                await Operation.CreateNewWord(chatId, EnglishWordFormUser[chatId], _configuration);
+                await Operation.CreateNewWord(chatId, EnglishWordFromUser[chatId], _configuration);
 
                 RemoveChatId(chatId);
             }
@@ -73,7 +75,7 @@ namespace ConsoleTelegramBot.Command
         public void RemoveChatId(long chatId)
         {
             ListChatId.Remove(chatId);
-            EnglishWordFormUser.Remove(chatId);
+            EnglishWordFromUser.Remove(chatId);
             State.Remove(chatId);
         }
     }

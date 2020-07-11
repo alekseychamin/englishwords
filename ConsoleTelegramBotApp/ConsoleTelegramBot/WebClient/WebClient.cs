@@ -43,6 +43,51 @@ namespace ConsoleTelegramBot
             }
         }
 
+        public async Task<string> PutNewWord(string url, object obj)
+        {
+            _client.DefaultRequestHeaders.Accept.Clear();
+
+            _client.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
+
+            _client.DefaultRequestHeaders.Add("Telegram-bot", "English words to learn");
+
+            var objStr = JsonSerializer.Serialize(obj);
+            var content = new StringContent(objStr, Encoding.UTF8, "application/json");
+
+            try
+            {
+                var result = await _client.PutAsync(url, content);
+                return result.Content.ReadAsStringAsync().Result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error ocuried");
+                return ex.Message;
+            }
+        }
+
+        public async Task<string> DeleteWord(string url)
+        {
+            _client.DefaultRequestHeaders.Accept.Clear();
+
+            _client.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
+
+            _client.DefaultRequestHeaders.Add("Telegram-bot", "English words to learn");
+
+            try
+            {
+                var result = await _client.DeleteAsync(url);
+                return result.Content.ReadAsStringAsync().Result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error ocuried");
+                return ex.Message;
+            }
+        }
+
         public async Task<string> GetStringFromUrl(string url)
         {
             _client.DefaultRequestHeaders.Accept.Clear();

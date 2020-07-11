@@ -1,4 +1,5 @@
 ﻿using ConsoleTelegramBot.Command;
+using ConsoleTelegramBot.Operations;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,14 +9,14 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ConsoleTelegramBot.States
 {
-    public class InputWordState : IState
+    public class EditCategoryIdState : IState
     {
         private readonly IConfiguration _configuration;
         private long _chatId;
         private readonly IState _nextState;
         private bool _isInitialize;
 
-        public InputWordState(long chatId, IConfiguration configuration, IState nextState, bool isInitialize = true)
+        public EditCategoryIdState(long chatId, IConfiguration configuration, IState nextState, bool isInitialize = true)
         {
             _configuration = configuration;
             _chatId = chatId;
@@ -25,9 +26,20 @@ namespace ConsoleTelegramBot.States
 
         public async Task ChangeState(IUniqueChatId uniqueChatId, string message)
         {
-            uniqueChatId.EnglishWordFromUser[_chatId].WordPhrase = message;
+            if (message.Equals("Yes"))
+            {
+                var field = uniqueChatId.EnglishWordFromUser[_chatId].CategoryName;
 
-            uniqueChatId.State[_chatId] = _nextState; //new InputTranscriptionState(_chatId, _configuration);
+                if (string.IsNullOrEmpty(field) == false)
+                    await _configuration.SendMessageCommand.Execute(_chatId, field, ParseMode.Html, new ReplyKeyboardRemove());
+
+                uniqueChatId.State[_chatId] = new InputCategoryIdState(_chatId, _configuration, this, isInitialize: false);
+                await uniqueChatId.State[_chatId].Initialize();
+
+                return;
+            }
+
+            uniqueChatId.State[_chatId] = _nextState;
 
             if (_nextState is null)
                 return;
@@ -40,7 +52,7 @@ namespace ConsoleTelegramBot.States
 
         public async Task Initialize()
         {
-            await _configuration.SendMessageCommand.Execute(_chatId, "Input new word or phrase:", ParseMode.Html, new ReplyKeyboardRemove());
+            await Operation.MakeQuestion(_chatId, "Do you need to edit category?", _configuration);
         }
     }
 }

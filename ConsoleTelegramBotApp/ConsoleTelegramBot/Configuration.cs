@@ -43,6 +43,7 @@ namespace ConsoleTelegramBot
                 { "/word", new RandomWordCommand("/word", "show random english word", this) },
                 { "/newword", new NewWordCommand("/newword", "add new english word", this) },
                 { "/editword", new EditWordCommand("/editword", "edit word by id", this) },
+                { "/deleteword", new DeleteWordCommand("/deleteword", "delete word by id", this) },
                 { "/categories", new ShowCategoryCommand("/categories", "show categories", this) }                
             };
 

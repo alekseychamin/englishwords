@@ -8,41 +8,34 @@ using System.Threading.Tasks;
 
 namespace ConsoleTelegramBot.Command
 {
-    public class EditWordCommand : IUniqueChatId
+    public class DeleteWordCommand : IUniqueChatId
     {
+        public string Name { get; }
+
+        public string Description { get; }
+
+        public int WordId { get; set; }
+
         public HashSet<long> ListChatId { get; } = new HashSet<long>();
 
         public Dictionary<long, IState> State { get; } = new Dictionary<long, IState>();
 
         public Dictionary<long, NewEnglishWord> EnglishWordFromUser { get; } = new Dictionary<long, NewEnglishWord>();
 
-        public string Name { get; }
-
-        public string Description { get; }
-        
-        public int WordId { get; set; }
-
         private readonly IConfiguration _configuration;
 
-        public EditWordCommand(string name, string description, IConfiguration configuration)
+        public DeleteWordCommand(string name, string description, IConfiguration configuration)
         {
             Name = name;
             Description = description;
             _configuration = configuration;
         }
-
+        
         public async Task Execute(long chatId)
         {
             ListChatId.Add(chatId);
 
-            //EnglishWordFormUser.Add(chatId, new NewEnglishWord());
-            State.Add(chatId, new InputWordIdState(chatId, _configuration,
-                                new EditWordState(chatId, _configuration,
-                                new EditTranscriptionState(chatId, _configuration,
-                                new EditTranslateState(chatId, _configuration,
-                                new EditExampleState(chatId, _configuration,
-                                new EditCategoryIdState(chatId, _configuration,
-                                null)))))));
+            State.Add(chatId, new InputWordIdState(chatId, _configuration, null));
 
             await State[chatId].Initialize();
         }
@@ -65,7 +58,7 @@ namespace ConsoleTelegramBot.Command
 
             if (State[chatId] == null)
             {
-                await Operation.EditEnglishWord(chatId, WordId, EnglishWordFromUser[chatId], _configuration);
+                await Operation.DeleteEnglishWord(chatId, WordId, _configuration);
 
                 RemoveChatId(chatId);
             }

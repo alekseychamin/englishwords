@@ -90,30 +90,9 @@ namespace ConsoleTelegramBot.Operations
 
         public static async Task GetRandomEnglishWord(long chatId, IConfiguration configuration)
         {
-            var result = await configuration.WebClient.GetStringFromUrl(Configuration.UrlRandomWord);
+            var response = await configuration.WebClient.GetStringFromUrl(Configuration.UrlRandomWord);
 
-            try
-            {
-                var englishWord = JsonSerializer.Deserialize<EnglishWord>(result);
-
-                if (englishWord is null)
-                {
-                    result = "English word is null";
-                    await configuration.SendMessageCommand.Execute(chatId, result,
-                                                                   ParseMode.Html, new ReplyKeyboardRemove());
-                    return;
-                }
-
-                result = $"*Id:* {englishWord.id}\n\n*WordPhrase*: {englishWord.wordPhrase}\n\n*Transcription:* {englishWord.transcription}\n\n" +
-                         $"*Translate:* {englishWord.translate}\n\n*Example:* {englishWord.example}\n\n*Category:* {englishWord.categoryName}";
-
-                await configuration.SendMessageCommand.Execute(chatId, result, ParseMode.Markdown, new ReplyKeyboardRemove());
-                return;
-
-            }
-            catch { }
-
-            await configuration.SendMessageCommand.Execute(chatId, result, ParseMode.Html, new ReplyKeyboardRemove());
+            await ProcessResponse(chatId, configuration, response, null, "English word not found");
         }
 
         public static async Task ShowValidationError(long chatId, string message, string response, IConfiguration configuration)
@@ -134,24 +113,47 @@ namespace ConsoleTelegramBot.Operations
         {
             var response = await configuration.WebClient.PostNewWord(Configuration.UrlEnglishWord, newEnglishWord);
 
+            await ProcessResponse(chatId, configuration, response, "New word was created", "New word was not created");
+        }
+
+        public static async Task EditEnglishWord(long chatId, int id, NewEnglishWord newEnglishWord, IConfiguration configuration)
+        {
+            var url = $"{Configuration.UrlEnglishWord}/{id}";
+            var response = await configuration.WebClient.PutNewWord(url, newEnglishWord);
+
+            await ProcessResponse(chatId, configuration, response, "Word was edited", "Word was not edit");
+        }
+
+        public static async Task DeleteEnglishWord(long chatId, int id, IConfiguration configuration)
+        {
+            var url = $"{Configuration.UrlEnglishWord}/{id}";
+            var response = await configuration.WebClient.DeleteWord(url);
+
+            await configuration.SendMessageCommand.Execute(chatId, response, ParseMode.Html, new ReplyKeyboardRemove());
+        }
+
+        public static async Task ProcessResponse(long chatId, IConfiguration configuration, string response, 
+                                                 string successedMessage, string failMessage)
+        {
             try
             {
                 var englishWord = JsonSerializer.Deserialize<EnglishWord>(response);
 
                 if (englishWord.id != 0)
                 {
-                    await configuration.SendMessageCommand.Execute(chatId, "New word was created",
-                                                                    ParseMode.Html, new ReplyKeyboardRemove());
+                    if (string.IsNullOrEmpty(successedMessage) == false)
+                        await configuration.SendMessageCommand.Execute(chatId, successedMessage,
+                                                                       ParseMode.Html, new ReplyKeyboardRemove());
 
                     response = $"*Id:* {englishWord.id}\n\n*WordPhrase*: {englishWord.wordPhrase}\n\n*Transcription:* {englishWord.transcription}\n\n" +
-                             $"*Translate:* {englishWord.translate}\n\n*Example:* {englishWord.example}\n\n*Category:* {englishWord.categoryName}";
+                               $"*Translate:* {englishWord.translate}\n\n*Example:* {englishWord.example}\n\n*Category:* {englishWord.categoryName}";
 
                     await configuration.SendMessageCommand.Execute(chatId, response, ParseMode.Markdown, new ReplyKeyboardRemove());
                     return;
                 }
                 else
                 {
-                    await Operation.ShowValidationError(chatId, "New word was not created", response, configuration);
+                    await Operation.ShowValidationError(chatId, failMessage, response, configuration);
                     return;
                 }
             }
@@ -167,8 +169,8 @@ namespace ConsoleTelegramBot.Operations
                 {
                     new []
                     {
-                        InlineKeyboardButton.WithCallbackData("Yes", "1"),
-                        InlineKeyboardButton.WithCallbackData("No", "0")
+                        InlineKeyboardButton.WithCallbackData("Yes", "Yes"),
+                        InlineKeyboardButton.WithCallbackData("No", "No")
                     }
                 });
 

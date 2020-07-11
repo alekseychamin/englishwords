@@ -107,7 +107,9 @@ namespace BusinessLogic.Repository
                 return;
             }
 
-            _mapper.Map(item, itemDAL);
+            _mapper.Map(item, itemDAL);            
+
+            _logger.LogInformation("Edited EnglishWord with id: {0}", itemDAL.Id);
 
             SaveChanges();
         }

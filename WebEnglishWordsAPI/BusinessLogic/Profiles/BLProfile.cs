@@ -17,9 +17,11 @@ namespace BusinessLogic.Profiles
 
             //BL -> DAL
             CreateMap<EnglishWordBL, EnglishWord>()
-                .ForMember(dest => dest.Category, opt => opt.Condition(source => source.Category != null));
+                .BeforeMap((s, d) => d.Category = null)
+                .ForMember(dest => dest.Category, opt => opt.Ignore());
 
-            CreateMap<CategoryBL, Category>();
+            CreateMap<CategoryBL, Category>()
+                .ForMember(dest => dest.EnglishWords, opt => opt.Ignore());
         }
     }
 }
