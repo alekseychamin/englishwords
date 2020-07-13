@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DataAccess.Repository
 {
@@ -40,12 +41,14 @@ namespace DataAccess.Repository
         {
             return _db.EnglishWords
                       .Include(x => x.Category);
+                        //.ThenInclude(x => x.EnglishWords);
         }
 
         public EnglishWord Read(int id)
         {
             return _db.EnglishWords
-                      .Include(x => x.Category)                        
+                      .Include(x => x.Category)
+                        //.ThenInclude(x => x.EnglishWords)
                       .SingleOrDefault(x => x.Id == id);
         }
 

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BusinessLogic.Manager;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using WebAPI.Model;
 
@@ -17,18 +18,21 @@ namespace WebAPI.Controllers
         private readonly IDataManager _dateManager;
         private readonly ILogger<OperationController> _logger;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
-        public OperationController(IDataManager dataManager, ILogger<OperationController> logger, IMapper mapper)
+        public OperationController(IConfiguration configuration, IDataManager dataManager, ILogger<OperationController> logger, IMapper mapper)
         {
             _dateManager = dataManager;
             _logger = logger;
             _mapper = mapper;
+            _configuration = configuration;
         }
         
         [HttpGet("addenglishword")]
         public ActionResult AddEnglishWordToDb()
         {
-            var count = _dateManager.AddEnglishWordsToDb();
+            var fileName = _configuration.GetValue<string>("CSVFileName");
+            var count = _dateManager.AddEnglishWordsToDb(fileName);
 
             _logger.LogInformation("Added {0} english words", count);
 
@@ -36,9 +40,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("randomword")]
-        public ActionResult<EnglishWordView> GetRandomEnglishWord()
+        public ActionResult<EnglishWordView> GetRandomEnglishWord([FromQuery] int categoryId)
         {
-            var itemBL = _dateManager.GetRandomEnglishWord();
+            var itemBL = _dateManager.GetRandomEnglishWord(categoryId);
 
             return Ok(_mapper.Map<EnglishWordView>(itemBL));
         }

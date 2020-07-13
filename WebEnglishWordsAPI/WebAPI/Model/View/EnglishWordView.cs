@@ -21,7 +21,9 @@ namespace WebAPI.Model
         public string CreateDate { get; set; }
 
         public int ShowCount { get; set; }
-        
+
+        public int CategoryId { get; set; }
+
         public string CategoryName { get; set; }
     }
 }

@@ -24,9 +24,9 @@ namespace ConsoleTelegramBot.States
         }
         public async Task ChangeState(IUniqueChatId uniqueChatId, string message)
         {
-            uniqueChatId.EnglishWordFromUser[_chatId].Example = message;
+            uniqueChatId.SetExample(_chatId, message);
 
-            uniqueChatId.State[_chatId] = _nextState; //new InputCategoryIdState(_chatId, _configuration);
+            uniqueChatId.State[_chatId] = _nextState;
 
             if (_nextState is null)
                 return;

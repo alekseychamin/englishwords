@@ -8,7 +8,7 @@ using Telegram.Bot;
 namespace ConsoleTelegramBot
 {
     public interface IConfiguration
-    {
+    {        
         ITelegramBotClient Bot { get; }
         Dictionary<string, INamedCommand> ListCommand { get; }
         List<IUniqueChatId> UniqueChatIds { get; }

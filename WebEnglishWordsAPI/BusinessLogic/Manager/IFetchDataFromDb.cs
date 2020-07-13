@@ -1,9 +1,10 @@
 ﻿using BusinessLogic.Model;
+using System.Threading.Tasks;
 
 namespace BusinessLogic.Manager
 {
     public interface IFetchDataFromDb
     {
-        EnglishWordBL GetRandomEnglishWord();
+        EnglishWordBL GetRandomEnglishWord(int categoryId);
     }
 }

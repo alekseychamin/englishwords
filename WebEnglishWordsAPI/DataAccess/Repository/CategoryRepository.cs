@@ -1,8 +1,11 @@
 ﻿using DataAccess.EF;
 using DataAccess.Model;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DataAccess.Repository
 {
@@ -36,12 +39,15 @@ namespace DataAccess.Repository
 
         public IEnumerable<Category> GetAll()
         {
-            return _db.Categories;
+            return _db.Categories
+                      .Include(x => x.EnglishWords);
         }
 
         public Category Read(int id)
         {
-            return _db.Categories.Find(id);
+            return _db.Categories
+                      .Include(x => x.EnglishWords)
+                      .SingleOrDefault(x => x.Id == id);
         }
 
         public void SaveChanges()

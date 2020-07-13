@@ -18,7 +18,9 @@ namespace WebAPI.Profiles
                 .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(source => source.CreateDate.ToShortDateString()));
             CreateMap<EnglishWordView, EnglishWordBL>();
 
-            CreateMap<CategoryBL, CategoryView>().ReverseMap();
+            CreateMap<CategoryBL, CategoryView>()
+                .ForMember(dest => dest.Count, opt => opt.MapFrom(source => source.EnglishWords.Count));
+            CreateMap<CategoryView, CategoryBL>();
 
             //Create <-> BL
             CreateMap<EnglishWordCreate, EnglishWordBL>().ReverseMap();
@@ -34,6 +36,9 @@ namespace WebAPI.Profiles
                 .ForMember(dest => dest.Translate, opt => opt.Condition(source => source.Translate != null))
                 .ForMember(dest => dest.WordPhrase, opt => opt.Condition(source => source.WordPhrase != null));
             CreateMap<EnglishWordBL, EnglishWordUpdate>();
+            
+            CreateMap<CategoryUpdate, CategoryBL>().ReverseMap();
+
         }
     }
 }

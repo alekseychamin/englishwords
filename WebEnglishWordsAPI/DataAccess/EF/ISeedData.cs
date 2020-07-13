@@ -6,6 +6,6 @@ namespace DataAccess.EF
 {
     public interface ISeedData
     {
-        bool Initialize(DbContextOptions<CurrentDbContext> options);        
+        bool Initialize(DbContextOptions<CurrentDbContext> options, bool isDelete = false);        
     }
 }

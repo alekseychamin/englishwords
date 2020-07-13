@@ -40,11 +40,17 @@ namespace ConsoleTelegramBot
 
             ListCommand = new Dictionary<string, INamedCommand>
             {
-                { "/word", new RandomWordCommand("/word", "show random english word", this) },
-                { "/newword", new NewWordCommand("/newword", "add new english word", this) },
-                { "/editword", new EditWordCommand("/editword", "edit word by id", this) },
-                { "/deleteword", new DeleteWordCommand("/deleteword", "delete word by id", this) },
-                { "/categories", new ShowCategoryCommand("/categories", "show categories", this) }                
+                { "/w", new RandomWordCommand("/w", "show random english word", this) },
+                { "/wid", new ShowWordByIdCommand("/wid", "show english word by id", this) },
+                { "/nw", new NewWordCommand("/nw", "add new english word", this) },
+                { "/ew", new EditWordCommand("/ew", "edit word by id", this) },
+                { "/dw", new DeleteWordCommand("/dw", "delete word by id", this) },
+                { "/c", new ShowCategoryCommand("/c", "show categories", this) },
+                { "/nc", new NewCategoryCommand("/nc", "add new category", this) },
+                { "/ec", new EditCategoryNameCommand("/ec", "edit name category", this) },
+                { "/dc", new DeleteCategoryCommand("/dc", "delete category", this) },
+                { "/sc", new SetCategoryIdCommand("/sc", "set category for showing words", this) },
+                { "/cc", new ClearCategoryIdCommand("/cc", "clear category for showing words", this) }
             };
 
             UniqueChatIds = GetListUniqueChatId(ListCommand);

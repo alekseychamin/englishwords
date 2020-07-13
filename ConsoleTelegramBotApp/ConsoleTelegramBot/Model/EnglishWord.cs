@@ -13,6 +13,7 @@ namespace ConsoleTelegramBot
         public string example { get; set; }
         public string createDate { get; set; }
         public int showCount { get; set; }
+        public int categoryId { get; set; }
         public string categoryName { get; set; }
     }
 }

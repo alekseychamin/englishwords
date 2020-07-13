@@ -5,9 +5,9 @@ namespace ConsoleTelegramBot
 {
     public interface IWebClient
     {
-        Task<string> GetStringFromUrl(string url);
-        Task<string> PostNewWord(string url, object obj);
-        Task<string> PutNewWord(string url, object obj);
-        Task<string> DeleteWord(string url);
+        Task<string> GetEntity(string url);
+        Task<string> PostEntity(string url, object obj);
+        Task<string> PutEntity(string url, object obj);
+        Task<string> DeleteEntity(string url);
     }
 }

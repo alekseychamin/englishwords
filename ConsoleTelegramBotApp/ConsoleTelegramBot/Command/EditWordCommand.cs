@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ConsoleTelegramBot.Command
 {
@@ -19,8 +21,8 @@ namespace ConsoleTelegramBot.Command
         public string Name { get; }
 
         public string Description { get; }
-        
-        public int WordId { get; set; }
+
+        private int wordId;
 
         private readonly IConfiguration _configuration;
 
@@ -34,8 +36,7 @@ namespace ConsoleTelegramBot.Command
         public async Task Execute(long chatId)
         {
             ListChatId.Add(chatId);
-
-            //EnglishWordFormUser.Add(chatId, new NewEnglishWord());
+            
             State.Add(chatId, new InputWordIdState(chatId, _configuration,
                                 new EditWordState(chatId, _configuration,
                                 new EditTranscriptionState(chatId, _configuration,
@@ -65,10 +66,81 @@ namespace ConsoleTelegramBot.Command
 
             if (State[chatId] == null)
             {
-                await Operation.EditEnglishWord(chatId, WordId, EnglishWordFromUser[chatId], _configuration);
+                await Operation.EditEnglishWord(chatId, wordId, EnglishWordFromUser[chatId], _configuration);
 
                 RemoveChatId(chatId);
             }
+        }
+
+        public async Task GetNewEnglishWordById(long chatId, int id)
+        {
+            var newEnglishWord = await Operation.GetNewEnglishWordById(id, chatId, _configuration);
+
+            if ((newEnglishWord is null) == false)
+            {
+                EnglishWordFromUser[chatId] = newEnglishWord;
+            }
+            else
+            {
+                await _configuration.SendMessageCommand.Execute(chatId, $"Word with id: {id} not found", 
+                                                                ParseMode.Html, new ReplyKeyboardRemove());
+                RemoveChatId(chatId);
+            }
+        }
+
+        public void SetId(int value)
+        {
+            wordId = value;
+        }
+
+        public void SetWordName(long chatId, string value)
+        {
+            EnglishWordFromUser[chatId].WordPhrase = value;
+        }
+
+        public void SetTranscription(long chatId, string value)
+        {
+            EnglishWordFromUser[chatId].Transcription = value;
+        }
+
+        public void SetTranslate(long chatId, string value)
+        {
+            EnglishWordFromUser[chatId].Translate = value;
+        }
+
+        public void SetExample(long chatId, string value)
+        {
+            EnglishWordFromUser[chatId].Example = value;
+        }
+
+        public void SetCategoryId(long chatId, int value)
+        {
+            EnglishWordFromUser[chatId].CategoryId = value;
+        }        
+
+        public string GetWordName(long chatId)
+        {
+            return EnglishWordFromUser[chatId].WordPhrase;
+        }
+
+        public string GetTranscription(long chatId)
+        {
+            return EnglishWordFromUser[chatId].Transcription;
+        }
+
+        public string GetTranslate(long chatId)
+        {
+            return EnglishWordFromUser[chatId].Translate;
+        }
+
+        public string GetExample(long chatId)
+        {
+            return EnglishWordFromUser[chatId].Example;
+        }
+
+        public string GetCategoryName(long chatId)
+        {
+            return EnglishWordFromUser[chatId].CategoryName;
         }
     }
 }

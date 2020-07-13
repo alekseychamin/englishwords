@@ -28,12 +28,12 @@ namespace ConsoleTelegramBot.States
         {
             if (message.Equals("Yes"))
             {
-                var field = uniqueChatId.EnglishWordFromUser[_chatId].WordPhrase;
+                var field = uniqueChatId.GetWordName(_chatId);
 
                 if (string.IsNullOrEmpty(field) == false)
                     await _configuration.SendMessageCommand.Execute(_chatId, field, ParseMode.Html, new ReplyKeyboardRemove());
 
-                uniqueChatId.State[_chatId] = new InputWordState(_chatId, _configuration, this, isInitialize: false);
+                uniqueChatId.State[_chatId] = new InputWordNameState(_chatId, _configuration, this, isInitialize: false);
                 await uniqueChatId.State[_chatId].Initialize();
 
                 return;

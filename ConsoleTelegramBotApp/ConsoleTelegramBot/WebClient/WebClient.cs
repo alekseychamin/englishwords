@@ -19,7 +19,7 @@ namespace ConsoleTelegramBot
             _logger = logger;
         }
 
-        public async Task<string> PostNewWord(string url, object obj)
+        public async Task<string> PostEntity(string url, object obj)
         {
             _client.DefaultRequestHeaders.Accept.Clear();
 
@@ -43,7 +43,7 @@ namespace ConsoleTelegramBot
             }
         }
 
-        public async Task<string> PutNewWord(string url, object obj)
+        public async Task<string> PutEntity(string url, object obj)
         {
             _client.DefaultRequestHeaders.Accept.Clear();
 
@@ -67,7 +67,7 @@ namespace ConsoleTelegramBot
             }
         }
 
-        public async Task<string> DeleteWord(string url)
+        public async Task<string> DeleteEntity(string url)
         {
             _client.DefaultRequestHeaders.Accept.Clear();
 
@@ -88,7 +88,7 @@ namespace ConsoleTelegramBot
             }
         }
 
-        public async Task<string> GetStringFromUrl(string url)
+        public async Task<string> GetEntity(string url)
         {
             _client.DefaultRequestHeaders.Accept.Clear();
 

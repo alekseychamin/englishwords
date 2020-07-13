@@ -16,9 +16,16 @@ namespace BusinessLogic.Profiles
             CreateMap<Category, CategoryBL>();
 
             //BL -> DAL
-            CreateMap<EnglishWordBL, EnglishWord>()
-                .BeforeMap((s, d) => d.Category = null)
-                .ForMember(dest => dest.Category, opt => opt.Ignore());
+            CreateMap<EnglishWordBL, EnglishWord>()               
+                .ForMember(d => d.Category, opt => opt.Condition(s => (s.Category is null == false)))
+                .AfterMap((s, d) =>
+                {
+                    if ((s.Category is null == false) && (s.CategoryId != s.Category.Id))
+                    {
+                        d.Category = null;
+                    }
+                });
+
 
             CreateMap<CategoryBL, Category>()
                 .ForMember(dest => dest.EnglishWords, opt => opt.Ignore());

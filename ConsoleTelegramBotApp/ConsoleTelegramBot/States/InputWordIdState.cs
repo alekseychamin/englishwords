@@ -30,26 +30,22 @@ namespace ConsoleTelegramBot.States
             int id;
             if (int.TryParse(message, out id))
             {
-                var newEnglishWord = await Operation.GetEnglishWordById(id, _chatId, _configuration);
+                uniqueChatId.SetId(id);
+                
+                await uniqueChatId.GetNewEnglishWordById(_chatId, id);
 
-                if ((newEnglishWord is null) == false)
-                {
-                    uniqueChatId.WordId = id;
-                    
-                    uniqueChatId.EnglishWordFromUser[_chatId] = newEnglishWord;
+                if (uniqueChatId.State.ContainsKey(_chatId) == false)
+                    return;
 
-                    uniqueChatId.State[_chatId] = _nextState;
+                uniqueChatId.State[_chatId] = _nextState;
 
-                    if (_nextState is null)
-                        return;
+                if (_nextState is null)
+                    return;
 
-                    if (_isInitialize)
-                        await uniqueChatId.State[_chatId].Initialize();
-                    else
-                        await uniqueChatId.State[_chatId].ChangeState(uniqueChatId, message);
-                }
-                else                
-                    await ShowError($"Word with id: {id} not found", uniqueChatId);
+                if (_isInitialize)
+                    await uniqueChatId.State[_chatId].Initialize();
+                else
+                    await uniqueChatId.State[_chatId].ChangeState(uniqueChatId, message);
             }
             else            
                 await ShowError("Word id is invalid", uniqueChatId);

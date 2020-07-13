@@ -8,13 +8,14 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BusinessLogic.Manager
 {
-    public class DataFormFileToDb : IDataFormFileToDb
+    public class DataFromFileToDb : IDataFromFileToDb
     {
         private readonly IConfiguration _configuration;
-        private readonly ILogger<DataFormFileToDb> _logger;
+        private readonly ILogger<DataFromFileToDb> _logger;
         private readonly IRepositoryBL<EnglishWordBL> _englishWordRepositoryBL;
         private readonly IRepositoryBL<CategoryBL> _categoryRepositoryBL;
         private readonly IRuleUniqueValidation<EnglishWordBL> _ruleUniqueEnglishWord;
@@ -22,7 +23,7 @@ namespace BusinessLogic.Manager
         private readonly IMapper _mapper;
         private readonly IReadCSVFile _readCSVFile;
 
-        public DataFormFileToDb(IConfiguration configuration, ILogger<DataFormFileToDb> logger,
+        public DataFromFileToDb(IConfiguration configuration, ILogger<DataFromFileToDb> logger,
                                 IRepositoryBL<EnglishWordBL> englishWordRepositoryBL,
                                 IRepositoryBL<CategoryBL> categoryRepositoryBL,
                                 IRuleUniqueValidation<EnglishWordBL> ruleUniqueEnglishWord,
@@ -39,9 +40,8 @@ namespace BusinessLogic.Manager
             _readCSVFile = readCSVFile;
         }
 
-        public int AddEnglishWordFromCSVFile()
-        {
-            var fileName = _configuration.GetValue<string>("CSVFileName");
+        public int AddEnglishWordFromCSVFile(string fileName)
+        {            
             var englishWords = _mapper.Map<List<EnglishWordBL>>(_readCSVFile.Read(fileName));
             int count = 0;
 

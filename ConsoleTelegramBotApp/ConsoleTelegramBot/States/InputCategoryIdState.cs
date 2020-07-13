@@ -28,24 +28,31 @@ namespace ConsoleTelegramBot.States
         public async Task ChangeState(IUniqueChatId uniqueChatId, string message)
         {
             int categoryId;
-            
+
             if (int.TryParse(message, out categoryId))
-                uniqueChatId.EnglishWordFromUser[_chatId].CategoryId = categoryId;
+            {
+                uniqueChatId.SetCategoryId(_chatId, categoryId);
+                
+                await uniqueChatId.GetCategoryById(_chatId, categoryId);
+
+                if (uniqueChatId.State.ContainsKey(_chatId) == false)
+                    return;
+
+                uniqueChatId.State[_chatId] = _nextState;
+
+                if (_nextState is null)
+                    return;
+
+                if (_isInitialize)
+                    await uniqueChatId.State[_chatId].Initialize();
+                else
+                    await uniqueChatId.State[_chatId].ChangeState(uniqueChatId, message);
+            }
             else
             {
                 await _configuration.SendMessageCommand.Execute(_chatId, "CategoryId is invalid", ParseMode.Html, new ReplyKeyboardRemove());
-                return;
+                uniqueChatId.RemoveChatId(_chatId);                
             }
-
-            uniqueChatId.State[_chatId] = _nextState; //null;
-
-            if (_nextState is null)
-                return;
-
-            if (_isInitialize)
-                await uniqueChatId.State[_chatId].Initialize();
-            else
-                await uniqueChatId.State[_chatId].ChangeState(uniqueChatId, message);
         }
 
         public async Task Initialize()

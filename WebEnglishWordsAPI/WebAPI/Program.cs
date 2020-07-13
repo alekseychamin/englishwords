@@ -43,8 +43,10 @@ namespace EnglishWords
                     var options = services.GetRequiredService<DbContextOptions<CurrentDbContext>>();
 
                     var dataManager = services.GetRequiredService<IDataManager>();
-                    
-                    dataManager.InitializeDb(options);
+
+                    var fileName = config.GetValue<string>("CSVFileName");
+
+                    dataManager.InitializeDb(options, fileName, isDelete: true);
                 }                
 
                 host.Run();

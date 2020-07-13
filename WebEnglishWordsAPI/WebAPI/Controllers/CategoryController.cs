@@ -59,7 +59,7 @@ namespace WebAPI.Controllers
             if (!_repositoryBL.Delete(id))
                 return NotFound();
 
-            return NoContent();
+            return Ok($"Category with id: {id} deleted");
         }
 
         // GET api/category/5
@@ -87,7 +87,7 @@ namespace WebAPI.Controllers
         [HttpPut("{id}")]
         public ActionResult UpdateItem(int id, CategoryUpdate itemUpdate)
         {
-            var itemBL = _repositoryBL.Read(id);
+            var itemBL = _repositoryBL.Read(id);            
 
             if (itemBL is null)
                 return NotFound();
@@ -101,7 +101,11 @@ namespace WebAPI.Controllers
 
             _repositoryBL.Update(itemBL);
 
-            return NoContent();
+            itemBL = _repositoryBL.Read(id);
+
+            var itemView = _mapper.Map<CategoryView>(itemBL);
+
+            return Ok(itemView);
         }
 
         private void CustomValidateModel(ModelStateDictionary modelState, CategoryBL itemBL)

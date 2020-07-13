@@ -28,7 +28,7 @@ namespace ConsoleTelegramBot.States
         {
             if (message.Equals("Yes"))
             {
-                var field = uniqueChatId.EnglishWordFromUser[_chatId].CategoryName;
+                var field = uniqueChatId.GetCategoryName(_chatId);
 
                 if (string.IsNullOrEmpty(field) == false)
                     await _configuration.SendMessageCommand.Execute(_chatId, field, ParseMode.Html, new ReplyKeyboardRemove());

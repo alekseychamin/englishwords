@@ -8,14 +8,14 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ConsoleTelegramBot.States
 {
-    public class InputWordState : IState
+    public class InputWordNameState : IState
     {
         private readonly IConfiguration _configuration;
         private long _chatId;
         private readonly IState _nextState;
         private bool _isInitialize;
 
-        public InputWordState(long chatId, IConfiguration configuration, IState nextState, bool isInitialize = true)
+        public InputWordNameState(long chatId, IConfiguration configuration, IState nextState, bool isInitialize = true)
         {
             _configuration = configuration;
             _chatId = chatId;
@@ -25,9 +25,9 @@ namespace ConsoleTelegramBot.States
 
         public async Task ChangeState(IUniqueChatId uniqueChatId, string message)
         {
-            uniqueChatId.EnglishWordFromUser[_chatId].WordPhrase = message;
+            uniqueChatId.SetWordName(_chatId, message);
 
-            uniqueChatId.State[_chatId] = _nextState; //new InputTranscriptionState(_chatId, _configuration);
+            uniqueChatId.State[_chatId] = _nextState;
 
             if (_nextState is null)
                 return;

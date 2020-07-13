@@ -11,11 +11,13 @@ namespace ConsoleTelegramBot.Operations
 {
     public class Operation
     {
+        private static int _categoryId;
+
         public static async Task<List<Category>> GetListCategory(long chatId, IConfiguration configuration)
         {
             List<Category> listCategory = new List<Category>();
 
-            var output = await configuration.WebClient.GetStringFromUrl(Configuration.UrlCategory);
+            var output = await configuration.WebClient.GetEntity(Configuration.UrlCategory);
 
             try
             {
@@ -39,11 +41,11 @@ namespace ConsoleTelegramBot.Operations
             }
         }
 
-        public static async Task<NewEnglishWord> GetEnglishWordById(int id, long chatId, IConfiguration configuration)
+        public static async Task<NewEnglishWord> GetNewEnglishWordById(int id, long chatId, IConfiguration configuration)
         {
             var urlPut = $"{Configuration.UrlEnglishWord}/{id}";
 
-            var response = await configuration.WebClient.GetStringFromUrl(urlPut);
+            var response = await configuration.WebClient.GetEntity(urlPut);
 
             try
             {
@@ -52,6 +54,39 @@ namespace ConsoleTelegramBot.Operations
                 if ((englishWord is null) == false)
                 {
                     return MapEnglishWord(englishWord);
+                }
+
+                return null;
+            }
+            catch (Exception)
+            {
+                foreach (var uniqueChatId in configuration.UniqueChatIds)
+                {
+                    if (uniqueChatId.ListChatId.Contains(chatId))
+                    {
+                        uniqueChatId.RemoveChatId(chatId);
+                    }
+                }
+
+                await configuration.SendMessageCommand.Execute(chatId, response, ParseMode.Html, new ReplyKeyboardRemove());
+
+                return null;
+            }
+        }
+
+        public static async Task<NewCategory> GetNewCategoryById(int id, long chatId, IConfiguration configuration)
+        {
+            var urlPut = $"{Configuration.UrlCategory}/{id}";
+
+            var response = await configuration.WebClient.GetEntity(urlPut);
+
+            try
+            {
+                var category = JsonSerializer.Deserialize<Category>(response);
+
+                if ((category is null) == false)
+                {
+                    return MapCategory(category);
                 }
 
                 return null;
@@ -82,17 +117,46 @@ namespace ConsoleTelegramBot.Operations
                 Transcription = englishWord.transcription,
                 Translate = englishWord.translate,
                 Example = englishWord.example,
-                CategoryName = englishWord.categoryName
+                CategoryName = englishWord.categoryName,
+                CategoryId = englishWord.categoryId
             };
 
             return output;
         }
 
+        public static NewCategory MapCategory(Category category)
+        {
+            if (category is null)
+                return null;
+
+            var output = new NewCategory
+            {
+                Name = category.name
+            };
+
+            return output;
+        }
+
+        public static async Task GetEnglishWordById(int id, long chatId, IConfiguration configuration)
+        {
+            var urlPut = $"{Configuration.UrlEnglishWord}/{id}";
+
+            var response = await configuration.WebClient.GetEntity(urlPut);
+
+            await ProcessResponseEnglishWord(chatId, configuration, response, null, $"English word with id: {id} not found");
+        }
+
         public static async Task GetRandomEnglishWord(long chatId, IConfiguration configuration)
         {
-            var response = await configuration.WebClient.GetStringFromUrl(Configuration.UrlRandomWord);
+            var url = $"{Configuration.UrlRandomWord}?categoryId={_categoryId}";
+            var response = await configuration.WebClient.GetEntity(url);
 
-            await ProcessResponse(chatId, configuration, response, null, "English word not found");
+            await ProcessResponseEnglishWord(chatId, configuration, response, null, "English word not found");
+        }
+
+        public static void SetCategoryId(int categoryId)
+        {
+            _categoryId = categoryId;
         }
 
         public static async Task ShowValidationError(long chatId, string message, string response, IConfiguration configuration)
@@ -111,29 +175,81 @@ namespace ConsoleTelegramBot.Operations
 
         public static async Task CreateNewWord(long chatId, NewEnglishWord newEnglishWord, IConfiguration configuration)
         {
-            var response = await configuration.WebClient.PostNewWord(Configuration.UrlEnglishWord, newEnglishWord);
+            var response = await configuration.WebClient.PostEntity(Configuration.UrlEnglishWord, newEnglishWord);
 
-            await ProcessResponse(chatId, configuration, response, "New word was created", "New word was not created");
+            await ProcessResponseEnglishWord(chatId, configuration, response, "New word was created", "New word was not created");
+        }
+
+        public static async Task CreateNewCategory(long chatId, NewCategory newCategory, IConfiguration configuration)
+        {
+            var response = await configuration.WebClient.PostEntity(Configuration.UrlCategory, newCategory);
+
+            await ProcessResponseCategory(chatId, configuration, response, "New category was created", "New category was not created");
         }
 
         public static async Task EditEnglishWord(long chatId, int id, NewEnglishWord newEnglishWord, IConfiguration configuration)
         {
             var url = $"{Configuration.UrlEnglishWord}/{id}";
-            var response = await configuration.WebClient.PutNewWord(url, newEnglishWord);
+            var response = await configuration.WebClient.PutEntity(url, newEnglishWord);
 
-            await ProcessResponse(chatId, configuration, response, "Word was edited", "Word was not edit");
+            await ProcessResponseEnglishWord(chatId, configuration, response, "Word was edited", "Word was not edit");
+        }
+
+        public static async Task EditCategory(long chatId, int id, NewCategory newCategory, IConfiguration configuration)
+        {
+            var url = $"{Configuration.UrlCategory}/{id}";
+            var response = await configuration.WebClient.PutEntity(url, newCategory);
+
+            await ProcessResponseCategory(chatId, configuration, response, "Category was edited", "Category was not edit");
         }
 
         public static async Task DeleteEnglishWord(long chatId, int id, IConfiguration configuration)
         {
             var url = $"{Configuration.UrlEnglishWord}/{id}";
-            var response = await configuration.WebClient.DeleteWord(url);
+            var response = await configuration.WebClient.DeleteEntity(url);
 
             await configuration.SendMessageCommand.Execute(chatId, response, ParseMode.Html, new ReplyKeyboardRemove());
         }
 
-        public static async Task ProcessResponse(long chatId, IConfiguration configuration, string response, 
-                                                 string successedMessage, string failMessage)
+        public static async Task DeleteCategory(long chatId, int id, IConfiguration configuration)
+        {
+            var url = $"{Configuration.UrlCategory}/{id}";
+            var response = await configuration.WebClient.DeleteEntity(url);
+
+            await configuration.SendMessageCommand.Execute(chatId, response, ParseMode.Html, new ReplyKeyboardRemove());
+        }
+
+        public static async Task ProcessResponseCategory(long chatId, IConfiguration configuration, string response,
+                                                         string successedMessage, string failMessage)
+        {
+            try
+            {
+                var category = JsonSerializer.Deserialize<Category>(response);
+
+                if (category.id != 0)
+                {
+                    if (string.IsNullOrEmpty(successedMessage) == false)
+                        await configuration.SendMessageCommand.Execute(chatId, successedMessage,
+                                                                       ParseMode.Html, new ReplyKeyboardRemove());
+
+                    response = $"*Id:* {category.id}\n\n*Name*: {category.name}\n\n*Count words:* {category.count}";
+
+                    await configuration.SendMessageCommand.Execute(chatId, response, ParseMode.Markdown, new ReplyKeyboardRemove());
+                    return;
+                }
+                else
+                {
+                    await Operation.ShowValidationError(chatId, failMessage, response, configuration);
+                    return;
+                }
+            }
+            catch { }
+
+            await configuration.SendMessageCommand.Execute(chatId, response, ParseMode.Html, new ReplyKeyboardRemove());
+        }
+
+        public static async Task ProcessResponseEnglishWord(long chatId, IConfiguration configuration, string response, 
+                                                            string successedMessage, string failMessage)
         {
             try
             {

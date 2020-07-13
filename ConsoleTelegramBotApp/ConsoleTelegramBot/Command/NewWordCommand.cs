@@ -21,13 +21,12 @@ namespace ConsoleTelegramBot.Command
     {
         public string Name { get; }
 
-        public string Description { get; }
-
-        public int WordId { get; set; }
+        public string Description { get; }        
 
         private readonly IConfiguration _configuration;
 
         public HashSet<long> ListChatId { get; } = new HashSet<long>();
+
         public Dictionary<long, IState> State { get; } = new Dictionary<long, IState>();
 
         public Dictionary<long, NewEnglishWord> EnglishWordFromUser { get; } = new Dictionary<long, NewEnglishWord>();        
@@ -43,9 +42,9 @@ namespace ConsoleTelegramBot.Command
         {
             ListChatId.Add(chatId);
 
-            EnglishWordFromUser.Add(chatId, new NewEnglishWord());
+            SetNewEnglishWord(chatId, new NewEnglishWord());
             
-            State.Add(chatId, new InputWordState(chatId, _configuration, 
+            State.Add(chatId, new InputWordNameState(chatId, _configuration, 
                                 new InputTranscriptionState(chatId, _configuration, 
                                 new InputTranslateState(chatId, _configuration,
                                 new InputExampleState(chatId, _configuration,
@@ -77,6 +76,36 @@ namespace ConsoleTelegramBot.Command
             ListChatId.Remove(chatId);
             EnglishWordFromUser.Remove(chatId);
             State.Remove(chatId);
+        }
+
+        public void SetWordName(long chatId, string value)
+        {
+            EnglishWordFromUser[chatId].WordPhrase = value;
+        }
+
+        public void SetTranscription(long chatId, string value)
+        {
+            EnglishWordFromUser[chatId].Transcription = value;
+        }
+
+        public void SetTranslate(long chatId, string value)
+        {
+            EnglishWordFromUser[chatId].Translate= value;
+        }
+
+        public void SetExample(long chatId, string value)
+        {
+            EnglishWordFromUser[chatId].Example = value;
+        }
+
+        public void SetCategoryId(long chatId, int value)
+        {
+            EnglishWordFromUser[chatId].CategoryId = value;
+        }
+
+        public void SetNewEnglishWord(long chatId, NewEnglishWord newEnglishWord)
+        {
+            EnglishWordFromUser.Add(chatId, newEnglishWord);
         }
     }
 }

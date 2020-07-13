@@ -15,6 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Source English tests.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Source English.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

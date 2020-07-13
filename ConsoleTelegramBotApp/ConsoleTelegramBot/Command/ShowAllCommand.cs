@@ -19,10 +19,17 @@ namespace ConsoleTelegramBot.Command
         public async Task Execute(long chatId)
         {
             string result = "Commands:\n";
-
+            int count = 0;
             foreach (var command in _configuration.ListCommand)
             {
+                if (count == 3)
+                {
+                    result += "\n";
+                    count = 0;
+                }
+
                 result += $"{command.Key} - {command.Value.Description}\n";
+                count++;
             }
             
             await _configuration.SendMessageCommand.Execute(chatId, result, ParseMode.Markdown, new ReplyKeyboardRemove());

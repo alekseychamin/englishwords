@@ -26,7 +26,7 @@ namespace ConsoleTelegramBot.Command
 
         public async Task Execute(long chatId)
         {
-            var result = await _configuration.WebClient.GetStringFromUrl(Configuration.UrlCategory);
+            var result = await _configuration.WebClient.GetEntity(Configuration.UrlCategory);
 
             try
             {
@@ -40,10 +40,14 @@ namespace ConsoleTelegramBot.Command
                 }
 
                 result = string.Empty;
+                int totalCount = 0;
                 foreach (var category in categories)
                 {
-                    result += $"*Id:* {category.id}\n*CategoryName*: {category.name}\n\n";                    
+                    result += $"*Id:* {category.id}\n*CategoryName:* {category.name}\n*Count words:* {category.count}\n\n";
+                    totalCount += category.count;
                 }
+
+                result += $"*Total count words:* {totalCount}";
 
                 await _configuration.SendMessageCommand.Execute(chatId, result, ParseMode.Markdown, new ReplyKeyboardRemove());
                 return;

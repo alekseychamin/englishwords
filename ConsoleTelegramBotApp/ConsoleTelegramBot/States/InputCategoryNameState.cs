@@ -8,25 +8,26 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ConsoleTelegramBot.States
 {
-    public class InputTranslateState : IState
+    public class InputCategoryNameState : IState
     {
-        private long _chatId;
         private readonly IConfiguration _configuration;
         private readonly IState _nextState;
+        private long _chatId;
         private bool _isInitialize;
 
-        public InputTranslateState(long chatId, IConfiguration configuration, IState nextState, bool isInitialize = true)
+        public InputCategoryNameState(long chatId, IConfiguration configuration, IState nextState, bool isInitialize = true)
         {
             _chatId = chatId;
             _configuration = configuration;
             _nextState = nextState;
             _isInitialize = isInitialize;
         }
+
         public async Task ChangeState(IUniqueChatId uniqueChatId, string message)
         {
-            uniqueChatId.SetTranslate(_chatId, message);
+            uniqueChatId.SetCategoryName(_chatId, message);
 
-            uniqueChatId.State[_chatId] = _nextState;
+            uniqueChatId.State[_chatId] = _nextState; 
 
             if (_nextState is null)
                 return;
@@ -39,7 +40,7 @@ namespace ConsoleTelegramBot.States
 
         public async Task Initialize()
         {
-            await _configuration.SendMessageCommand.Execute(_chatId, "Input translate:", ParseMode.Html, new ReplyKeyboardRemove());
+            await _configuration.SendMessageCommand.Execute(_chatId, "Input new category name:", ParseMode.Html, new ReplyKeyboardRemove());
         }
     }
 }

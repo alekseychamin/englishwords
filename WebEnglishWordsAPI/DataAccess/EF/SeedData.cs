@@ -17,13 +17,14 @@ namespace DataAccess.EF
         {
             _logger = logger;
         }
-        public bool Initialize(DbContextOptions<CurrentDbContext> options)
+        public bool Initialize(DbContextOptions<CurrentDbContext> options, bool isDelete = false)
         {
             _logger.LogInformation("Initializing DB...");
 
             using (var db = new CurrentDbContext(options))
             {
-                //TryToDeleteDb(db);
+                if (isDelete)
+                    TryToDeleteDb(db);
 
                 var result = TryToCreateDb(db);
 

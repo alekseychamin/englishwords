@@ -5,27 +5,26 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Telegram.Bot.Exceptions;
 
 namespace ConsoleTelegramBot.Command
 {
-    public class DeleteWordCommand : IUniqueChatId
+    public class DeleteCategoryCommand : IUniqueChatId
     {
-        public string Name { get; }
-
-        public string Description { get; }        
-
         public HashSet<long> ListChatId { get; } = new HashSet<long>();
 
-        public Dictionary<long, IState> State { get; } = new Dictionary<long, IState>();
+        public Dictionary<long, IState> State { get; } = new Dictionary<long, IState>();        
 
-        public Dictionary<long, NewEnglishWord> EnglishWordFromUser { get; } = new Dictionary<long, NewEnglishWord>();
+        public Dictionary<long, NewCategory> CategoryFromUser { get; } = new Dictionary<long, NewCategory>();
 
-        private int wordId;
+        public string Name { get; }
+
+        public string Description { get; }
+
+        private int categoryId;
 
         private readonly IConfiguration _configuration;
 
-        public DeleteWordCommand(string name, string description, IConfiguration configuration)
+        public DeleteCategoryCommand(string name, string description, IConfiguration configuration)
         {
             Name = name;
             Description = description;
@@ -36,15 +35,14 @@ namespace ConsoleTelegramBot.Command
         {
             ListChatId.Add(chatId);
 
-            State.Add(chatId, new InputWordIdState(chatId, _configuration, null));
+            State.Add(chatId, new InputCategoryIdState(chatId, _configuration, null));
 
             await State[chatId].Initialize();
         }
 
         public void RemoveChatId(long chatId)
         {
-            ListChatId.Remove(chatId);
-            EnglishWordFromUser.Remove(chatId);
+            ListChatId.Remove(chatId);            
             State.Remove(chatId);
         }
 
@@ -59,15 +57,15 @@ namespace ConsoleTelegramBot.Command
 
             if (State[chatId] == null)
             {
-                await Operation.DeleteEnglishWord(chatId, wordId, _configuration);
+                await Operation.DeleteCategory(chatId, categoryId, _configuration);
 
                 RemoveChatId(chatId);
             }
         }
 
-        public void SetId(int value)
+        public void SetCategoryId(long chatId, int value)
         {
-            wordId = value;
-        }        
+            categoryId = value;
+        }
     }
 }
