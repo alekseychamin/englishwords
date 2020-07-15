@@ -8,7 +8,12 @@ using Telegram.Bot;
 namespace ConsoleTelegramBot
 {
     public interface IConfiguration
-    {        
+    {
+        string BotToken { get; }
+        string UrlRandomWord { get; }
+        string UrlCategory { get; }
+        string UrlEnglishWord { get; }
+
         ITelegramBotClient Bot { get; }
         Dictionary<string, INamedCommand> ListCommand { get; }
         List<IUniqueChatId> UniqueChatIds { get; }

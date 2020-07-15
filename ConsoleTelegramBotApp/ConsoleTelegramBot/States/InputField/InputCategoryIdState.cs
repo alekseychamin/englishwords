@@ -59,7 +59,7 @@ namespace ConsoleTelegramBot.States
         {
             var listCategories = await Operation.GetListCategory(_chatId, _configuration);
 
-            if (listCategories.Count == 0)
+            if (listCategories is null)
                 return;
 
             List<List<InlineKeyboardButton>> listKeyBut = new List<List<InlineKeyboardButton>>();

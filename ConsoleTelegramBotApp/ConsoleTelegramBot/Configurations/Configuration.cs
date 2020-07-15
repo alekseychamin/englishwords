@@ -4,7 +4,9 @@ using ConsoleTelegramBot.Updates;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using Telegram.Bot;
 
@@ -12,12 +14,12 @@ namespace ConsoleTelegramBot
 {
     public class Configuration : IConfiguration
     {
-        public const string BotToken = "1144632945:AAFWHd0Um4WrUMI4Ijm-5pfkoJGK41cxahE";
-        public const string UrlRandomWord = "http://localhost:5000/api/operation/randomword";        
-        public const string UrlCategory = "http://localhost:5000/api/category";
-        public const string UrlEnglishWord = "http://localhost:5000/api/englishword";
+        public string BotToken { get; private set; }
+        public string UrlRandomWord { get; private set; }
+        public string UrlCategory { get; private set; }
+        public string UrlEnglishWord { get; private set; }
 
-        public ILogger Logger { get; }
+        public ILogger Logger { get; private set; }
         public ISendMessageCommand SendMessageCommand { get; }
         public ICommand ShowAllCommand { get; }        
         public ITelegramBotClient Bot { get; }
@@ -32,15 +34,17 @@ namespace ConsoleTelegramBot
         {
             Logger = LogManager.GetCurrentClassLogger();
 
+            SetAppSettingsFromJsonFile("appsettings.json");
+
             Bot = CreateTelegramBot(BotToken);
             WebClient = CreateWebClient(Logger);
 
             SendMessageCommand = CreateSendMessageCommand(this);
-            ShowAllCommand = CreateShowAllCommand(this);            
+            ShowAllCommand = CreateShowAllCommand(this);
 
             ListCommand = new Dictionary<string, INamedCommand>
             {
-                { "/w", new RandomWordCommand("/w", "show random english word", this) },
+                { "/w", new ShowRandomWordCommand("/w", "show random english word", this) },
                 { "/wid", new ShowWordByIdCommand("/wid", "show english word by id", this) },
                 { "/nw", new NewWordCommand("/nw", "add new english word", this) },
                 { "/ew", new EditWordCommand("/ew", "edit word by id", this) },
@@ -58,6 +62,28 @@ namespace ConsoleTelegramBot
             TextMessageUpdate = CreateTextMessageUpdate(this);
             CallBackQueryUpdate = CreateCallBackQueryUpdate(this);
             UnknownMessageUpdate = CreateUnknownMessageUpdate(this);
+        }
+       
+        private void SetAppSettingsFromJsonFile(string fileName)
+        {
+            var fullFileName = $"{AppDomain.CurrentDomain.BaseDirectory}\\{fileName}";            
+
+            try
+            {
+                var jsonStr = File.ReadAllText(fullFileName);
+
+                var appSetting = JsonSerializer.Deserialize<SettingModel>(jsonStr);
+
+                BotToken = appSetting.BotToken;
+                UrlRandomWord = appSetting.UrlRandomWord;
+                UrlCategory = appSetting.UrlCategory;
+                UrlEnglishWord = appSetting.UrlEnglishWord;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"Error ocuried during reading app settings: {ex}");
+                throw;
+            }
         }
 
         private ITelegramBotClient CreateTelegramBot(string token)

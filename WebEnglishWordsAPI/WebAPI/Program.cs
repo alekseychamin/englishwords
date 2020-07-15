@@ -46,7 +46,7 @@ namespace EnglishWords
 
                     var fileName = config.GetValue<string>("CSVFileName");
 
-                    dataManager.InitializeDb(options, fileName, isDelete: true);
+                    dataManager.InitializeDb(options, fileName, isDelete: false);
                 }                
 
                 host.Run();

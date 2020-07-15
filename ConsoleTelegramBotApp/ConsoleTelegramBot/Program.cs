@@ -78,6 +78,9 @@ namespace ConsoleTelegramBot
             {
                 _chatId = update.Message?.Chat.Id ?? -1;
                 await HandleErrorAsync(bot, ex, cancellationToken);
+
+                if ((ex is ApiRequestException) == false)
+                    throw;
             }
         }
 

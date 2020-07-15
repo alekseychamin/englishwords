@@ -9,7 +9,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ConsoleTelegramBot.Command
 {
-    public class RandomWordCommand : INamedCommand
+    public class ShowRandomWordCommand : INamedCommand
     {
         public string Name { get; }
 
@@ -17,7 +17,7 @@ namespace ConsoleTelegramBot.Command
 
         private readonly IConfiguration _configuration;
 
-        public RandomWordCommand(string name, string description, IConfiguration configuration)
+        public ShowRandomWordCommand(string name, string description, IConfiguration configuration)
         {
             Name = name;
             Description = description;

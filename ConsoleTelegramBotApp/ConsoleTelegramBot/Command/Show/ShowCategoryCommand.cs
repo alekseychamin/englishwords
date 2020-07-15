@@ -26,7 +26,7 @@ namespace ConsoleTelegramBot.Command
 
         public async Task Execute(long chatId)
         {
-            var result = await _configuration.WebClient.GetEntity(Configuration.UrlCategory);
+            var result = await _configuration.WebClient.GetEntity(_configuration.UrlCategory);
 
             try
             {
