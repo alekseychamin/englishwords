@@ -26,7 +26,7 @@ namespace ConsoleTelegramBot.Command
 
         public async Task Execute(long chatId)
         {
-            await Operation.GetRandomEnglishWord(chatId, _configuration);
+            await _configuration.Operation.GetRandomEnglishWord(chatId, _configuration);
         }
     }
 }

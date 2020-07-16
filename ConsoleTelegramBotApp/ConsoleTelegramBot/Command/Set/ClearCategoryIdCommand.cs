@@ -25,7 +25,7 @@ namespace ConsoleTelegramBot.Command
         
         public async Task Execute(long chatId)
         {
-            Operation.SetCategoryId(0);
+            _configuration.Operation.SetCategoryId(0);
 
             await _configuration.SendMessageCommand.Execute(chatId, "Category id cleared", ParseMode.Html, new ReplyKeyboardRemove());
         }

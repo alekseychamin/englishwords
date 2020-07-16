@@ -11,16 +11,33 @@ namespace ConsoleTelegramBot.States
 {
     public class EditCategoryIdState : IState
     {
-        private readonly IConfiguration _configuration;
-        private long _chatId;
-        private readonly IState _nextState;
+        private IConfiguration _configuration;
+        public IConfiguration Configuration
+        {
+            get
+            {
+                if (_configuration is null)
+                    throw new ArgumentNullException(nameof(Configuration));
+
+                return _configuration;
+            }
+            set
+            {
+                if (value is null)
+                    throw new ArgumentNullException(nameof(Configuration));
+
+                _configuration = value;
+            }
+        }
+        public long ChatId { get; set; }
+
+        public IState NextState { get; private set; }
+
         private bool _isInitialize;
 
-        public EditCategoryIdState(long chatId, IConfiguration configuration, IState nextState, bool isInitialize = true)
+        public EditCategoryIdState(IState nextState, bool isInitialize = true)
         {
-            _configuration = configuration;
-            _chatId = chatId;
-            _nextState = nextState;
+            NextState = nextState;
             _isInitialize = isInitialize;
         }
 
@@ -28,31 +45,34 @@ namespace ConsoleTelegramBot.States
         {
             if (message.Equals("Yes"))
             {
-                var field = uniqueChatId.GetCategoryName(_chatId);
+                var field = uniqueChatId.GetCategoryName(ChatId);
 
                 if (string.IsNullOrEmpty(field) == false)
-                    await _configuration.SendMessageCommand.Execute(_chatId, field, ParseMode.Html, new ReplyKeyboardRemove());
+                    await _configuration.SendMessageCommand.Execute(ChatId, field, ParseMode.Html, new ReplyKeyboardRemove());
 
-                uniqueChatId.State[_chatId] = new InputCategoryIdState(_chatId, _configuration, this, isInitialize: false);
-                await uniqueChatId.State[_chatId].Initialize();
+                var inputWordNameState = new InputCategoryIdState(this, isInitialize: false);
+                _configuration.Operation.SetStateChatIdConfig(inputWordNameState, this, ChatId, _configuration);
+
+                uniqueChatId.State[ChatId] = inputWordNameState;
+                await uniqueChatId.State[ChatId].Initialize();
 
                 return;
             }
 
-            uniqueChatId.State[_chatId] = _nextState;
+            uniqueChatId.State[ChatId] = NextState;
 
-            if (_nextState is null)
+            if (NextState is null)
                 return;
 
             if (_isInitialize)
-                await uniqueChatId.State[_chatId].Initialize();
+                await uniqueChatId.State[ChatId].Initialize();
             else
-                await uniqueChatId.State[_chatId].ChangeState(uniqueChatId, message);
+                await uniqueChatId.State[ChatId].ChangeState(uniqueChatId, message);
         }
 
         public async Task Initialize()
         {
-            await Operation.MakeQuestion(_chatId, "Do you need to edit category?", _configuration);
+            await _configuration.Operation.MakeQuestion(ChatId, "Do you need to edit category?", _configuration);
         }
     }
 }

@@ -8,6 +8,9 @@ namespace ConsoleTelegramBot.States
 {
     public interface IState
     {
+        IState NextState { get; }
+        IConfiguration Configuration { get; set; }
+        long ChatId { get; set; }
         Task ChangeState(IUniqueChatId uniqueChatId, string message);
         Task Initialize();
     }

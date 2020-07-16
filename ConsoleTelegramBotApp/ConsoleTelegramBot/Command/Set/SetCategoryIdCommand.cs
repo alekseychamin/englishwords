@@ -23,19 +23,23 @@ namespace ConsoleTelegramBot.Command
         private int categoryId;
 
         private readonly IConfiguration _configuration;
+        private readonly IState _startState;
 
-        public SetCategoryIdCommand(string name, string description, IConfiguration configuration)
+        public SetCategoryIdCommand(string name, string description, IConfiguration configuration, IState startState)
         {
             Name = name;
             Description = description;
             _configuration = configuration;
+            _startState = startState;
         }
         
         public async Task Execute(long chatId)
         {
             ListChatId.Add(chatId);
 
-            State.Add(chatId, new InputCategoryIdState(chatId, _configuration, null));
+            _configuration.Operation.SetStateChatIdConfig(_startState, null, chatId, _configuration);
+            
+            State.Add(chatId, _startState);//new InputCategoryIdState(chatId, _configuration, null));
 
             await State[chatId].Initialize();
         }
@@ -57,7 +61,7 @@ namespace ConsoleTelegramBot.Command
 
             if (State[chatId] == null)
             {
-                Operation.SetCategoryId(categoryId);
+                _configuration.Operation.SetCategoryId(categoryId);
 
                 await _configuration.SendMessageCommand.Execute(chatId, "Category id selected", ParseMode.Html, new ReplyKeyboardRemove());
 

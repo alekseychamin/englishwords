@@ -21,19 +21,23 @@ namespace ConsoleTelegramBot.Command
         private int wordId;
 
         private readonly IConfiguration _configuration;
+        private readonly IState _startState;
 
-        public ShowWordByIdCommand(string name, string description, IConfiguration configuration)
+        public ShowWordByIdCommand(string name, string description, IConfiguration configuration, IState startState)
         {
             Name = name;
             Description = description;
             _configuration = configuration;
+            _startState = startState;
         }
         
         public async Task Execute(long chatId)
         {
             ListChatId.Add(chatId);
 
-            State.Add(chatId, new InputWordIdState(chatId, _configuration, null));
+            _configuration.Operation.SetStateChatIdConfig(_startState, null, chatId, _configuration);
+            
+            State.Add(chatId, _startState);//new InputWordIdState(chatId, _configuration, null));
 
             await State[chatId].Initialize();
         }
@@ -55,7 +59,7 @@ namespace ConsoleTelegramBot.Command
 
             if (State[chatId] == null)
             {
-                await Operation.GetEnglishWordById(wordId, chatId, _configuration);
+                await _configuration.Operation.GetEnglishWordById(wordId, chatId, _configuration);
 
                 RemoveChatId(chatId);
             }

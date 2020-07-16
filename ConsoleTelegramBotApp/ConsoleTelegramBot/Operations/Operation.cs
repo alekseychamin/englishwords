@@ -1,4 +1,6 @@
 ﻿using ConsoleTelegramBot.Model;
+using ConsoleTelegramBot.States;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,11 +11,17 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ConsoleTelegramBot.Operations
 {
-    public class Operation
+    public class Operation : IOperation
     {
         private static int _categoryId;
+        private readonly ILogger _logger;
 
-        private static async Task<T> DeserializeResponse<T>(string response, long chatId, IConfiguration configuration)
+        public Operation(ILogger logger)
+        {
+            _logger = logger;
+        }
+
+        private async Task<T> DeserializeResponse<T>(string response, long chatId, IConfiguration configuration)
         {
             try
             {
@@ -37,14 +45,14 @@ namespace ConsoleTelegramBot.Operations
             }
         }
 
-        public static async Task<List<Category>> GetListCategory(long chatId, IConfiguration configuration)
+        public async Task<List<Category>> GetListCategory(long chatId, IConfiguration configuration)
         {
             var response = await configuration.WebClient.GetEntity(configuration.UrlCategory);
 
             return await DeserializeResponse<List<Category>>(response, chatId, configuration);
         }
 
-        public static async Task<NewCategory> GetNewCategoryById(int id, long chatId, IConfiguration configuration)
+        public async Task<NewCategory> GetNewCategoryById(int id, long chatId, IConfiguration configuration)
         {
             var urlPut = $"{configuration.UrlCategory}/{id}";
 
@@ -60,7 +68,7 @@ namespace ConsoleTelegramBot.Operations
             return null;
         }
 
-        public static async Task<NewEnglishWord> GetNewEnglishWordById(int id, long chatId, IConfiguration configuration)
+        public async Task<NewEnglishWord> GetNewEnglishWordById(int id, long chatId, IConfiguration configuration)
         {
             var urlPut = $"{configuration.UrlEnglishWord}/{id}";
 
@@ -73,15 +81,15 @@ namespace ConsoleTelegramBot.Operations
                 return MapEnglishWord(englishWord);
             }
 
-            return null;            
+            return null;
         }
 
-        public static void SetCategoryId(int categoryId)
+        public void SetCategoryId(int categoryId)
         {
             _categoryId = categoryId;
         }
 
-        public static async Task EditCategory(long chatId, int id, NewCategory newCategory, IConfiguration configuration)
+        public async Task EditCategory(long chatId, int id, NewCategory newCategory, IConfiguration configuration)
         {
             var url = $"{configuration.UrlCategory}/{id}";
             var response = await configuration.WebClient.PutEntity(url, newCategory);
@@ -89,14 +97,14 @@ namespace ConsoleTelegramBot.Operations
             await ProcessResponseCategory(chatId, configuration, response, "Category was edited", "Category was not edit");
         }
 
-        public static async Task CreateNewCategory(long chatId, NewCategory newCategory, IConfiguration configuration)
+        public async Task CreateNewCategory(long chatId, NewCategory newCategory, IConfiguration configuration)
         {
             var response = await configuration.WebClient.PostEntity(configuration.UrlCategory, newCategory);
 
             await ProcessResponseCategory(chatId, configuration, response, "New category was created", "New category was not created");
         }
 
-        public static async Task DeleteCategory(long chatId, int id, IConfiguration configuration)
+        public async Task DeleteCategory(long chatId, int id, IConfiguration configuration)
         {
             var url = $"{configuration.UrlCategory}/{id}";
             var response = await configuration.WebClient.DeleteEntity(url);
@@ -104,7 +112,7 @@ namespace ConsoleTelegramBot.Operations
             await configuration.SendMessageCommand.Execute(chatId, response, ParseMode.Html, new ReplyKeyboardRemove());
         }
 
-        public static async Task ProcessResponseCategory(long chatId, IConfiguration configuration, string response,
+        public async Task ProcessResponseCategory(long chatId, IConfiguration configuration, string response,
                                                          string successedMessage, string failMessage)
         {
             try
@@ -124,7 +132,7 @@ namespace ConsoleTelegramBot.Operations
                 }
                 else
                 {
-                    await Operation.ShowValidationError(chatId, failMessage, response, configuration);
+                    await ShowValidationError(chatId, failMessage, response, configuration);
                     return;
                 }
             }
@@ -133,12 +141,13 @@ namespace ConsoleTelegramBot.Operations
             await configuration.SendMessageCommand.Execute(chatId, response, ParseMode.Html, new ReplyKeyboardRemove());
         }
 
-        public static NewEnglishWord MapEnglishWord(EnglishWord englishWord)
+        public NewEnglishWord MapEnglishWord(EnglishWord englishWord)
         {
             if (englishWord is null)
                 return null;
 
-            var output = new NewEnglishWord {
+            var output = new NewEnglishWord
+            {
                 WordPhrase = englishWord.wordPhrase,
                 Transcription = englishWord.transcription,
                 Translate = englishWord.translate,
@@ -150,7 +159,7 @@ namespace ConsoleTelegramBot.Operations
             return output;
         }
 
-        public static NewCategory MapCategory(Category category)
+        public NewCategory MapCategory(Category category)
         {
             if (category is null)
                 return null;
@@ -163,7 +172,7 @@ namespace ConsoleTelegramBot.Operations
             return output;
         }
 
-        public static async Task GetEnglishWordById(int id, long chatId, IConfiguration configuration)
+        public async Task GetEnglishWordById(int id, long chatId, IConfiguration configuration)
         {
             var urlPut = $"{configuration.UrlEnglishWord}/{id}";
 
@@ -172,15 +181,15 @@ namespace ConsoleTelegramBot.Operations
             await ProcessResponseEnglishWord(chatId, configuration, response, null, $"English word with id: {id} not found");
         }
 
-        public static async Task GetRandomEnglishWord(long chatId, IConfiguration configuration)
+        public async Task GetRandomEnglishWord(long chatId, IConfiguration configuration)
         {
             var url = $"{configuration.UrlRandomWord}?categoryId={_categoryId}";
             var response = await configuration.WebClient.GetEntity(url);
 
             await ProcessResponseEnglishWord(chatId, configuration, response, null, "English word not found");
         }
-        
-        public static async Task ShowValidationError(long chatId, string message, string response, IConfiguration configuration)
+
+        private async Task ShowValidationError(long chatId, string message, string response, IConfiguration configuration)
         {
             var validationError = JsonSerializer.Deserialize<ValidationError>(response);
 
@@ -194,22 +203,22 @@ namespace ConsoleTelegramBot.Operations
             await configuration.SendMessageCommand.Execute(chatId, result, ParseMode.Html, new ReplyKeyboardRemove());
         }
 
-        public static async Task CreateNewWord(long chatId, NewEnglishWord newEnglishWord, IConfiguration configuration)
+        public async Task CreateNewWord(long chatId, NewEnglishWord newEnglishWord, IConfiguration configuration)
         {
             var response = await configuration.WebClient.PostEntity(configuration.UrlEnglishWord, newEnglishWord);
 
             await ProcessResponseEnglishWord(chatId, configuration, response, "New word was created", "New word was not created");
         }
-        
-        public static async Task EditEnglishWord(long chatId, int id, NewEnglishWord newEnglishWord, IConfiguration configuration)
+
+        public async Task EditEnglishWord(long chatId, int id, NewEnglishWord newEnglishWord, IConfiguration configuration)
         {
             var url = $"{configuration.UrlEnglishWord}/{id}";
             var response = await configuration.WebClient.PutEntity(url, newEnglishWord);
 
             await ProcessResponseEnglishWord(chatId, configuration, response, "Word was edited", "Word was not edit");
         }
-        
-        public static async Task DeleteEnglishWord(long chatId, int id, IConfiguration configuration)
+
+        public async Task DeleteEnglishWord(long chatId, int id, IConfiguration configuration)
         {
             var url = $"{configuration.UrlEnglishWord}/{id}";
             var response = await configuration.WebClient.DeleteEntity(url);
@@ -217,7 +226,7 @@ namespace ConsoleTelegramBot.Operations
             await configuration.SendMessageCommand.Execute(chatId, response, ParseMode.Html, new ReplyKeyboardRemove());
         }
 
-        public static async Task ProcessResponseEnglishWord(long chatId, IConfiguration configuration, string response, 
+        public async Task ProcessResponseEnglishWord(long chatId, IConfiguration configuration, string response,
                                                             string successedMessage, string failMessage)
         {
             try
@@ -238,7 +247,7 @@ namespace ConsoleTelegramBot.Operations
                 }
                 else
                 {
-                    await Operation.ShowValidationError(chatId, failMessage, response, configuration);
+                    await ShowValidationError(chatId, failMessage, response, configuration);
                     return;
                 }
             }
@@ -247,7 +256,7 @@ namespace ConsoleTelegramBot.Operations
             await configuration.SendMessageCommand.Execute(chatId, response, ParseMode.Html, new ReplyKeyboardRemove());
         }
 
-        public static async Task MakeQuestion(long chatId, string message, IConfiguration configuration)
+        public async Task MakeQuestion(long chatId, string message, IConfiguration configuration)
         {
             var inlineKeyboard = new InlineKeyboardMarkup(
                 new[]
@@ -260,6 +269,19 @@ namespace ConsoleTelegramBot.Operations
                 });
 
             await configuration.SendMessageCommand.Execute(chatId, message, ParseMode.Html, inlineKeyboard);
+        }
+
+        public void SetStateChatIdConfig(IState startState, IState stopState, long chatId, IConfiguration configuration)
+        {
+            var state = startState;
+            do
+            {
+                state.ChatId = chatId;
+                state.Configuration = configuration;
+
+                state = state.NextState;
+            } 
+            while (Equals(state, stopState) == false);
         }
     }
 }

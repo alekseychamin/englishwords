@@ -1,7 +1,9 @@
 ﻿using ConsoleTelegramBot.Command;
+using ConsoleTelegramBot.Operations;
 using ConsoleTelegramBot.States;
 using ConsoleTelegramBot.Updates;
 using NLog;
+using NLog.Fluent;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,13 +16,31 @@ namespace ConsoleTelegramBot
 {
     public class Configuration : IConfiguration
     {
+        private ISendMessageCommand sendMessageCommand;
+
         public string BotToken { get; private set; }
         public string UrlRandomWord { get; private set; }
         public string UrlCategory { get; private set; }
         public string UrlEnglishWord { get; private set; }
 
         public ILogger Logger { get; private set; }
-        public ISendMessageCommand SendMessageCommand { get; }
+        public ISendMessageCommand SendMessageCommand 
+        {
+            get 
+            {
+                if (sendMessageCommand is null)
+                    throw new ArgumentNullException(nameof(sendMessageCommand));
+                
+                return sendMessageCommand;
+            }
+            set 
+            {
+                if (value is null)
+                    throw new ArgumentNullException(nameof(sendMessageCommand));
+
+                sendMessageCommand = value;
+            } 
+        }
         public ICommand ShowAllCommand { get; }        
         public ITelegramBotClient Bot { get; }
         public IWebClient WebClient { get; }
@@ -30,30 +50,54 @@ namespace ConsoleTelegramBot
         public Dictionary<string, INamedCommand> ListCommand { get; }
         public List<IUniqueChatId> UniqueChatIds { get; }
 
-        public Configuration()
+        public IOperation Operation { get; }
+
+        public Configuration(ILogger logger, IOperation operation)
         {
-            Logger = LogManager.GetCurrentClassLogger();
+            Logger = logger;
+
+            Operation = operation;
 
             SetAppSettingsFromJsonFile("appsettings.json");
 
             Bot = CreateTelegramBot(BotToken);
             WebClient = CreateWebClient(Logger);
 
-            SendMessageCommand = CreateSendMessageCommand(this);
+            //SendMessageCommand = sendMessageCommand;//CreateSendMessageCommand(this);
             ShowAllCommand = CreateShowAllCommand(this);
 
             ListCommand = new Dictionary<string, INamedCommand>
             {
                 { "/w", new ShowRandomWordCommand("/w", "show random english word", this) },
-                { "/wid", new ShowWordByIdCommand("/wid", "show english word by id", this) },
-                { "/nw", new NewWordCommand("/nw", "add new english word", this) },
-                { "/ew", new EditWordCommand("/ew", "edit word by id", this) },
-                { "/dw", new DeleteWordCommand("/dw", "delete word by id", this) },
+                
+                { "/wid", new ShowWordByIdCommand("/wid", "show english word by id", this, startState: new InputWordIdState(nextState: null)) },
+                
+                { "/nw", new NewWordCommand("/nw", "add new english word", this, startState: new InputWordNameState(nextState:
+                                                                                             new InputTranscriptionState(nextState: 
+                                                                                             new InputTranslateState(nextState:
+                                                                                             new InputExampleState(nextState:
+                                                                                             new InputCategoryIdState(nextState: null)))))) },
+                
+                { "/ew", new EditWordCommand("/ew", "edit word by id", this, startState: new InputWordIdState(nextState: 
+                                                                                         new EditWordState(nextState:
+                                                                                         new EditTranscriptionState(nextState:
+                                                                                         new EditTranslateState(nextState:
+                                                                                         new EditExampleState(nextState:
+                                                                                         new EditCategoryIdState(nextState: null))))))) },                
+                
+                { "/dw", new DeleteWordCommand("/dw", "delete word by id", this, new InputWordIdState(nextState: null)) },
+                
                 { "/c", new ShowCategoryCommand("/c", "show categories", this) },
-                { "/nc", new NewCategoryCommand("/nc", "add new category", this) },
-                { "/ec", new EditCategoryNameCommand("/ec", "edit name category", this) },
-                { "/dc", new DeleteCategoryCommand("/dc", "delete category", this) },
-                { "/sc", new SetCategoryIdCommand("/sc", "set category for showing words", this) },
+                
+                { "/nc", new NewCategoryCommand("/nc", "add new category", this, startState: new InputCategoryNameState(nextState: null)) },
+                
+                { "/ec", new EditCategoryNameCommand("/ec", "edit name category", this, startState: new InputCategoryIdState(nextState:
+                                                                                                    new InputCategoryNameState(nextState: null))) },
+                
+                { "/dc", new DeleteCategoryCommand("/dc", "delete category", this, new InputCategoryIdState(nextState: null)) },
+                
+                { "/sc", new SetCategoryIdCommand("/sc", "set category for showing words", this, startState: new InputCategoryIdState(nextState: null)) },
+                
                 { "/cc", new ClearCategoryIdCommand("/cc", "clear category for showing words", this) }
             };
 

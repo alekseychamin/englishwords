@@ -21,12 +21,14 @@ namespace ConsoleTelegramBot.Command
         public string Description { get; }
 
         private readonly IConfiguration _configuration;
+        private readonly IState _startState;
 
-        public NewCategoryCommand(string name, string description, IConfiguration configuration)
+        public NewCategoryCommand(string name, string description, IConfiguration configuration, IState startState)
         {
             Name = name;
             Description = description;
             _configuration = configuration;
+            _startState = startState;
         }
         
         public async Task Execute(long chatId)
@@ -34,8 +36,10 @@ namespace ConsoleTelegramBot.Command
             ListChatId.Add(chatId);
 
             CategoryFromUser.Add(chatId, new NewCategory());
-            
-            State.Add(chatId, new InputCategoryNameState(chatId, _configuration, null));
+
+            _configuration.Operation.SetStateChatIdConfig(_startState, null, chatId, _configuration);
+
+            State.Add(chatId, _startState);//new InputCategoryNameState(chatId, _configuration, null));
 
             await State[chatId].Initialize();
         }
@@ -58,7 +62,7 @@ namespace ConsoleTelegramBot.Command
 
             if (State[chatId] == null)
             {
-                await Operation.CreateNewCategory(chatId, CategoryFromUser[chatId], _configuration);
+                await _configuration.Operation.CreateNewCategory(chatId, CategoryFromUser[chatId], _configuration);
 
                 RemoveChatId(chatId);
             }

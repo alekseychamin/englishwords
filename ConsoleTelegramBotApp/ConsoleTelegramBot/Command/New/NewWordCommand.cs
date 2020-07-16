@@ -24,6 +24,7 @@ namespace ConsoleTelegramBot.Command
         public string Description { get; }        
 
         private readonly IConfiguration _configuration;
+        private readonly IState _startState;
 
         public HashSet<long> ListChatId { get; } = new HashSet<long>();
 
@@ -31,11 +32,12 @@ namespace ConsoleTelegramBot.Command
 
         public Dictionary<long, NewEnglishWord> EnglishWordFromUser { get; } = new Dictionary<long, NewEnglishWord>();        
 
-        public NewWordCommand(string name, string description, IConfiguration configuration)
+        public NewWordCommand(string name, string description, IConfiguration configuration, IState startState)
         {
             Name = name;
             Description = description;
             _configuration = configuration;
+            _startState = startState;
         }
         
         public async Task Execute(long chatId)
@@ -43,14 +45,18 @@ namespace ConsoleTelegramBot.Command
             ListChatId.Add(chatId);
 
             SetNewEnglishWord(chatId, new NewEnglishWord());
-            
-            State.Add(chatId, new InputWordNameState(chatId, _configuration, 
-                                new InputTranscriptionState(chatId, _configuration, 
-                                new InputTranslateState(chatId, _configuration,
-                                new InputExampleState(chatId, _configuration,
-                                new InputCategoryIdState(chatId, _configuration,
-                                null))))));
-                        
+
+            _configuration.Operation.SetStateChatIdConfig(_startState, null, chatId, _configuration);
+
+            State.Add(chatId, _startState);
+
+            //State.Add(chatId, new InputWordNameState(chatId, _configuration, 
+            //                    new InputTranscriptionState(chatId, _configuration, 
+            //                    new InputTranslateState(chatId, _configuration,
+            //                    new InputExampleState(chatId, _configuration,
+            //                    new InputCategoryIdState(chatId, _configuration,
+            //                    null))))));
+
             await State[chatId].Initialize();
         }
 
@@ -65,7 +71,7 @@ namespace ConsoleTelegramBot.Command
             
             if (State[chatId] == null)
             {
-                await Operation.CreateNewWord(chatId, EnglishWordFromUser[chatId], _configuration);
+                await _configuration.Operation.CreateNewWord(chatId, EnglishWordFromUser[chatId], _configuration);
 
                 RemoveChatId(chatId);
             }

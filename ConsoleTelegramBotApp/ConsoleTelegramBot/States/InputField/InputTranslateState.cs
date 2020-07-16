@@ -10,36 +10,53 @@ namespace ConsoleTelegramBot.States
 {
     public class InputTranslateState : IState
     {
-        private long _chatId;
-        private readonly IConfiguration _configuration;
-        private readonly IState _nextState;
+        private IConfiguration _configuration;
+        public IConfiguration Configuration
+        {
+            get
+            {
+                if (_configuration is null)
+                    throw new ArgumentNullException(nameof(Configuration));
+
+                return _configuration;
+            }
+            set
+            {
+                if (value is null)
+                    throw new ArgumentNullException(nameof(Configuration));
+
+                _configuration = value;
+            }
+        }
+        public long ChatId { get; set; }
+
+        public IState NextState { get; private set; }
+
         private bool _isInitialize;
 
-        public InputTranslateState(long chatId, IConfiguration configuration, IState nextState, bool isInitialize = true)
+        public InputTranslateState(IState nextState, bool isInitialize = true)
         {
-            _chatId = chatId;
-            _configuration = configuration;
-            _nextState = nextState;
+            NextState = nextState;
             _isInitialize = isInitialize;
         }
         public async Task ChangeState(IUniqueChatId uniqueChatId, string message)
         {
-            uniqueChatId.SetTranslate(_chatId, message);
+            uniqueChatId.SetTranslate(ChatId, message);
 
-            uniqueChatId.State[_chatId] = _nextState;
+            uniqueChatId.State[ChatId] = NextState;
 
-            if (_nextState is null)
+            if (NextState is null)
                 return;
 
             if (_isInitialize)
-                await uniqueChatId.State[_chatId].Initialize();
+                await uniqueChatId.State[ChatId].Initialize();
             else
-                await uniqueChatId.State[_chatId].ChangeState(uniqueChatId, message);
+                await uniqueChatId.State[ChatId].ChangeState(uniqueChatId, message);
         }
 
         public async Task Initialize()
         {
-            await _configuration.SendMessageCommand.Execute(_chatId, "Input translate:", ParseMode.Html, new ReplyKeyboardRemove());
+            await _configuration.SendMessageCommand.Execute(ChatId, "Input translate:", ParseMode.Html, new ReplyKeyboardRemove());
         }
     }
 }

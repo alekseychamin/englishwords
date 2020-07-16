@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -11,47 +12,68 @@ namespace ConsoleTelegramBot.States
 {
     public class EditTranscriptionState : IState
     {
-        private readonly IConfiguration _configuration;
-        private readonly IState _nextState;
-        private long _chatId;
+        private IConfiguration _configuration;
+        public IConfiguration Configuration
+        {
+            get
+            {
+                if (_configuration is null)
+                    throw new ArgumentNullException(nameof(Configuration));
+
+                return _configuration;
+            }
+            set
+            {
+                if (value is null)
+                    throw new ArgumentNullException(nameof(Configuration));
+
+                _configuration = value;
+            }
+        }
+        public long ChatId { get; set; }
+
+        public IState NextState { get; private set; }
+
         private bool _isInitialize;
 
-        public EditTranscriptionState(long chatId, IConfiguration configuration, IState nextState, bool isInitialize = true)
+        public EditTranscriptionState(IState nextState, bool isInitialize = true)
         {
-            _chatId = chatId;
-            _configuration = configuration;
-            _nextState = nextState;
+            NextState = nextState;
             _isInitialize = isInitialize;
         }
+
         public async Task ChangeState(IUniqueChatId uniqueChatId, string message)
         {
             if (message.Equals("Yes"))
             {
-                var field = uniqueChatId.GetTranscription(_chatId);
+                var field = uniqueChatId.GetTranscription(ChatId);
 
                 if (string.IsNullOrEmpty(field) == false)
-                    await _configuration.SendMessageCommand.Execute(_chatId, field, ParseMode.Html, new ReplyKeyboardRemove());
+                    await _configuration.SendMessageCommand.Execute(ChatId, field, ParseMode.Html, new ReplyKeyboardRemove());
 
-                uniqueChatId.State[_chatId] = new InputTranscriptionState(_chatId, _configuration, this, isInitialize: false);
-                await uniqueChatId.State[_chatId].Initialize();
+                var inputWordNameState = new InputTranscriptionState(this, isInitialize: false);
+                _configuration.Operation.SetStateChatIdConfig(inputWordNameState, this, ChatId, _configuration);
+
+                uniqueChatId.State[ChatId] = inputWordNameState;
+                await uniqueChatId.State[ChatId].Initialize();
 
                 return;
             }
 
-            uniqueChatId.State[_chatId] = _nextState;
+            uniqueChatId.State[ChatId] = NextState;
 
-            if (_nextState is null)
+            if (NextState is null)
                 return;
 
             if (_isInitialize)
-                await uniqueChatId.State[_chatId].Initialize();
+                await uniqueChatId.State[ChatId].Initialize();
             else
-                await uniqueChatId.State[_chatId].ChangeState(uniqueChatId, message);
+                await uniqueChatId.State[ChatId].ChangeState(uniqueChatId, message);
         }
 
         public async Task Initialize()
         {
-            await Operation.MakeQuestion(_chatId, "Do you need to edit transcription?", _configuration);
+            await _configuration.Operation.MakeQuestion(ChatId, "Do you need to edit transcription?", _configuration);
         }
     }
 }

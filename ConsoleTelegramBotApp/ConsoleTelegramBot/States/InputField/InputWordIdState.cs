@@ -13,18 +13,36 @@ namespace ConsoleTelegramBot.States
 {
     public class InputWordIdState : IState
     {
-        private readonly IConfiguration _configuration;
-        private readonly IState _nextState;
-        private long _chatId;
+        private IConfiguration _configuration;
+        public IConfiguration Configuration 
+        { 
+            get
+            {
+                if (_configuration is null)
+                    throw new ArgumentNullException(nameof(Configuration));
+
+                return _configuration;
+            } 
+            set 
+            { 
+                if (value is null)
+                    throw new ArgumentNullException(nameof(Configuration));
+
+                _configuration = value;
+            } 
+        }
+        public long ChatId { get; set; }
+
+        public IState NextState { get; private set; }                
+        
         private bool _isInitialize;
 
-        public InputWordIdState(long chatId, IConfiguration configuration, IState nextState, bool isInitialize = true)
+        public InputWordIdState(IState nextState, bool isInitialize = true)
         {
-            _chatId = chatId;
-            _configuration = configuration;
-            _nextState = nextState;
+            NextState = nextState;
             _isInitialize = isInitialize;
         }
+
         public async Task ChangeState(IUniqueChatId uniqueChatId, string message)
         {
             int id;
@@ -32,20 +50,20 @@ namespace ConsoleTelegramBot.States
             {
                 uniqueChatId.SetId(id);
                 
-                await uniqueChatId.GetNewEnglishWordById(_chatId, id);
+                await uniqueChatId.GetNewEnglishWordById(ChatId, id);
 
-                if (uniqueChatId.State.ContainsKey(_chatId) == false)
+                if (uniqueChatId.State.ContainsKey(ChatId) == false)
                     return;
 
-                uniqueChatId.State[_chatId] = _nextState;
+                uniqueChatId.State[ChatId] = NextState;
 
-                if (_nextState is null)
+                if (NextState is null)
                     return;
 
                 if (_isInitialize)
-                    await uniqueChatId.State[_chatId].Initialize();
+                    await uniqueChatId.State[ChatId].Initialize();
                 else
-                    await uniqueChatId.State[_chatId].ChangeState(uniqueChatId, message);
+                    await uniqueChatId.State[ChatId].ChangeState(uniqueChatId, message);
             }
             else            
                 await ShowError("Word id is invalid", uniqueChatId);
@@ -53,13 +71,16 @@ namespace ConsoleTelegramBot.States
 
         public async Task Initialize()
         {
-            await _configuration.SendMessageCommand.Execute(_chatId, "Input word id:", ParseMode.Html, new ReplyKeyboardRemove());
+            await Configuration.SendMessageCommand
+                               .Execute(ChatId, "Input word id:", ParseMode.Html, new ReplyKeyboardRemove());
         }
 
         private async Task ShowError(string message, IUniqueChatId uniqueChatId)
         {
-            await _configuration.SendMessageCommand.Execute(_chatId, message, ParseMode.Html, new ReplyKeyboardRemove());
-            uniqueChatId.RemoveChatId(_chatId);
+            await Configuration.SendMessageCommand
+                               .Execute(ChatId, message, ParseMode.Html, new ReplyKeyboardRemove());
+            
+            uniqueChatId.RemoveChatId(ChatId);
         }
     }
 }

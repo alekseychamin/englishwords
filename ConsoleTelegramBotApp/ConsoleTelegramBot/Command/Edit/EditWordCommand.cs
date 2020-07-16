@@ -25,25 +25,31 @@ namespace ConsoleTelegramBot.Command
         private int wordId;
 
         private readonly IConfiguration _configuration;
+        private readonly IState _startState;
 
-        public EditWordCommand(string name, string description, IConfiguration configuration)
+        public EditWordCommand(string name, string description, IConfiguration configuration, IState startState)
         {
             Name = name;
             Description = description;
             _configuration = configuration;
+            _startState = startState;
         }
 
         public async Task Execute(long chatId)
         {
             ListChatId.Add(chatId);
+
+            _configuration.Operation.SetStateChatIdConfig(_startState, null, chatId, _configuration);
             
-            State.Add(chatId, new InputWordIdState(chatId, _configuration,
-                                new EditWordState(chatId, _configuration,
-                                new EditTranscriptionState(chatId, _configuration,
-                                new EditTranslateState(chatId, _configuration,
-                                new EditExampleState(chatId, _configuration,
-                                new EditCategoryIdState(chatId, _configuration,
-                                null)))))));
+            State.Add(chatId, _startState);
+
+            //State.Add(chatId, new InputWordIdState(chatId, _configuration,
+            //                    new EditWordState(chatId, _configuration,
+            //                    new EditTranscriptionState(chatId, _configuration,
+            //                    new EditTranslateState(chatId, _configuration,
+            //                    new EditExampleState(chatId, _configuration,
+            //                    new EditCategoryIdState(chatId, _configuration,
+            //                    null)))))));
 
             await State[chatId].Initialize();
         }
@@ -66,7 +72,7 @@ namespace ConsoleTelegramBot.Command
 
             if (State[chatId] == null)
             {
-                await Operation.EditEnglishWord(chatId, wordId, EnglishWordFromUser[chatId], _configuration);
+                await _configuration.Operation.EditEnglishWord(chatId, wordId, EnglishWordFromUser[chatId], _configuration);
 
                 RemoveChatId(chatId);
             }
@@ -74,7 +80,7 @@ namespace ConsoleTelegramBot.Command
 
         public async Task GetNewEnglishWordById(long chatId, int id)
         {
-            var newEnglishWord = await Operation.GetNewEnglishWordById(id, chatId, _configuration);
+            var newEnglishWord = await _configuration.Operation.GetNewEnglishWordById(id, chatId, _configuration);
 
             if ((newEnglishWord is null) == false)
             {

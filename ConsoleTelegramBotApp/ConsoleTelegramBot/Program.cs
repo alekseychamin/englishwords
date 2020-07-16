@@ -13,6 +13,7 @@ using System.Text.Json;
 using System.Collections.Generic;
 using ConsoleTelegramBot.Command;
 using ConsoleTelegramBot.Updates;
+using ConsoleTelegramBot.Operations;
 
 namespace ConsoleTelegramBot
 {
@@ -28,11 +29,12 @@ namespace ConsoleTelegramBot
         private static IConfiguration configuration; 
 
         static async Task Main(string[] args)
-        {
-            configuration = new Configuration();
-
-            _logger = configuration.Logger;
+        {            
+            _logger = LogManager.GetCurrentClassLogger();            
             
+            configuration = new Configuration(_logger, new Operation(_logger));
+            configuration.SendMessageCommand = new SendMessageCommand(configuration);
+
             _logger.Debug("Init main");
 
             _bot = configuration.Bot;            

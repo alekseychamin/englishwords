@@ -13,16 +13,33 @@ namespace ConsoleTelegramBot.States
 {
     public class InputCategoryIdState : IState
     {
-        private readonly IConfiguration _configuration;
-        private long _chatId;
-        private readonly IState _nextState;
+        private IConfiguration _configuration;
+        public IConfiguration Configuration
+        {
+            get
+            {
+                if (_configuration is null)
+                    throw new ArgumentNullException(nameof(Configuration));
+
+                return _configuration;
+            }
+            set
+            {
+                if (value is null)
+                    throw new ArgumentNullException(nameof(Configuration));
+
+                _configuration = value;
+            }
+        }
+        public long ChatId { get; set; }
+
+        public IState NextState { get; private set; }
+
         private bool _isInitialize;
 
-        public InputCategoryIdState(long chatId, IConfiguration configuration, IState nextState, bool isInitialize = true)
+        public InputCategoryIdState(IState nextState, bool isInitialize = true)
         {
-            _configuration = configuration;
-            _chatId = chatId;
-            _nextState = nextState;
+            NextState = nextState;
             _isInitialize = isInitialize;
         }
         public async Task ChangeState(IUniqueChatId uniqueChatId, string message)
@@ -31,33 +48,33 @@ namespace ConsoleTelegramBot.States
 
             if (int.TryParse(message, out categoryId))
             {
-                uniqueChatId.SetCategoryId(_chatId, categoryId);
+                uniqueChatId.SetCategoryId(ChatId, categoryId);
                 
-                await uniqueChatId.GetCategoryById(_chatId, categoryId);
+                await uniqueChatId.GetCategoryById(ChatId, categoryId);
 
-                if (uniqueChatId.State.ContainsKey(_chatId) == false)
+                if (uniqueChatId.State.ContainsKey(ChatId) == false)
                     return;
 
-                uniqueChatId.State[_chatId] = _nextState;
+                uniqueChatId.State[ChatId] = NextState;
 
-                if (_nextState is null)
+                if (NextState is null)
                     return;
 
                 if (_isInitialize)
-                    await uniqueChatId.State[_chatId].Initialize();
+                    await uniqueChatId.State[ChatId].Initialize();
                 else
-                    await uniqueChatId.State[_chatId].ChangeState(uniqueChatId, message);
+                    await uniqueChatId.State[ChatId].ChangeState(uniqueChatId, message);
             }
             else
             {
-                await _configuration.SendMessageCommand.Execute(_chatId, "CategoryId is invalid", ParseMode.Html, new ReplyKeyboardRemove());
-                uniqueChatId.RemoveChatId(_chatId);                
+                await _configuration.SendMessageCommand.Execute(ChatId, "CategoryId is invalid", ParseMode.Html, new ReplyKeyboardRemove());
+                uniqueChatId.RemoveChatId(ChatId);                
             }
         }
 
         public async Task Initialize()
         {
-            var listCategories = await Operation.GetListCategory(_chatId, _configuration);
+            var listCategories = await _configuration.Operation.GetListCategory(ChatId, _configuration);
 
             if (listCategories is null)
                 return;
@@ -72,7 +89,7 @@ namespace ConsoleTelegramBot.States
                 listKeyBut[0].Add(inlineKeyBut);
             }
 
-            await _configuration.SendMessageCommand.Execute(_chatId, "Input category:", ParseMode.Html, new InlineKeyboardMarkup(listKeyBut));
+            await _configuration.SendMessageCommand.Execute(ChatId, "Input category:", ParseMode.Html, new InlineKeyboardMarkup(listKeyBut));
         }
     }
 }
