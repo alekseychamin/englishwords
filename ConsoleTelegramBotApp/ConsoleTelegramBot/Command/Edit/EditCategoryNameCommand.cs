@@ -40,19 +40,18 @@ namespace ConsoleTelegramBot.Command
         {
             ListChatId.Add(chatId);
 
+            CategoryFromUser.Add(chatId, new NewCategory());
+
             _configuration.Operation.SetStateChatIdConfig(_startState, null, chatId, _configuration);
             
-            State.Add(chatId, _startState);
-
-            //State.Add(chatId, new InputCategoryIdState(chatId, _configuration, 
-            //                    new InputCategoryNameState(chatId, _configuration, null)));
+            State.Add(chatId, _startState);            
 
             await State[chatId].Initialize();
         }
 
         public void RemoveChatId(long chatId)
         {
-            ListChatId.Remove(chatId);
+            ListChatId.Remove(chatId);            
             CategoryFromUser.Remove(chatId);
             State.Remove(chatId);
         }
@@ -80,7 +79,7 @@ namespace ConsoleTelegramBot.Command
         }
 
         public void SetCategoryName(long chatId, string value)
-        {
+        {            
             CategoryFromUser[chatId].Name = value;
         }
 

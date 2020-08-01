@@ -19,8 +19,6 @@ namespace ConsoleTelegramBot.Command
 
         public Dictionary<long, IState> State { get; } = new Dictionary<long, IState>();
 
-        public Dictionary<long, NewEnglishWord> EnglishWordFromUser { get; } = new Dictionary<long, NewEnglishWord>();
-
         private int wordId;
 
         private readonly IConfiguration _configuration;
@@ -47,8 +45,7 @@ namespace ConsoleTelegramBot.Command
 
         public void RemoveChatId(long chatId)
         {
-            ListChatId.Remove(chatId);
-            EnglishWordFromUser.Remove(chatId);
+            ListChatId.Remove(chatId);            
             State.Remove(chatId);
         }
 

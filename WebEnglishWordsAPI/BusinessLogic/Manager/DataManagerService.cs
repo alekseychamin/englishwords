@@ -15,14 +15,14 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic.Manager
 {
-    public class DataManager : IDataManager
+    public class DataManagerService : IDataManagerService
     {
-        private readonly ILogger<DataManager> _logger;
+        private readonly ILogger<DataManagerService> _logger;
         private readonly ISeedData _seedData;
         private readonly IDataFromFileToDb _dataFromFileToDb;
         private readonly IFetchDataFromDb _fetchDataFromDb;
 
-        public DataManager(ILogger<DataManager> logger,
+        public DataManagerService(ILogger<DataManagerService> logger,
                            ISeedData seedData, 
                            IDataFromFileToDb dataFormFileToDb,
                            IFetchDataFromDb fetchDataFromDb)

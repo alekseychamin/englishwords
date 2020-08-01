@@ -15,14 +15,15 @@ namespace WebAPI.Controllers
     [ApiController]
     public class OperationController : ControllerBase
     {
-        private readonly IDataManager _dateManager;
+        private readonly IDataManagerService _dataManagerService;
         private readonly ILogger<OperationController> _logger;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
 
-        public OperationController(IConfiguration configuration, IDataManager dataManager, ILogger<OperationController> logger, IMapper mapper)
+        public OperationController(IConfiguration configuration, IDataManagerService dataManagerService, 
+                                   ILogger<OperationController> logger, IMapper mapper)
         {
-            _dateManager = dataManager;
+            _dataManagerService = dataManagerService;
             _logger = logger;
             _mapper = mapper;
             _configuration = configuration;
@@ -32,7 +33,7 @@ namespace WebAPI.Controllers
         public ActionResult AddEnglishWordToDb()
         {
             var fileName = _configuration.GetValue<string>("CSVFileName");
-            var count = _dateManager.AddEnglishWordsToDb(fileName);
+            var count = _dataManagerService.AddEnglishWordsToDb(fileName);
 
             _logger.LogInformation("Added {0} english words", count);
 
@@ -42,7 +43,7 @@ namespace WebAPI.Controllers
         [HttpGet("randomword")]
         public ActionResult<EnglishWordView> GetRandomEnglishWord([FromQuery] int categoryId)
         {
-            var itemBL = _dateManager.GetRandomEnglishWord(categoryId);
+            var itemBL = _dataManagerService.GetRandomEnglishWord(categoryId);
 
             return Ok(_mapper.Map<EnglishWordView>(itemBL));
         }

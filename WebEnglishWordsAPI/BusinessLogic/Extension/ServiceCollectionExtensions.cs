@@ -15,7 +15,7 @@ namespace BusinessLogic.Extension
     {
         public static IServiceCollection AddBusinessLogic(this IServiceCollection collection)
         {
-            return collection.AddScoped<IDataManager, DataManager>()
+            return collection.AddScoped<IDataManagerService, DataManagerService>()
                              .AddScoped<IRepositoryBL<EnglishWordBL>, EnglishWordRepositoryBL>()
                              .AddScoped<IRepositoryBL<CategoryBL>, CategoryRepositoryBL>()
                              .AddScoped<IReadCSVFile, ReadCSVFile>()

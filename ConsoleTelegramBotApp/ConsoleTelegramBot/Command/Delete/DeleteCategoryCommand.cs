@@ -14,8 +14,6 @@ namespace ConsoleTelegramBot.Command
 
         public Dictionary<long, IState> State { get; } = new Dictionary<long, IState>();        
 
-        public Dictionary<long, NewCategory> CategoryFromUser { get; } = new Dictionary<long, NewCategory>();
-
         public string Name { get; }
 
         public string Description { get; }

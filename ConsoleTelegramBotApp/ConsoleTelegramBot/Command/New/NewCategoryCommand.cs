@@ -69,7 +69,7 @@ namespace ConsoleTelegramBot.Command
         }
 
         public void SetCategoryName(long chatId, string value)
-        {
+        {            
             CategoryFromUser[chatId].Name = value;
         }        
     }

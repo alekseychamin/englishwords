@@ -29,7 +29,9 @@ namespace ConsoleTelegramBot.Command
 
         void SetCategoryId(long chatId, int value) { }
 
-        void SetCategoryName(long chatId, string value) { }        
+        void SetCategoryName(long chatId, string value) { }
+
+        //void SetNewEnglisgWord(long chatId, NewEnglishWord newEnglishWord) { }
 
         string GetWordName(long chatId) { return null; }
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic.Manager
 {
-    public interface IDataManager
+    public interface IDataManagerService
     {
         void InitializeDb(DbContextOptions<CurrentDbContext> options, string fileName, bool isDelete = false);
         

@@ -42,7 +42,7 @@ namespace EnglishWords
 
                     var options = services.GetRequiredService<DbContextOptions<CurrentDbContext>>();
 
-                    var dataManager = services.GetRequiredService<IDataManager>();
+                    var dataManager = services.GetRequiredService<IDataManagerService>();
 
                     var fileName = config.GetValue<string>("CSVFileName");
 

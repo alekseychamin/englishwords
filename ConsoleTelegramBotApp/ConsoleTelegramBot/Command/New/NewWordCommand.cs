@@ -50,13 +50,6 @@ namespace ConsoleTelegramBot.Command
 
             State.Add(chatId, _startState);
 
-            //State.Add(chatId, new InputWordNameState(chatId, _configuration, 
-            //                    new InputTranscriptionState(chatId, _configuration, 
-            //                    new InputTranslateState(chatId, _configuration,
-            //                    new InputExampleState(chatId, _configuration,
-            //                    new InputCategoryIdState(chatId, _configuration,
-            //                    null))))));
-
             await State[chatId].Initialize();
         }
 

@@ -41,15 +41,7 @@ namespace ConsoleTelegramBot.Command
 
             _configuration.Operation.SetStateChatIdConfig(_startState, null, chatId, _configuration);
             
-            State.Add(chatId, _startState);
-
-            //State.Add(chatId, new InputWordIdState(chatId, _configuration,
-            //                    new EditWordState(chatId, _configuration,
-            //                    new EditTranscriptionState(chatId, _configuration,
-            //                    new EditTranslateState(chatId, _configuration,
-            //                    new EditExampleState(chatId, _configuration,
-            //                    new EditCategoryIdState(chatId, _configuration,
-            //                    null)))))));
+            State.Add(chatId, _startState);            
 
             await State[chatId].Initialize();
         }
@@ -57,7 +49,7 @@ namespace ConsoleTelegramBot.Command
         public void RemoveChatId(long chatId)
         {
             ListChatId.Remove(chatId);
-            EnglishWordFromUser.Remove(chatId);
+            EnglishWordFromUser.Remove(chatId);            
             State.Remove(chatId);
         }
 
@@ -84,7 +76,7 @@ namespace ConsoleTelegramBot.Command
 
             if ((newEnglishWord is null) == false)
             {
-                EnglishWordFromUser[chatId] = newEnglishWord;
+                EnglishWordFromUser.Add(chatId, newEnglishWord);
             }
             else
             {

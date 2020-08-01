@@ -58,7 +58,7 @@ namespace Tests.WebAPI
             serviceProvider = services.BuildServiceProvider();
 
             var options = serviceProvider.GetRequiredService<DbContextOptions<CurrentDbContext>>();
-            var dataManager = serviceProvider.GetRequiredService<IDataManager>();
+            var dataManager = serviceProvider.GetRequiredService<IDataManagerService>();
             
             var fileName = configuration.GetValue<string>("CSVFileNameTests");
             dataManager.InitializeDb(options, fileName, isDelete: false);
