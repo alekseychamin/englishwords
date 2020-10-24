@@ -42,11 +42,21 @@ namespace EnglishWords
 
                     var options = services.GetRequiredService<DbContextOptions<CurrentDbContext>>();
 
-                    var dataManager = services.GetRequiredService<IDataManagerService>();
+                    using (var db = new CurrentDbContext(options))
+                    {
+                        var canConnect = db.Database.CanConnect();
 
-                    var fileName = config.GetValue<string>("CSVFileName");
+                        if (canConnect)
+                        {
+                            logger.Info("DB exists");
+                        }
+                        else
+                        {                            
+                            throw new Exception("DB doesn't exist");
+                        }
+                    }
 
-                    dataManager.InitializeDb(options, fileName, isDelete: false);
+
                 }                
 
                 host.Run();

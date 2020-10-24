@@ -25,7 +25,7 @@ namespace EnglishWords
         public void ConfigureServices(IServiceCollection services)
         {
             string connection = Configuration.GetConnectionString("EnglishWords");
-            services.AddDbContext<CurrentDbContext>(options => options.UseSqlServer(connection));
+            services.AddDbContext<CurrentDbContext>(options => options.UseNpgsql(connection));
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
