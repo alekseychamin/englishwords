@@ -48,19 +48,28 @@ namespace ConsoleTelegramBot
             _callBackQueryUpdate = configuration.CallBackQueryUpdate;
             _uknownUpdate = configuration.UnknownMessageUpdate;
 
-            _sendMessageCommand = configuration.SendMessageCommand;                        
+            _sendMessageCommand = configuration.SendMessageCommand;
 
             // StartReceiving does not block the caller thread. Receiving is done on the ThreadPool.
-            _bot.StartReceiving(
-                new DefaultUpdateHandler(HandleUpdateAsync, HandleErrorAsync),
-                cts.Token
-            );
+            _bot.StartReceiving(new DefaultUpdateHandler(HandleUpdateAsync, HandleErrorAsync), cts.Token);
 
             _logger.Debug("Start listening for @{0}", user.Username);
-            Console.ReadLine();
 
-            // Send cancellation request to stop bot
-            cts.Cancel();
+            try
+            {
+                Task t = new Task(() => { while (true) { if (cts.IsCancellationRequested) return; } }
+                );
+
+                t.Start();
+                t.Wait();
+                
+            }
+            finally
+            {
+                // Send cancellation request to stop bot
+                cts.Cancel();
+            }
+            
         }
 
         private static async Task HandleUpdateAsync(ITelegramBotClient bot, Update update, CancellationToken cancellationToken)
@@ -81,8 +90,9 @@ namespace ConsoleTelegramBot
                 _chatId = update.Message?.Chat.Id ?? -1;
                 await HandleErrorAsync(bot, ex, cancellationToken);
 
-                if ((ex is ApiRequestException) == false)
-                    throw;
+                //if ((ex is ApiRequestException) == false)
+                //    throw;
+                throw;
             }
         }
 

@@ -26,6 +26,7 @@ namespace BusinessLogic.Extension
                              .AddScoped<IUniqueValidation<CategoryBL>, UniqueCategoryValidation>()
                              .AddScoped<IExistIdCategoryValidation, ExistIdCategoryValidation>()
                              .AddScoped<IDataFromFileToDb, DataFromFileToDb>()
+                             .AddScoped<IEnglishWordRepositoryBL, EnglishWordRepositoryBL>()
                              .AddScoped<IFetchDataFromDb, FetchDataFromDb>();
         }
     }

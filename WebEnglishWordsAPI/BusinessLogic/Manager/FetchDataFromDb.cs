@@ -1,30 +1,28 @@
 ﻿using BusinessLogic.Model;
 using BusinessLogic.Repository;
-using DataAccess.Model;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BusinessLogic.Manager
 {
     public class FetchDataFromDb : IFetchDataFromDb
     {
         private readonly ILogger<FetchDataFromDb> _logger;
-        private readonly IRepositoryBL<EnglishWordBL> _repositoryBL;
+        private readonly IEnglishWordRepositoryBL _englishWordRepositoryBL;        
 
-        public FetchDataFromDb(ILogger<FetchDataFromDb> logger, IRepositoryBL<EnglishWordBL> repositoryBL)
+        public FetchDataFromDb(ILogger<FetchDataFromDb> logger, IEnglishWordRepositoryBL englishWordRepositoryBL)
         {
             _logger = logger;
-            _repositoryBL = repositoryBL;
+            _englishWordRepositoryBL = englishWordRepositoryBL;            
         }
 
         public EnglishWordBL GetRandomEnglishWord(int categoryId)
         {
-            var englishWords = _repositoryBL.GetAll();
+            IEnumerable<EnglishWordBL> englishWords;
+            
+            _= categoryId == 0 ? englishWords = _englishWordRepositoryBL.GetAll() : englishWords = _englishWordRepositoryBL.GetAll(categoryId);
 
             var minShowCount = englishWords.Select(x => x.ShowCount).Min();
 
@@ -43,10 +41,10 @@ namespace BusinessLogic.Manager
 
             var englishWord = englWordWithMinShCount[index];            
 
-            var itemBL = _repositoryBL.Read(englishWord.Id);
+            var itemBL = _englishWordRepositoryBL.Read(englishWord.Id);
             itemBL.ShowCount++;
 
-            _repositoryBL.Update(itemBL);
+            _englishWordRepositoryBL.Update(itemBL);
 
             return englWordWithMinShCount[index];
         }

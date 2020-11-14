@@ -110,7 +110,7 @@ namespace ConsoleTelegramBot
        
         private void SetAppSettingsFromJsonFile(string fileName)
         {
-            var fullFileName = $"{AppDomain.CurrentDomain.BaseDirectory}\\{fileName}";            
+            var fullFileName = $"{fileName}";            
 
             try
             {

@@ -8,7 +8,7 @@ namespace DataAccess.Repository
     public interface IRepository<T> where T: class
     {
         IEnumerable<T> GetAll();
-        
+
         void Create(T item);
 
         T Read(int id);

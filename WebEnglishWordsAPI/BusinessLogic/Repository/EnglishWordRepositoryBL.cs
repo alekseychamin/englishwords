@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic.Repository
 {
-    public class EnglishWordRepositoryBL : IRepositoryBL<EnglishWordBL>
+    public class EnglishWordRepositoryBL : IRepositoryBL<EnglishWordBL>, IEnglishWordRepositoryBL
     {
         private readonly IRepository<EnglishWord> _repository;
         private readonly IMapper _mapper;
         private readonly ILogger<EnglishWordRepositoryBL> _logger;
 
-        public EnglishWordRepositoryBL(IRepository<EnglishWord> repository, IMapper mapper, 
+        public EnglishWordRepositoryBL(IRepository<EnglishWord> repository, IMapper mapper,
                                        ILogger<EnglishWordRepositoryBL> logger)
         {
             _repository = repository;
@@ -40,7 +40,7 @@ namespace BusinessLogic.Repository
             SaveChanges();
 
             _mapper.Map(itemDAL, item);
-            
+
             _logger.LogInformation("Created new EnglishWord with id: {0}", itemDAL.Id);
         }
 
@@ -55,9 +55,18 @@ namespace BusinessLogic.Repository
                 SaveChanges();
             }
             else
-                _logger.LogWarning("Can`t find EnglishWord to delete with id: {0}", id);            
+                _logger.LogWarning("Can`t find EnglishWord to delete with id: {0}", id);
 
             return result;
+        }
+
+        public IEnumerable<EnglishWordBL> GetAll(int categoryId)
+        {
+            var itemsDAL = _repository.GetAll();
+
+            var resultItems = itemsDAL.Where(x => x.CategoryId == categoryId);
+
+            return _mapper.Map<IEnumerable<EnglishWordBL>>(resultItems);
         }
 
         public IEnumerable<EnglishWordBL> GetAll()
@@ -108,7 +117,7 @@ namespace BusinessLogic.Repository
                 return;
             }
 
-            _mapper.Map(item, itemDAL);            
+            _mapper.Map(item, itemDAL);
 
             _logger.LogInformation("Edited EnglishWord with id: {0}", itemDAL.Id);
 
