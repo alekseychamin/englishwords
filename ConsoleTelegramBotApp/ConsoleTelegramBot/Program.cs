@@ -54,22 +54,16 @@ namespace ConsoleTelegramBot
             _bot.StartReceiving(new DefaultUpdateHandler(HandleUpdateAsync, HandleErrorAsync), cts.Token);
 
             _logger.Debug("Start listening for @{0}", user.Username);
-
-            try
-            {
-                Task t = new Task(() => { while (true) { if (cts.IsCancellationRequested) return; } }
-                );
-
-                t.Start();
-                t.Wait();
-                
-            }
-            finally
-            {
-                // Send cancellation request to stop bot
-                cts.Cancel();
-            }
             
+            string line;
+            do
+            {
+                Console.WriteLine("Input exit to close the program...");
+                line = Console.ReadLine();
+            }
+            while (line != "exit");
+
+            cts.Cancel();
         }
 
         private static async Task HandleUpdateAsync(ITelegramBotClient bot, Update update, CancellationToken cancellationToken)
