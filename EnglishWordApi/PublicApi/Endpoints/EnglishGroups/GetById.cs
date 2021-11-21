@@ -30,17 +30,18 @@ namespace PublicApi.Endpoints.EnglishGroups
         [HttpGet("api/[namespace]/{groupId}")]
         [SwaggerOperation(
             Summary = "Get an English Group by Id",
-            Description = "Get an English Group by Id with English Words",
-            OperationId = "englishgroups.GetById")
+            Description = "Get an English Group by Id",
+            OperationId = "englishgroups.GetById",
+            Tags = new[] { "EnglishGroups" })
         ]
         public override async Task<ActionResult<GetByIdEnglishGroupResult>> HandleAsync([FromRoute] int groupId, CancellationToken cancellationToken = default)
         {
-            var group = await _repository.GetBySpecAsync(new EnglishGroupWithItemsSpecification(groupId), cancellationToken);
+            var group = await _repository.GetByIdAsync(groupId, cancellationToken);
             
             if (group is null)
             {
                 _logger.LogInformation($"EnglishGroup with id = {groupId} could not be found.");
-                return NotFound(); 
+                return NotFound();
             }
 
             return Ok(_mapper.Map<GetByIdEnglishGroupResult>(group));

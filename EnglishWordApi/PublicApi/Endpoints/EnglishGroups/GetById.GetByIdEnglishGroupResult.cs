@@ -1,4 +1,4 @@
-﻿using PublicApi.Models;
+﻿using PublicApi.Models.EnglishWords;
 using System.Collections.Generic;
 
 namespace PublicApi.EnglishGroupEndpoints
@@ -8,7 +8,5 @@ namespace PublicApi.EnglishGroupEndpoints
         public int Id { get; set; }
 
         public string Name { get; set; }
-
-        public List<EnglishWordDto> EnglishWords { get; set; }
     }
 }

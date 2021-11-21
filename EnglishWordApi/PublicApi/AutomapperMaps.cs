@@ -1,11 +1,9 @@
 ﻿using ApplicationCore.Entities;
 using AutoMapper;
+using PublicApi.Endpoints.EnglishGroups;
+using PublicApi.Endpoints.EnglishWords;
 using PublicApi.EnglishGroupEndpoints;
-using PublicApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using PublicApi.Models.EnglishWords;
 
 namespace PublicApi
 {
@@ -14,8 +12,10 @@ namespace PublicApi
         public AutomapperMaps()
         {
             CreateMap<EnglishWordDto, EnglishWord>().ReverseMap();
+            CreateMap<EnglishGroupDto, EnglishGroup>().ReverseMap();
+            
             CreateMap<EnglishGroup, GetByIdEnglishGroupResult>();
-                //.ForMember(res => res.EnglishWords, options => options.MapFrom(src => src.EnglishWords.ToList()));
+            CreateMap<EnglishWord, GetByIdEnglishWordResult>();
         }
     }
 }
