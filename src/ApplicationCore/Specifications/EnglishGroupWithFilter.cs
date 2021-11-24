@@ -11,6 +11,8 @@ namespace ApplicationCore.Specifications
     {
         public EnglishGroupWithFilter(EnglishGroupFilter filter)
         {
+            filter ??= new EnglishGroupFilter();
+            
             if (!string.IsNullOrEmpty(filter.Name))
             {
                 Query.Search(x => x.Name, "%" + filter.Name + "%");
