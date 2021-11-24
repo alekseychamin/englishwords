@@ -1,14 +1,12 @@
-﻿using Ardalis.Specification.EntityFrameworkCore;
-using ApplicationCore.Entities;
+﻿using ApplicationCore.Entities;
 using ApplicationCore.Specifications;
-using Moq;
 using System.Collections.Generic;
-using Xunit;
 using System.Linq;
+using Xunit;
 
 namespace UnitTests.ApplicationCore.Specifications
 {
-    public class EnglishWordWithGroup
+    public class EnglishWordWithGroupTests
     {
         private readonly int _testEnglishWordId = 123;
         private readonly int _testEnglishGroupId = 231;
@@ -16,7 +14,7 @@ namespace UnitTests.ApplicationCore.Specifications
         [Fact]
         public void MatchesEnglishWordWithGivenEnglishWordId()
         {
-            var spec = new EnglishWordWithGroupSpecification(_testEnglishWordId);
+            var spec = new EnglishWordWithGroup(_testEnglishWordId);
 
             var result = GetTestEnglishWordCollection()
                 .AsQueryable()
