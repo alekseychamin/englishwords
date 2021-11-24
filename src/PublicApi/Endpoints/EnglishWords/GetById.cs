@@ -37,7 +37,7 @@ namespace PublicApi.Endpoints.EnglishWords
         ]
         public override async Task<ActionResult<GetByIdEnglishWordResult>> HandleAsync([FromRoute] int englishWordId, CancellationToken cancellationToken = default)
         {
-            var spec = new EnglishWordWithGroupSpecification(englishWordId);
+            var spec = new EnglishWordWithGroup(englishWordId);
 
             var word = await _repository.GetBySpecAsync(spec);
 
