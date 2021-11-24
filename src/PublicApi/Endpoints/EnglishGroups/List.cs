@@ -6,6 +6,7 @@ using Ardalis.ApiEndpoints;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,12 @@ namespace PublicApi.Endpoints.EnglishGroups
         }
         
         [HttpGet("api/[namespace]")]
+        [SwaggerOperation(
+            Summary = "Get an List of English Groups",
+            Description = "Get an List of English Groups",
+            OperationId = "englishgroups",
+            Tags = new[] { "EnglishGroups" })
+        ]
         public override async Task<EnglishGroupListResult> HandleAsync([FromQuery] EnglishGroupFilterRequest request, 
             CancellationToken cancellationToken = default)
         {
