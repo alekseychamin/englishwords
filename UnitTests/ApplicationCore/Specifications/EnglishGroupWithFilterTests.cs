@@ -12,7 +12,7 @@ namespace UnitTests.ApplicationCore.Specifications
     public class EnglishGroupWithFilterTests
     {
         [Fact]
-        public void ReturnsAllEnglishGroups()
+        public void ReturnsEmptyCriteriaEnglishGroupWithFilter()
         {
             // Arrange
             var spec = new EnglishGroupWithFilter(new EnglishGroupFilter());
@@ -25,7 +25,7 @@ namespace UnitTests.ApplicationCore.Specifications
         }
 
         [Fact]
-        public void Returns2EnglishGroups()
+        public void Returns1CriteriaEnglishGroupWithFilter()
         {
             // Arrange
             var spec = new EnglishGroupWithFilter(new EnglishGroupFilter() { Name = "Group1" });
