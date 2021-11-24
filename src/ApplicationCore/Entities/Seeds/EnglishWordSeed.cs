@@ -10,12 +10,12 @@ namespace ApplicationCore.Entities.Seeds
 
         public static List<EnglishGroup> Seed()
         {
-            var countGroup = 3;
+            var countGroup = 25;
             var result = new List<EnglishGroup>();
 
             for (int i = 0; i < countGroup; i++)
             {
-                result.Add(CreateEnglishGroup($"Group{i}", 3));
+                result.Add(CreateEnglishGroup($"Group{i}", 50));
             }
 
             return result;
