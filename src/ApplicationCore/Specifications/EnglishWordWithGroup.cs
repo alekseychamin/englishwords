@@ -3,9 +3,9 @@ using Ardalis.Specification;
 
 namespace ApplicationCore.Specifications
 {
-    public class EnglishWordWithGroupSpecification : Specification<EnglishWord>, ISingleResultSpecification
+    public class EnglishWordWithGroup : Specification<EnglishWord>, ISingleResultSpecification
     {
-        public EnglishWordWithGroupSpecification(int englishWordId)
+        public EnglishWordWithGroup(int englishWordId)
         {
             Query
                 .Where(x => x.Id == englishWordId)
