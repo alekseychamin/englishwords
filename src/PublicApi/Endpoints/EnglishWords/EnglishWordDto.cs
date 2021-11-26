@@ -13,5 +13,7 @@
         public string Example { get; set; }
 
         public string PictureUri { get; set; }
+
+        public int EnglishGroupId { get; set; }
     }
 }

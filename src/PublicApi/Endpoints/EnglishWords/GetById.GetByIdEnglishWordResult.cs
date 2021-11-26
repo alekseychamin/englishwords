@@ -15,7 +15,7 @@ namespace PublicApi.Endpoints.EnglishWords
 
         public string PictureUri { get; set; }
 
-        public EnglishGroupDto EnglishGroup { get; set; }
+        public int EnglishGroupId { get; set; }
 
         public DateTime CreateDate { get; set; }
     }
