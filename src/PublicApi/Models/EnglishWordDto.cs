@@ -1,4 +1,6 @@
-﻿namespace PublicApi.Models.EnglishWords
+﻿using PublicApi.Endpoints.EnglishGroups;
+
+namespace PublicApi.Models
 {
     public class EnglishWordDto
     {
@@ -14,6 +16,6 @@
 
         public string PictureUri { get; set; }
 
-        public int EnglishGroupId { get; set; }
+        public EnglishGroupDto EnglishGroup { get; set; }
     }
 }

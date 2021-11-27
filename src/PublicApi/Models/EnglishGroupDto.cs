@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PublicApi.Endpoints.EnglishGroups
+namespace PublicApi.Models
 {
     public class EnglishGroupDto
     {
