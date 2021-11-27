@@ -13,7 +13,7 @@ namespace PublicApi.Endpoints.EnglishGroups
 {
     public class Update : EndpointBaseAsync
         .WithRequest<UpdateEnglishGroupRequest>
-        .WithActionResult<UpdateEnglishGroupResponse>
+        .WithActionResult<UpdateEnglishGroupResult>
     {
         private readonly IRepository<EnglishGroup> _repository;
         private readonly IMapper _mapper;
@@ -33,7 +33,7 @@ namespace PublicApi.Endpoints.EnglishGroups
             OperationId = "englishgroups.update",
             Tags = new[] { "EnglishGroups" })
         ]
-        public override async Task<ActionResult<UpdateEnglishGroupResponse>> HandleAsync(UpdateEnglishGroupRequest request, CancellationToken cancellationToken = default)
+        public override async Task<ActionResult<UpdateEnglishGroupResult>> HandleAsync(UpdateEnglishGroupRequest request, CancellationToken cancellationToken = default)
         {
             var group = await _repository.GetByIdAsync(request.Id, cancellationToken);
 
@@ -47,7 +47,7 @@ namespace PublicApi.Endpoints.EnglishGroups
 
             await _repository.UpdateAsync(group, cancellationToken);
 
-            return Ok(_mapper.Map<UpdateEnglishGroupResponse>(request));
+            return Ok(_mapper.Map<UpdateEnglishGroupResult>(request));
         }
     }
 }

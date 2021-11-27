@@ -16,7 +16,7 @@ namespace PublicApi.Endpoints.EnglishGroups
 {
     public class List : EndpointBaseAsync
         .WithRequest<EnglishGroupFilterRequest>
-        .WithResult<EnglishGroupListResult>
+        .WithActionResult<EnglishGroupListResult>
     {
         private readonly IRepository<EnglishGroup> _repository;
         private readonly IMapper _mapper;
@@ -36,7 +36,7 @@ namespace PublicApi.Endpoints.EnglishGroups
             OperationId = "englishgroups.list",
             Tags = new[] { "EnglishGroups" })
         ]
-        public override async Task<EnglishGroupListResult> HandleAsync([FromQuery] EnglishGroupFilterRequest request, 
+        public override async Task<ActionResult<EnglishGroupListResult>> HandleAsync([FromQuery] EnglishGroupFilterRequest request, 
             CancellationToken cancellationToken = default)
         {
             var spec = new EnglishGroupWithFilter(_mapper.Map<EnglishGroupFilter>(request));
@@ -47,7 +47,7 @@ namespace PublicApi.Endpoints.EnglishGroups
                 EnglishGroups = _mapper.Map<List<EnglishGroupDto>>(englishGroups)
             };
             
-            return result;
+            return Ok(result);
         }
     }
 }
