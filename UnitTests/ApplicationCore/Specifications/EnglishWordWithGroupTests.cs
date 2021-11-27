@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Specifications;
+using Moq;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -28,11 +29,24 @@ namespace UnitTests.ApplicationCore.Specifications
 
         public List<EnglishWord> GetTestEnglishWordCollection()
         {
+            var mockEnglishGroup1 = new Mock<EnglishGroup>("Group1");
+            mockEnglishGroup1.SetupGet(x => x.Id).Returns(1);
+
+            var mockEnglishWord1 = new Mock<EnglishWord>("phrase1", "transcription1", "translation1",
+                                                         "example1", "pictureUri1", mockEnglishGroup1.Object);
+            mockEnglishWord1.SetupGet(x => x.Id).Returns(1);
+
+            var mockEnglishGroup2 = new Mock<EnglishGroup>("Group2");
+            mockEnglishGroup2.SetupGet(x => x.Id).Returns(_testEnglishGroupId);
+
+            var mockEnglishWord2 = new Mock<EnglishWord>("phrase2", "transcription2", "translation2",
+                                                         "example2", "pictureUri2", mockEnglishGroup2.Object);
+            mockEnglishWord2.SetupGet(x => x.Id).Returns(_testEnglishWordId);
+
             return new List<EnglishWord>()
             {
-                new EnglishWord(){ Id = 1, EnglishGroup = new EnglishGroup() { Id = 1 }},
-                new EnglishWord(){ Id = 2, EnglishGroup = new EnglishGroup() { Id = 2 }},
-                new EnglishWord(){ Id = _testEnglishWordId, EnglishGroup = new EnglishGroup() { Id = _testEnglishGroupId }}
+                mockEnglishWord1.Object,
+                mockEnglishWord2.Object
             };
         }
     }

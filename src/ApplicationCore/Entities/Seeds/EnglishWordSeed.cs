@@ -23,15 +23,11 @@ namespace ApplicationCore.Entities.Seeds
 
         private static EnglishGroup CreateEnglishGroup(string groupName, int wordCount)
         {
-            var group = new EnglishGroup
-            { 
-                Name = groupName,
-                EnglishWords = new List<EnglishWord>()
-            };
+            var group = new EnglishGroup(name: groupName);
             
             for (int i = 0; i < wordCount; i++)
             {
-                group.EnglishWords.Add(CreateRandomEnglishWord(group));
+                group.AddItem(CreateRandomEnglishWord(group));
             }
 
             return group;
@@ -39,14 +35,13 @@ namespace ApplicationCore.Entities.Seeds
 
         private static EnglishWord CreateRandomEnglishWord(EnglishGroup group)
         {
-            return new EnglishWord 
-            {
-                Phrase = GetRandomString(10),
-                Transcription = GetRandomString(15),
-                Translation = GetRandomString(20),
-                Example = GetRandomString(30),
-                EnglishGroup = group
-            };
+            return new EnglishWord(
+                phrase: GetRandomString(10),
+                transcription: GetRandomString(15),
+                translation: GetRandomString(20),
+                example: GetRandomString(30),
+                pictureUri: GetRandomString(30),
+                englishGroup: group);
         }
 
         private static string GetRandomString(int charCount)

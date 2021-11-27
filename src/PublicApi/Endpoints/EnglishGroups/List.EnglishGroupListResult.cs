@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using PublicApi.Models;
+using System.Collections.Generic;
 
 namespace PublicApi.Endpoints.EnglishGroups
 {

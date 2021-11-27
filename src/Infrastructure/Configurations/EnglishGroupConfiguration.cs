@@ -16,7 +16,7 @@ namespace Infrastructure.Configurations
                             .SetPropertyAccessMode(PropertyAccessMode.Field);
 
             builder.Property(x => x.Name)
-                .IsRequired();
+                   .IsRequired();
         }
     }
 }

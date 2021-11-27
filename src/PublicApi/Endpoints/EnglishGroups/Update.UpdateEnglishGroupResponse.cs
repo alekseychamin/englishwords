@@ -1,6 +1,6 @@
-﻿namespace PublicApi.EnglishGroupEndpoints
+﻿namespace PublicApi.Endpoints.EnglishGroups
 {
-    public class GetByIdEnglishGroupResult
+    public class UpdateEnglishGroupResponse
     {
         public int Id { get; set; }
 

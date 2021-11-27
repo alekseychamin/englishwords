@@ -1,4 +1,4 @@
-﻿using PublicApi.Endpoints.EnglishGroups;
+﻿using PublicApi.Models;
 using System;
 
 namespace PublicApi.Endpoints.EnglishWords
@@ -15,7 +15,7 @@ namespace PublicApi.Endpoints.EnglishWords
 
         public string PictureUri { get; set; }
 
-        public int EnglishGroupId { get; set; }
+        public EnglishGroupDto EnglishGroup { get; set; }
 
         public DateTime CreateDate { get; set; }
     }
