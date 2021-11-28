@@ -18,6 +18,8 @@ namespace ApplicationCore.Entities
 
         public EnglishGroup(string name)
         {
+            Guard.Against.NullOrEmpty(name, nameof(name));
+
             Name = name;
         }
 

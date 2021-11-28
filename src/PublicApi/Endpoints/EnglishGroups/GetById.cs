@@ -1,6 +1,5 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Interfaces;
-using ApplicationCore.Specifications;
 using Ardalis.ApiEndpoints;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -40,7 +39,7 @@ namespace PublicApi.Endpoints.EnglishGroups
             
             if (group is null)
             {
-                _logger.LogInformation($"EnglishGroup with id = {groupId} could not be found.");
+                _logger.LogError($"EnglishGroup with id = {groupId} could not be found.");
                 return NotFound();
             }
 

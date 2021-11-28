@@ -27,14 +27,12 @@ namespace PublicApi.Endpoints.Errors
         {
             var context = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
             var exception = context.Error;
-            var code = HttpStatusCode.InternalServerError;
 
             _logger.LogError(exception.Message);
             _logger.LogTrace(exception, exception.Message);
 
             var errorResult = new ErrorResult()
             {
-                StatusCode = code,
                 Message = exception.Message
             };
 
