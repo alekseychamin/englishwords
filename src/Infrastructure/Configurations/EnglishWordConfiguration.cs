@@ -11,6 +11,9 @@ namespace Infrastructure.Configurations
         {
             builder.ToTable(nameof(EnglishWord));
             builder.HasKey(x => x.Id);
+
+            builder.Property(x => x.Phrase)
+                   .IsRequired();
         }
     }
 }
