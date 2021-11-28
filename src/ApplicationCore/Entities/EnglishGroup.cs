@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Interfaces;
+using Ardalis.GuardClauses;
 using System.Collections.Generic;
 
 namespace ApplicationCore.Entities
@@ -27,6 +28,8 @@ namespace ApplicationCore.Entities
 
         public void Update(string name)
         {
+            Guard.Against.NullOrEmpty(name, nameof(name));
+
             Name = name;
         }
     }
