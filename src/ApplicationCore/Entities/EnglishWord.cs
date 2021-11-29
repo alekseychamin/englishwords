@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Interfaces;
+using Ardalis.GuardClauses;
 using System;
 
 namespace ApplicationCore.Entities
@@ -27,6 +28,8 @@ namespace ApplicationCore.Entities
         public EnglishWord(string phrase, string transcription, string translation, 
                            string example, string pictureUri, EnglishGroup englishGroup)
         {
+            Guard.Against.NullOrEmpty(phrase, nameof(phrase));
+
             Phrase = phrase;
             Transcription = transcription;
             Translation = translation;
