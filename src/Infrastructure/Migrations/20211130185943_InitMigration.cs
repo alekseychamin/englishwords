@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Infrastructure.Migrations
 {
-    public partial class IntialCreate : Migration
+    public partial class InitMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -26,12 +26,12 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Phrase = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Phrase = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Transcription = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Translation = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Example = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PictureUri = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EnglishGroupId = table.Column<int>(type: "int", nullable: false),
+                    EnglishGroupId = table.Column<int>(type: "int", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -42,7 +42,7 @@ namespace Infrastructure.Migrations
                         column: x => x.EnglishGroupId,
                         principalTable: "EnglishGroup",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(

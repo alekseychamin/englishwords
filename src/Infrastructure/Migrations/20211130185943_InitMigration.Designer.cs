@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(EnglishWordDbContext))]
-    [Migration("20211117204514_IntialCreate")]
-    partial class IntialCreate
+    [Migration("20211130185943_InitMigration")]
+    partial class InitMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -47,13 +47,14 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EnglishGroupId")
+                    b.Property<int?>("EnglishGroupId")
                         .HasColumnType("int");
 
                     b.Property<string>("Example")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phrase")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PictureUri")
@@ -76,9 +77,7 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("ApplicationCore.Entities.EnglishGroup", "EnglishGroup")
                         .WithMany("EnglishWords")
-                        .HasForeignKey("EnglishGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EnglishGroupId");
 
                     b.Navigation("EnglishGroup");
                 });

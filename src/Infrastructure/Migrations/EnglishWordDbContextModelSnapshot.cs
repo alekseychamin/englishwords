@@ -45,13 +45,14 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EnglishGroupId")
+                    b.Property<int?>("EnglishGroupId")
                         .HasColumnType("int");
 
                     b.Property<string>("Example")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phrase")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PictureUri")
@@ -74,9 +75,7 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("ApplicationCore.Entities.EnglishGroup", "EnglishGroup")
                         .WithMany("EnglishWords")
-                        .HasForeignKey("EnglishGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EnglishGroupId");
 
                     b.Navigation("EnglishGroup");
                 });
