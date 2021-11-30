@@ -16,6 +16,8 @@ namespace ApplicationCore.Entities
 
         public string PictureUri { get; private set; }
 
+        public int? EnglishGroupId { get; private set; }
+
         public EnglishGroup EnglishGroup { get; private set; }
 
         public DateTime CreateDate { get; private set; } = DateTime.Now;

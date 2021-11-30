@@ -6,7 +6,9 @@ namespace ApplicationCore.Specifications.Filter
 {
     public class EnglishWordFilter : BaseFilter
     {
-        public string Name { get; set; }
+        public int? EnglishGroupId { get; set; }
+        
+        public string Phrase { get; set; }
         
         public string Transcription { get; set; }
 
