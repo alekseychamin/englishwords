@@ -16,6 +16,8 @@ namespace PublicApi.Models
 
         public string PictureUri { get; set; }
 
+        public string CreateDate { get; set; }
+
         public EnglishGroupDto EnglishGroup { get; set; }
     }
 }

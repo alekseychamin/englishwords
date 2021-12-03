@@ -20,7 +20,8 @@ namespace PublicApi
 
             CreateMap<BaseFilterDto, BaseFilter>().IncludeAllDerived().ReverseMap();
             CreateMap<EnglishGroupFilterRequest, EnglishGroupFilter>().ReverseMap();
-            
+            CreateMap<EnglishWordFilterRequest, EnglishWordFilter>().ReverseMap();
+
             CreateMap<UpdateEnglishGroupRequest, UpdateEnglishGroupResult>();
 
             CreateMap<EnglishGroup, CreateEnglishGroupResult>();
