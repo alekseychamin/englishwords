@@ -11,10 +11,7 @@ namespace ApplicationCore.Specifications
     {
         public EnglishGroupWithFilter(EnglishGroupFilter filter)
         {
-            if (!string.IsNullOrEmpty(filter.Name))
-            {
-                Query.Search(x => x.Name, "%" + filter.Name + "%");
-            }
+            FilterHelper.SearchByTerms(Query, x => x.Name, filter.Name, SearchType.Like);
 
             if (filter.IsPagingEnabled)
             {
