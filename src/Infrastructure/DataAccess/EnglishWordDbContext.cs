@@ -26,6 +26,12 @@ namespace Infrastructure.DataAccess
 
             builder.ApplyConfiguration(new EnglishGroupConfiguration());
             builder.ApplyConfiguration(new EnglishWordConfiguration());
+
+            builder.Entity<EnglishGroup>()
+                   .HasMany(x => x.EnglishWords)
+                   .WithOne(x => x.EnglishGroup)
+                   .HasForeignKey(x => x.EnglishGroupId)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

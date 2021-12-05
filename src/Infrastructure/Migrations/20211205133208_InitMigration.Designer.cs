@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(EnglishWordDbContext))]
-    [Migration("20211130185943_InitMigration")]
+    [Migration("20211205133208_InitMigration")]
     partial class InitMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -77,7 +77,8 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("ApplicationCore.Entities.EnglishGroup", "EnglishGroup")
                         .WithMany("EnglishWords")
-                        .HasForeignKey("EnglishGroupId");
+                        .HasForeignKey("EnglishGroupId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("EnglishGroup");
                 });

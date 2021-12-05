@@ -75,7 +75,8 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("ApplicationCore.Entities.EnglishGroup", "EnglishGroup")
                         .WithMany("EnglishWords")
-                        .HasForeignKey("EnglishGroupId");
+                        .HasForeignKey("EnglishGroupId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("EnglishGroup");
                 });

@@ -42,7 +42,7 @@ namespace Infrastructure.Migrations
                         column: x => x.EnglishGroupId,
                         principalTable: "EnglishGroup",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
