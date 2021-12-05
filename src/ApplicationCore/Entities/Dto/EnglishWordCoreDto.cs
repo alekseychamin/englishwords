@@ -1,9 +1,7 @@
-﻿namespace PublicApi.Models
+﻿namespace ApplicationCore.Entities.Dto
 {
-    public class EnglishWordDto
+    public class EnglishWordCoreDto
     {
-        public int Id { get; set; }
-
         public string Phrase { get; set; }
 
         public string Transcription { get; set; }
@@ -16,6 +14,6 @@
 
         public string CreateDate { get; set; }
 
-        public EnglishGroupDto EnglishGroup { get; set; }
+        public EnglishGroup EnglishGroup { get; set; }
     }
 }

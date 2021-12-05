@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities;
+using ApplicationCore.Entities.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +20,13 @@ namespace UnitTests.ApplicationCore.Entitties
         [Fact]
         public void EnglishGroupCreateThrowsArgumentExeption()
         {
-            Assert.Throws<ArgumentException>(() => new EnglishGroup(string.Empty));
+            Assert.Throws<ArgumentException>(() => new EnglishGroup(new EnglishGroupCoreDto() { Name = string.Empty }));
         }
 
         [Fact]
         public void EnglishGroupUpdateThrowsArgumentNullException()
         {
-            var englishGroup = new EnglishGroup("Group1");
+            var englishGroup = new EnglishGroup(new EnglishGroupCoreDto() { Name = "Group1" });
 
             Assert.Throws<ArgumentNullException>(() => englishGroup.Update(null));
         }
@@ -33,9 +34,9 @@ namespace UnitTests.ApplicationCore.Entitties
         [Fact]
         public void EnglishGroupUpdateThrowsArgumentException()
         {
-            var englishGroup = new EnglishGroup("Group1");
+            var englishGroup = new EnglishGroup(new EnglishGroupCoreDto() { Name = "Group1" });
 
-            Assert.Throws<ArgumentException>(() => englishGroup.Update(string.Empty));
+            Assert.Throws<ArgumentException>(() => englishGroup.Update(new EnglishGroupCoreDto() { Name = string.Empty }));
         }
     }
 }

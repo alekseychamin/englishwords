@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ApplicationCore.Entities.Dto;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,7 +7,7 @@ namespace ApplicationCore.Entities.Seeds
 {
     public class EnglishWordSeed
     {
-        private static Random _random = new Random();
+        private static readonly Random _random = new Random();
 
         public static List<EnglishGroup> Seed()
         {
@@ -23,7 +24,7 @@ namespace ApplicationCore.Entities.Seeds
 
         private static EnglishGroup CreateEnglishGroup(string groupName, int wordCount)
         {
-            var group = new EnglishGroup(name: groupName);
+            var group = new EnglishGroup(new EnglishGroupCoreDto() { Name = groupName });
             
             for (int i = 0; i < wordCount; i++)
             {
@@ -35,13 +36,15 @@ namespace ApplicationCore.Entities.Seeds
 
         private static EnglishWord CreateRandomEnglishWord(EnglishGroup group)
         {
-            return new EnglishWord(
-                phrase: GetRandomString(10),
-                transcription: GetRandomString(15),
-                translation: GetRandomString(20),
-                example: GetRandomString(30),
-                pictureUri: GetRandomString(30),
-                englishGroup: group);
+            return new EnglishWord(new EnglishWordCoreDto()
+            {
+                Phrase = GetRandomString(10),
+                Transcription = GetRandomString(15),
+                Translation = GetRandomString(20),
+                Example = GetRandomString(30),
+                PictureUri = GetRandomString(30),
+                EnglishGroup = group
+            });
         }
 
         private static string GetRandomString(int charCount)

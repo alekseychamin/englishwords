@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities;
+using ApplicationCore.Entities.Dto;
 using ApplicationCore.Interfaces;
 using Ardalis.ApiEndpoints;
 using AutoMapper;
@@ -43,7 +44,7 @@ namespace PublicApi.Endpoints.EnglishGroups
                 return NotFound();
             }
 
-            group.Update(request.Name);
+            group.Update(_mapper.Map<EnglishGroupCoreDto>(request));
 
             await _repository.UpdateAsync(group, cancellationToken);
 

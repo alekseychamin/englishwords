@@ -1,4 +1,5 @@
-﻿using ApplicationCore.Interfaces;
+﻿using ApplicationCore.Entities.Dto;
+using ApplicationCore.Interfaces;
 using Ardalis.GuardClauses;
 using System;
 
@@ -27,17 +28,21 @@ namespace ApplicationCore.Entities
 
         }
 
-        public EnglishWord(string phrase, string transcription, string translation, 
-                           string example, string pictureUri, EnglishGroup englishGroup)
+        public EnglishWord(EnglishWordCoreDto englishWord)
         {
-            Guard.Against.NullOrEmpty(phrase, nameof(phrase));
+            Guard.Against.NullOrEmpty(englishWord.Phrase, nameof(englishWord.Phrase));
 
-            Phrase = phrase;
-            Transcription = transcription;
-            Translation = translation;
-            Example = example;
-            PictureUri = pictureUri;
-            EnglishGroup = englishGroup;
+            Phrase = englishWord.Phrase;
+            Transcription = englishWord.Transcription;
+            Translation = englishWord.Translation;
+            Example = englishWord.Example;
+            PictureUri = englishWord.PictureUri;
+            EnglishGroup = englishWord.EnglishGroup;
+        }
+
+        public void Update()
+        {
+
         }
     }
 }

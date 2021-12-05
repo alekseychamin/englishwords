@@ -14,7 +14,7 @@ namespace ApplicationCore.Specifications
 
     public static class FilterHelper
     {
-        private static Dictionary<SearchType, Func<string, string>> processSearchTerms =
+        private static readonly Dictionary<SearchType, Func<string, string>> processSearchTerms =
             new Dictionary<SearchType, Func<string, string>>()
             {
                 { SearchType.Like, (s) => { return $"%{s}%"; } }

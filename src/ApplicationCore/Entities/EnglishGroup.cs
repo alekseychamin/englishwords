@@ -1,4 +1,5 @@
-﻿using ApplicationCore.Interfaces;
+﻿using ApplicationCore.Entities.Dto;
+using ApplicationCore.Interfaces;
 using Ardalis.GuardClauses;
 using System.Collections.Generic;
 
@@ -16,11 +17,11 @@ namespace ApplicationCore.Entities
 
         }
 
-        public EnglishGroup(string name)
+        public EnglishGroup(EnglishGroupCoreDto englishGroup)
         {
-            Guard.Against.NullOrEmpty(name, nameof(name));
+            Guard.Against.NullOrEmpty(englishGroup.Name, nameof(englishGroup.Name));
 
-            Name = name;
+            Name = englishGroup.Name;
         }
 
         public void AddItem(EnglishWord englishWord)
@@ -28,11 +29,11 @@ namespace ApplicationCore.Entities
             _englishWords.Add(englishWord);
         }
 
-        public void Update(string name)
+        public void Update(EnglishGroupCoreDto englishGroup)
         {
-            Guard.Against.NullOrEmpty(name, nameof(name));
+            Guard.Against.NullOrEmpty(englishGroup.Name, nameof(englishGroup.Name));
 
-            Name = name;
+            Name = englishGroup.Name;
         }
     }
 }

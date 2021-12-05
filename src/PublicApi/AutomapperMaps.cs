@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities;
+using ApplicationCore.Entities.Dto;
 using ApplicationCore.Specifications.Filter;
 using AutoMapper;
 using PublicApi.Endpoints.EnglishGroups;
@@ -12,19 +13,19 @@ namespace PublicApi
     {
         public AutomapperMaps()
         {
-            CreateMap<EnglishWord, EnglishWordDto>();
-            CreateMap<EnglishGroup, EnglishGroupDto>();
-            
-            CreateMap<EnglishGroup, GetByIdEnglishGroupResult>();
-            CreateMap<EnglishWord, GetByIdEnglishWordResult>();
-
             CreateMap<BaseFilterDto, BaseFilter>().IncludeAllDerived().ReverseMap();
-            CreateMap<EnglishGroupFilterRequest, EnglishGroupFilter>().ReverseMap();
+
+            CreateMap<EnglishWord, EnglishWordDto>();
+            CreateMap<EnglishWord, GetByIdEnglishWordResult>();
+            CreateMap<CreateEnglishGroupRequest, EnglishGroupCoreDto>();
+            CreateMap<UpdateEnglishGroupRequest, EnglishGroupCoreDto>();
             CreateMap<EnglishWordFilterRequest, EnglishWordFilter>().ReverseMap();
 
-            CreateMap<UpdateEnglishGroupRequest, UpdateEnglishGroupResult>();
-
+            CreateMap<EnglishGroup, EnglishGroupDto>();
+            CreateMap<EnglishGroup, GetByIdEnglishGroupResult>();
             CreateMap<EnglishGroup, CreateEnglishGroupResult>();
+            CreateMap<UpdateEnglishGroupRequest, UpdateEnglishGroupResult>();
+            CreateMap<EnglishGroupFilterRequest, EnglishGroupFilter>().ReverseMap();
         }
     }
 }

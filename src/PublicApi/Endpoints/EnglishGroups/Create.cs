@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities;
+using ApplicationCore.Entities.Dto;
 using ApplicationCore.Interfaces;
 using Ardalis.ApiEndpoints;
 using AutoMapper;
@@ -37,7 +38,7 @@ namespace PublicApi.Endpoints.EnglishGroups
         ]
         public override async Task<ActionResult<CreateEnglishGroupResult>> HandleAsync(CreateEnglishGroupRequest request, CancellationToken cancellationToken = default)
         {
-            var newItem = new EnglishGroup(request.Name);
+            var newItem = new EnglishGroup(_mapper.Map<EnglishGroupCoreDto>(request));
 
             await _repository.AddAsync(newItem, cancellationToken);
 
