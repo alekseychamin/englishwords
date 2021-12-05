@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities;
+using ApplicationCore.Interfaces;
 using Ardalis.Specification;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace ApplicationCore.Specifications
             };
         
         public static void SearchByTerms<T>(ISpecificationBuilder<T> spec, Expression<Func<T, string>> selector, 
-            string searchTerm, SearchType type) where T : BaseEntity
+            string searchTerm, SearchType type) where T : class
         {
             if (!string.IsNullOrEmpty(searchTerm))
             {

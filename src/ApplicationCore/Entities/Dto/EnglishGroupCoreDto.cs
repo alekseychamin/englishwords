@@ -1,6 +1,8 @@
-﻿namespace ApplicationCore.Entities.Dto
+﻿using ApplicationCore.Interfaces;
+
+namespace ApplicationCore.Entities.Dto
 {
-    public class EnglishGroupCoreDto
+    public class EnglishGroupCoreDto : IBaseCoreDto
     {
         public string Name { get; set; }
     }

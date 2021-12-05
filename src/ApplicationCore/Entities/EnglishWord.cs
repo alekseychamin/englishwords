@@ -5,7 +5,7 @@ using System;
 
 namespace ApplicationCore.Entities
 {
-    public class EnglishWord : BaseEntity, IAggregateRoot
+    public class EnglishWord : BaseEntity<EnglishWordCoreDto>, IAggregateRoot
     {
         public string Phrase { get; private set; }
 
@@ -28,21 +28,28 @@ namespace ApplicationCore.Entities
 
         }
 
-        public EnglishWord(EnglishWordCoreDto englishWord)
+        public EnglishWord(EnglishWordCoreDto entityDto)
         {
-            Guard.Against.NullOrEmpty(englishWord.Phrase, nameof(englishWord.Phrase));
+            Guard.Against.NullOrEmpty(entityDto.Phrase, nameof(entityDto.Phrase));
 
-            Phrase = englishWord.Phrase;
-            Transcription = englishWord.Transcription;
-            Translation = englishWord.Translation;
-            Example = englishWord.Example;
-            PictureUri = englishWord.PictureUri;
-            EnglishGroup = englishWord.EnglishGroup;
+            SetProperties(entityDto);
         }
 
-        public void Update()
+        public override void Update(EnglishWordCoreDto entityDto)
         {
+            Guard.Against.NullOrEmpty(entityDto.Phrase, nameof(entityDto.Phrase));
 
+            SetProperties(entityDto);
+        }
+
+        protected override void SetProperties(EnglishWordCoreDto entityDto)
+        {
+            Phrase = entityDto.Phrase;
+            Transcription = entityDto.Transcription;
+            Translation = entityDto.Translation;
+            Example = entityDto.Example;
+            PictureUri = entityDto.PictureUri;
+            EnglishGroup = entityDto.EnglishGroup;
         }
     }
 }

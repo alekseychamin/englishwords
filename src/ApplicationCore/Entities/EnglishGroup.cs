@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace ApplicationCore.Entities
 {
-    public class EnglishGroup : BaseEntity, IAggregateRoot
+    public class EnglishGroup : BaseEntity<EnglishGroupCoreDto>, IAggregateRoot
     {
         public string Name { get; private set; }
 
@@ -17,11 +17,11 @@ namespace ApplicationCore.Entities
 
         }
 
-        public EnglishGroup(EnglishGroupCoreDto englishGroup)
+        public EnglishGroup(EnglishGroupCoreDto entityDto)
         {
-            Guard.Against.NullOrEmpty(englishGroup.Name, nameof(englishGroup.Name));
+            Guard.Against.NullOrEmpty(entityDto.Name, nameof(entityDto.Name));
 
-            Name = englishGroup.Name;
+            SetProperties(entityDto);
         }
 
         public void AddItem(EnglishWord englishWord)
@@ -29,11 +29,16 @@ namespace ApplicationCore.Entities
             _englishWords.Add(englishWord);
         }
 
-        public void Update(EnglishGroupCoreDto englishGroup)
+        public override void Update(EnglishGroupCoreDto entityDto)
         {
-            Guard.Against.NullOrEmpty(englishGroup.Name, nameof(englishGroup.Name));
+            Guard.Against.NullOrEmpty(entityDto.Name, nameof(entityDto.Name));
 
-            Name = englishGroup.Name;
+            SetProperties(entityDto);
+        }
+
+        protected override void SetProperties(EnglishGroupCoreDto entityDto)
+        {
+            Name = entityDto.Name;
         }
     }
 }

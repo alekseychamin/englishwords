@@ -1,6 +1,8 @@
-﻿namespace ApplicationCore.Entities.Dto
+﻿using ApplicationCore.Interfaces;
+
+namespace ApplicationCore.Entities.Dto
 {
-    public class EnglishWordCoreDto
+    public class EnglishWordCoreDto : IBaseCoreDto
     {
         public string Phrase { get; set; }
 
