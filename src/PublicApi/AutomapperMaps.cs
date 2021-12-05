@@ -15,17 +15,19 @@ namespace PublicApi
         {
             CreateMap<BaseFilterDto, BaseFilter>().IncludeAllDerived().ReverseMap();
 
+            CreateMap<UpdateEnglishWordRequest, EnglishWordCoreDto>();
+            CreateMap<EnglishWordFilterRequest, EnglishWordFilter>().ReverseMap();
             CreateMap<EnglishWord, EnglishWordDto>();
             CreateMap<EnglishWord, GetByIdEnglishWordResult>();
+            CreateMap<EnglishWord, UpdateEnglishWordResult>();
+
             CreateMap<CreateEnglishGroupRequest, EnglishGroupCoreDto>();
             CreateMap<UpdateEnglishGroupRequest, EnglishGroupCoreDto>();
-            CreateMap<EnglishWordFilterRequest, EnglishWordFilter>().ReverseMap();
-
+            CreateMap<EnglishGroupFilterRequest, EnglishGroupFilter>().ReverseMap();
             CreateMap<EnglishGroup, EnglishGroupDto>();
             CreateMap<EnglishGroup, GetByIdEnglishGroupResult>();
             CreateMap<EnglishGroup, CreateEnglishGroupResult>();
-            CreateMap<UpdateEnglishGroupRequest, UpdateEnglishGroupResult>();
-            CreateMap<EnglishGroupFilterRequest, EnglishGroupFilter>().ReverseMap();
+            CreateMap<EnglishGroup, UpdateEnglishGroupResult>();
         }
     }
 }

@@ -48,7 +48,7 @@ namespace PublicApi.Endpoints.EnglishGroups
 
             await _repository.UpdateAsync(group, cancellationToken);
 
-            return Ok(_mapper.Map<UpdateEnglishGroupResult>(request));
+            return Ok(_mapper.Map<UpdateEnglishGroupResult>(group));
         }
     }
 }
