@@ -42,7 +42,9 @@ namespace PublicApi.Endpoints.EnglishGroups
 
             await _repository.AddAsync(newItem, cancellationToken);
 
-            return Ok(_mapper.Map<CreateEnglishGroupResult>(newItem));
+            var group = await _repository.GetByIdAsync(newItem.Id, cancellationToken);
+
+            return Ok(_mapper.Map<CreateEnglishGroupResult>(group));
         }
     }
 }
