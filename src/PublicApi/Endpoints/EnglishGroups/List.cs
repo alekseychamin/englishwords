@@ -31,8 +31,8 @@ namespace PublicApi.Endpoints.EnglishGroups
         
         [HttpGet("api/[namespace]")]
         [SwaggerOperation(
-            Summary = "Get an List of English Groups",
-            Description = "Get an List of English Groups",
+            Summary = "Get a List of English Groups",
+            Description = "Get a List of English Groups",
             OperationId = "englishgroups.list",
             Tags = new[] { "EnglishGroups" })
         ]
