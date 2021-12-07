@@ -33,8 +33,8 @@ namespace PublicApi.Endpoints.EnglishWords
         
         [HttpGet("api/[namespace]")]
         [SwaggerOperation(
-            Summary = "Get an List of English Words",
-            Description = "Get an List of English Words",
+            Summary = "Get a List of English Words",
+            Description = "Get a List of English Words",
             OperationId = "englishwords.list",
             Tags = new[] { "EnglishWords" })
         ]
