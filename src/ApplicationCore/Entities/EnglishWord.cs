@@ -49,6 +49,7 @@ namespace ApplicationCore.Entities
             Translation = entityDto.Translation;
             Example = entityDto.Example;
             PictureUri = entityDto.PictureUri;
+            EnglishGroupId = entityDto.EnglishGroupId;
             EnglishGroup = entityDto.EnglishGroup;
         }
     }

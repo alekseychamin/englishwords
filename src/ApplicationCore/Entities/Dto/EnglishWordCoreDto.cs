@@ -16,6 +16,8 @@ namespace ApplicationCore.Entities.Dto
 
         public string CreateDate { get; set; }
 
+        public int? EnglishGroupId { get; set; }
+
         public EnglishGroup EnglishGroup { get; set; }
     }
 }
