@@ -21,6 +21,7 @@ namespace ApplicationCore.Entities
 
         public EnglishGroup(EnglishGroupCoreDto entityDto)
         {
+            Guard.Against.Null(entityDto, nameof(entityDto));
             Guard.Against.NullOrEmpty(entityDto.Name, nameof(entityDto.Name));
 
             SetProperties(entityDto);
@@ -33,6 +34,7 @@ namespace ApplicationCore.Entities
 
         public override void Update(EnglishGroupCoreDto entityDto)
         {
+            Guard.Against.Null(entityDto, nameof(entityDto));
             Guard.Against.NullOrEmpty(entityDto.Name, nameof(entityDto.Name));
 
             SetProperties(entityDto);
@@ -40,6 +42,7 @@ namespace ApplicationCore.Entities
 
         protected override void SetProperties(EnglishGroupCoreDto entityDto)
         {
+            Id = entityDto.Id;
             Name = entityDto.Name;
         }
     }

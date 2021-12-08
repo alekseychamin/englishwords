@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities;
+using ApplicationCore.Entities.Dto;
 using ApplicationCore.Specifications;
 using Moq;
 using System.Collections.Generic;
@@ -27,26 +28,40 @@ namespace UnitTests.ApplicationCore.Specifications
             Assert.Equal(_testEnglishGroupId, result.EnglishGroup.Id);
         }
 
-        public List<EnglishWord> GetTestEnglishWordCollection()
+        private List<EnglishWord> GetTestEnglishWordCollection()
         {
-            var mockEnglishGroup1 = new Mock<EnglishGroup>("Group1");
-            mockEnglishGroup1.SetupGet(x => x.Id).Returns(1);
+            var englishGroup1 = new EnglishGroup(new EnglishGroupCoreDto() { Id = 1, Name = "Group1" });
 
-            var mockEnglishWord1 = new Mock<EnglishWord>("phrase1", "transcription1", "translation1",
-                                                         "example1", "pictureUri1", mockEnglishGroup1.Object);
-            mockEnglishWord1.SetupGet(x => x.Id).Returns(1);
+            var englishWord1 = new EnglishWord(
+                new EnglishWordCoreDto()
+                {
+                    Id = 1,
+                    Phrase = "phrase1",
+                    Transcription = "transcription1",
+                    Translation = "translation1",
+                    Example = "example1",
+                    PictureUri = "pictureUri1",
+                    EnglishGroup = englishGroup1
+                });
 
-            var mockEnglishGroup2 = new Mock<EnglishGroup>("Group2");
-            mockEnglishGroup2.SetupGet(x => x.Id).Returns(_testEnglishGroupId);
+            var englishGroup2 = new EnglishGroup(new EnglishGroupCoreDto() { Id = _testEnglishGroupId, Name = "Group2" });
 
-            var mockEnglishWord2 = new Mock<EnglishWord>("phrase2", "transcription2", "translation2",
-                                                         "example2", "pictureUri2", mockEnglishGroup2.Object);
-            mockEnglishWord2.SetupGet(x => x.Id).Returns(_testEnglishWordId);
+            var englishWord2 = new EnglishWord(
+                new EnglishWordCoreDto()
+                {
+                    Id = _testEnglishWordId,
+                    Phrase = "phrase2",
+                    Transcription = "transcription2",
+                    Translation = "translation2",
+                    Example = "example2",
+                    PictureUri = "pictureUri2",
+                    EnglishGroup = englishGroup2
+                });
 
             return new List<EnglishWord>()
             {
-                mockEnglishWord1.Object,
-                mockEnglishWord2.Object
+                englishWord1,
+                englishWord2
             };
         }
     }

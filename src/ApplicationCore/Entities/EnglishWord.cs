@@ -45,12 +45,13 @@ namespace ApplicationCore.Entities
 
         protected override void SetProperties(EnglishWordCoreDto entityDto)
         {
+            Id = entityDto.Id;
             Phrase = entityDto.Phrase;
             Transcription = entityDto.Transcription;
             Translation = entityDto.Translation;
             Example = entityDto.Example;
             PictureUri = entityDto.PictureUri;
-            CreateDate = DateTime.Parse(entityDto.CreateDate);
+            CreateDate = string.IsNullOrEmpty(entityDto.CreateDate) ? DateTime.Now : DateTime.Parse(entityDto.CreateDate);
             EnglishGroupId = entityDto.EnglishGroupId;
             EnglishGroup = entityDto.EnglishGroup;
         }
