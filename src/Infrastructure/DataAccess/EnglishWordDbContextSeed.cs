@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities.Seeds;
+using ApplicationCore.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -15,7 +16,7 @@ namespace Infrastructure.DataAccess
             _dbContext = dbContext;
         }
 
-        public async Task SeedAsync(int retry = 0)
+        public async Task SeedAsync(ISeed seed, int retry = 0)
         {
             try
             {
@@ -23,7 +24,7 @@ namespace Infrastructure.DataAccess
 
                 if (!await _dbContext.EnglishGroups.AnyAsync())
                 {
-                    foreach (var group in EnglishWordSeed.Seed())
+                    foreach (var group in EnglishWordSeed.Seed(seed))
                     {
                         _dbContext.EnglishGroups.Add(group);
                     }
@@ -35,7 +36,11 @@ namespace Infrastructure.DataAccess
             {
                 if (retry > 0)
                 {
-                    await SeedAsync(retry - 1);
+                    await SeedAsync(seed, retry - 1);
+                }
+                else
+                {
+                    throw;
                 }
             }
         }

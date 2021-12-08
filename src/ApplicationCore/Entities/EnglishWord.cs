@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Entities.Dto;
 using ApplicationCore.Interfaces;
 using Ardalis.GuardClauses;
+using Newtonsoft.Json;
 using System;
 
 namespace ApplicationCore.Entities
@@ -10,17 +11,17 @@ namespace ApplicationCore.Entities
         public string Phrase { get; private set; }
 
         public string Transcription { get; private set; }
-
+        
         public string Translation { get; private set; }
-
+        
         public string Example { get; private set; }
-
+        
         public string PictureUri { get; private set; }
-
+        
         public int? EnglishGroupId { get; private set; }
-
+        
         public EnglishGroup EnglishGroup { get; private set; }
-
+        
         public DateTime CreateDate { get; private set; } = DateTime.Now;
 
         private EnglishWord()
@@ -49,6 +50,7 @@ namespace ApplicationCore.Entities
             Translation = entityDto.Translation;
             Example = entityDto.Example;
             PictureUri = entityDto.PictureUri;
+            CreateDate = DateTime.Parse(entityDto.CreateDate);
             EnglishGroupId = entityDto.EnglishGroupId;
             EnglishGroup = entityDto.EnglishGroup;
         }

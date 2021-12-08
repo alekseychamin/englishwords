@@ -1,3 +1,4 @@
+using ApplicationCore.Entities.Seeds;
 using Infrastructure.DataAccess;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -5,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace PublicAPI
@@ -25,8 +27,10 @@ namespace PublicAPI
                     var services = scope.ServiceProvider;
 
                     var dbContext = services.GetRequiredService<EnglishWordDbContext>();
-                    
-                    await new EnglishWordDbContextSeed(dbContext).SeedAsync();
+
+                    var seedJson = new SeedFromJsonEnglishWord(Path.Combine(AppContext.BaseDirectory, "englishwords.json"));
+
+                    await new EnglishWordDbContextSeed(dbContext).SeedAsync(seedJson);
                 }
 
                 host.Run();
