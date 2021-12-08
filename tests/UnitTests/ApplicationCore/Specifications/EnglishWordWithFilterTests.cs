@@ -47,7 +47,5 @@ namespace UnitTests.ApplicationCore.Specifications
             criterias.Should().Contain(x => x.SearchTerm.Equals("%Translation%"));
             criterias.Should().Contain(x => x.SearchTerm.Equals("%Example%"));
         }
-
-
     }
 }
