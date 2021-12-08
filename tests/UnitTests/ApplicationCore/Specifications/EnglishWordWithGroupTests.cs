@@ -14,7 +14,7 @@ namespace UnitTests.ApplicationCore.Specifications
         private readonly int _testEnglishGroupId = 231;
 
         [Fact]
-        public void MatchesEnglishWordWithGivenEnglishWordId()
+        public void FindEnglishWordWithGivenEnglishWordId()
         {
             var spec = new EnglishWordWithGroup(_testEnglishWordId);
 
