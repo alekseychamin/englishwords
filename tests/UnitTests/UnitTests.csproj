@@ -22,8 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\ApplicationCore\ApplicationCore.csproj" />
-    <ProjectReference Include="..\src\PublicApi\PublicApi.csproj" />
+    <ProjectReference Include="..\..\src\ApplicationCore\ApplicationCore.csproj" />
+    <ProjectReference Include="..\..\src\PublicApi\PublicApi.csproj" />
   </ItemGroup>
 
 </Project>
