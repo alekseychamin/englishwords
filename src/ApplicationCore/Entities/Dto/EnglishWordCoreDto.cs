@@ -4,6 +4,8 @@ namespace ApplicationCore.Entities.Dto
 {
     public class EnglishWordCoreDto : IBaseCoreDto
     {
+        public int Id { get; set; }
+
         public string Phrase { get; set; }
 
         public string Transcription { get; set; }
