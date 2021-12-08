@@ -1,9 +1,6 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Specifications;
+﻿using ApplicationCore.Specifications;
 using ApplicationCore.Specifications.Filter;
-using Ardalis.Specification.EntityFrameworkCore;
 using FluentAssertions;
-using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
