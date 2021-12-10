@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,12 +16,10 @@ namespace PublicApi.Endpoints.EnglishGroups
         .WithActionResult<DeleteEnglishGroupResult>
     {
         private readonly IRepository<EnglishGroup> _repository;
-        private readonly ILogger<Delete> _logger;
 
-        public Delete(IRepository<EnglishGroup> repository, ILogger<Delete> logger)
+        public Delete(IRepository<EnglishGroup> repository)
         {
             _repository = repository;
-            _logger = logger;
         }
 
         [HttpDelete("api/[namespace]/{groupId}")]
@@ -36,8 +35,7 @@ namespace PublicApi.Endpoints.EnglishGroups
 
             if (itemToDelete is null)
             {
-                _logger.LogError($"EnglishGroup with id = {groupId} could not be found.");
-                return NotFound();
+                throw new KeyNotFoundException($"EnglishGroup with id = {groupId} could not be found.");
             }
 
             await _repository.DeleteAsync(itemToDelete, cancellationToken);

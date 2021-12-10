@@ -21,14 +21,12 @@ namespace PublicApi.Endpoints.EnglishWords
         private readonly IRepository<EnglishWord> _wordRepository;
         private readonly IRepository<EnglishGroup> _groupRepository;
         private readonly IMapper _mapper;
-        private readonly ILogger<Create> _logger;
 
-        public Create(IRepository<EnglishWord> wordRepository, IRepository<EnglishGroup> groupRepository, IMapper mapper, ILogger<Create> logger)
+        public Create(IRepository<EnglishWord> wordRepository, IRepository<EnglishGroup> groupRepository, IMapper mapper)
         {
             _wordRepository = wordRepository;
             _groupRepository = groupRepository;
             _mapper = mapper;
-            _logger = logger;
         }
 
         [HttpPost("api/[namespace]")]
@@ -46,8 +44,7 @@ namespace PublicApi.Endpoints.EnglishWords
 
                 if (group is null)
                 {
-                    _logger.LogInformation($"EnglishGroup with id = {request.EnglishGroupId} could not be found.");
-                    return NotFound();
+                    throw new KeyNotFoundException($"EnglishGroup with id = {request.EnglishGroupId} could not be found.");
                 }
             }
             

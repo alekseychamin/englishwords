@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PublicApi.EnglishGroupEndpoints;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,13 +18,11 @@ namespace PublicApi.Endpoints.EnglishGroups
     {
         private readonly IRepository<EnglishGroup> _repository;
         private readonly IMapper _mapper;
-        private readonly ILogger<GetById> _logger;
 
-        public GetById(IRepository<EnglishGroup> repository, IMapper mapper, ILogger<GetById> logger)
+        public GetById(IRepository<EnglishGroup> repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
-            _logger = logger;
         }
 
         [HttpGet("api/[namespace]/{groupId}")]
@@ -39,8 +38,7 @@ namespace PublicApi.Endpoints.EnglishGroups
             
             if (group is null)
             {
-                _logger.LogError($"EnglishGroup with id = {groupId} could not be found.");
-                return NotFound();
+                throw new KeyNotFoundException($"EnglishGroup with id = {groupId} could not be found.");
             }
 
             return Ok(_mapper.Map<GetByIdEnglishGroupResult>(group));

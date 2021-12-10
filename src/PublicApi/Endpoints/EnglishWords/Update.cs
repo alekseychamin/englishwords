@@ -20,13 +20,11 @@ namespace PublicApi.Endpoints.EnglishWords
     {
         private readonly IRepository<EnglishWord> _repository;
         private readonly IMapper _mapper;
-        private readonly ILogger<Update> _logger;
 
-        public Update(IRepository<EnglishWord> repository, IMapper mapper, ILogger<Update> logger)
+        public Update(IRepository<EnglishWord> repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
-            _logger = logger;
         }
 
         [HttpPut("api/[namespace]")]
@@ -42,8 +40,7 @@ namespace PublicApi.Endpoints.EnglishWords
 
             if (word is null)
             {
-                _logger.LogInformation($"EnglishWord with id = {request.Id} could not be found.");
-                return NotFound();
+                throw new KeyNotFoundException($"EnglishWord with id = {request.Id} could not be found.");
             }
 
             word.Update(_mapper.Map<EnglishWordCoreDto>(request));

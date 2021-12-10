@@ -20,13 +20,11 @@ namespace PublicApi.Endpoints.EnglishGroups
     {
         private readonly IRepository<EnglishGroup> _repository;
         private readonly IMapper _mapper;
-        private readonly ILogger<List> _logger;
 
-        public List(IRepository<EnglishGroup> repository, IMapper mapper, ILogger<List> logger)
+        public List(IRepository<EnglishGroup> repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
-            _logger = logger;
         }
         
         [HttpGet("api/[namespace]")]

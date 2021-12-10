@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using PublicApi;
+using PublicApi.Middlewares;
 using System;
 using System.IO;
 
@@ -49,7 +50,8 @@ namespace PublicAPI
             }
             else
             {
-                app.UseExceptionHandler("/error");
+                //app.UseExceptionHandler("/error");
+                app.UseMiddleware<ErrorHandlerMiddleware>();
             }
 
             app.UseHttpsRedirection();

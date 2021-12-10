@@ -18,12 +18,10 @@ namespace PublicApi.Endpoints.EnglishWords
         .WithActionResult<DeleteEnglishWordResult>
     {
         private readonly IRepository<EnglishWord> _repository;
-        private readonly ILogger<Delete> _logger;
 
-        public Delete(IRepository<EnglishWord> repository, ILogger<Delete> logger)
+        public Delete(IRepository<EnglishWord> repository)
         {
-            _repository = repository;
-            _logger = logger;
+            _repository = repository;            
         }
 
         [HttpDelete("api/[namespace]/{wordId}")]
@@ -39,8 +37,7 @@ namespace PublicApi.Endpoints.EnglishWords
 
             if (itemToDelete is null)
             {
-                _logger.LogError($"EnglishWord with id = {wordId} could not be found.");
-                return NotFound();
+                throw new KeyNotFoundException($"EnglishWord with id = {wordId} could not be found.");
             }
 
             await _repository.DeleteAsync(itemToDelete, cancellationToken);

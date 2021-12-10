@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,13 +20,11 @@ namespace PublicApi.Endpoints.EnglishWords
     {
         private readonly IRepository<EnglishWord> _repository;
         private readonly IMapper _mapper;
-        private readonly ILogger<GetById> _logger;
 
-        public GetById(IRepository<EnglishWord> repository, IMapper mapper, ILogger<GetById> logger)
+        public GetById(IRepository<EnglishWord> repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
-            _logger = logger;
         }
 
         [HttpGet("api/[namespace]/{englishWordId}")]
@@ -43,8 +42,7 @@ namespace PublicApi.Endpoints.EnglishWords
 
             if (word is null)
             {
-                _logger.LogInformation($"EnglishWord with id = {englishWordId} could not be found.");
-                return NotFound();
+                throw new KeyNotFoundException($"EnglishWord with id = {englishWordId} could not be found.");
             }
 
             return Ok(_mapper.Map<GetByIdEnglishWordResult>(word));
