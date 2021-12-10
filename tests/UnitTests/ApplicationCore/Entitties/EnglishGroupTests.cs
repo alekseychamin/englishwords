@@ -11,6 +11,25 @@ namespace UnitTests.ApplicationCore.Entitties
 {
     public class EnglishGroupTests
     {
+        #region Tests with success results
+        [Fact]
+        public void EnglishGroupCreateSucccess()
+        {
+            Assert.NotNull(new EnglishGroup(new EnglishGroupCoreDto() { Name = "Group1" }));
+        }
+
+        [Fact]
+        public void EnglishGroupUpdateSuccess()
+        {
+            var group = new EnglishGroup(new EnglishGroupCoreDto() { Name = "Group1" });
+            
+            var exception = Record.Exception(() => group.Update(new EnglishGroupCoreDto() { Name = "Group2" }));
+
+            Assert.Null(exception);
+        }
+        #endregion
+
+        #region Tests with error results
         [Fact]
         public void EnglishGroupCreateThrowsArgumentNullExeption()
         {
@@ -37,6 +56,7 @@ namespace UnitTests.ApplicationCore.Entitties
             var englishGroup = new EnglishGroup(new EnglishGroupCoreDto() { Name = "Group1" });
 
             Assert.Throws<ArgumentException>(() => englishGroup.Update(new EnglishGroupCoreDto() { Name = string.Empty }));
-        }
+        } 
+        #endregion
     }
 }
