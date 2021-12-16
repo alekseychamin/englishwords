@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Entities.Dto;
+using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,21 @@ namespace UnitTests.ApplicationCore.Entitties
             var exception = Record.Exception(() => group.Update(new EnglishGroupCoreDto() { Name = "Group2" }));
 
             Assert.Null(exception);
+        }
+
+        [Fact]
+        public void EnglishGroupAddItemSuccess()
+        {
+            // Arrange
+            var group = new EnglishGroup(new EnglishGroupCoreDto() { Name = "Group" });
+            var word = new EnglishWord(new EnglishWordCoreDto() { Phrase = "Word" });
+
+            // Act
+            group.AddItem(word);
+
+            // Assert
+            group.EnglishWords.Should().ContainSingle(x => x.Phrase == "Word");
+            group.EnglishWords.Should().Equal(word);
         }
         #endregion
 
