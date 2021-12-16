@@ -41,7 +41,7 @@ namespace PublicApi.Middlewares
                 response.StatusCode = _httpStatusCodes.TryGetValue(error.GetType(), out int statusCode) ?
                     statusCode : (int)HttpStatusCode.InternalServerError;
 
-                _logger.LogTrace(error, error.Message);
+                _logger.LogError(error, error.Message);
 
                 var result = JsonConvert.SerializeObject(new { message = error?.Message });
                 await response.WriteAsync(result);
