@@ -40,7 +40,7 @@ namespace UnitTests.ApplicationCore.Specifications
             // Act
             var criterias = spec.SearchCriterias.ToList();
 
-            // Arrange
+            // Assert
             criterias.Should().HaveCount(4);
             criterias.Should().Contain(x => x.SearchTerm.Equals("%Phrase%"));
             criterias.Should().Contain(x => x.SearchTerm.Equals("%Transcription%"));
