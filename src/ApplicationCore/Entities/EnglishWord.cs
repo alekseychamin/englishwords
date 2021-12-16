@@ -59,7 +59,6 @@ namespace ApplicationCore.Entities
                                                 CultureInfo.InvariantCulture,
                                                 DateTimeStyles.None,
                                                 out DateTime date) ? date : (entityDto.Type == TypeOperation.Create) ? DateTime.Today : CreateDate;
-            //CreateDate = string.IsNullOrEmpty(entityDto.CreateDate) ? DateTime.Now : DateTime.Parse(entityDto.CreateDate);
             EnglishGroupId = entityDto.EnglishGroupId;
             EnglishGroup = entityDto.EnglishGroup;
         }
