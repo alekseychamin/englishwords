@@ -3,6 +3,7 @@ using ApplicationCore.Interfaces;
 using Ardalis.GuardClauses;
 using Newtonsoft.Json;
 using System;
+using System.Globalization;
 
 namespace ApplicationCore.Entities
 {
@@ -33,6 +34,7 @@ namespace ApplicationCore.Entities
         {
             Guard.Against.NullOrEmpty(entityDto.Phrase, nameof(entityDto.Phrase));
 
+            entityDto.Type = TypeOperation.Create;
             SetProperties(entityDto);
         }
 
@@ -40,6 +42,7 @@ namespace ApplicationCore.Entities
         {
             Guard.Against.NullOrEmpty(entityDto.Phrase, nameof(entityDto.Phrase));
 
+            entityDto.Type = TypeOperation.Update;
             SetProperties(entityDto);
         }
 
@@ -51,7 +54,12 @@ namespace ApplicationCore.Entities
             Translation = entityDto.Translation;
             Example = entityDto.Example;
             PictureUri = entityDto.PictureUri;
-            CreateDate = string.IsNullOrEmpty(entityDto.CreateDate) ? DateTime.Now : DateTime.Parse(entityDto.CreateDate);
+            CreateDate = DateTime.TryParseExact(entityDto.CreateDate,
+                                                "MM/dd/yyyy",
+                                                CultureInfo.InvariantCulture,
+                                                DateTimeStyles.None,
+                                                out DateTime date) ? date : (entityDto.Type == TypeOperation.Create) ? DateTime.Today : CreateDate;
+            //CreateDate = string.IsNullOrEmpty(entityDto.CreateDate) ? DateTime.Now : DateTime.Parse(entityDto.CreateDate);
             EnglishGroupId = entityDto.EnglishGroupId;
             EnglishGroup = entityDto.EnglishGroup;
         }

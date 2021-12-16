@@ -21,5 +21,7 @@ namespace ApplicationCore.Entities.Dto
         public int? EnglishGroupId { get; set; }
 
         public EnglishGroup EnglishGroup { get; set; }
+
+        public TypeOperation Type { get; set; } = TypeOperation.None;
     }
 }

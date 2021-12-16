@@ -11,5 +11,7 @@ namespace ApplicationCore.Entities.Dto
         public string Name { get; set; }
         
         public List<EnglishWordCoreDto> EnglishWords { get; set; }
+
+        public TypeOperation Type { get; set; } = TypeOperation.None;
     }
 }
