@@ -1,7 +1,5 @@
 ﻿using ApplicationCore.Entities;
-using ApplicationCore.Entities.Dto;
 using ApplicationCore.Specifications;
-using Moq;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -30,10 +28,9 @@ namespace UnitTests.ApplicationCore.Specifications
 
         private List<EnglishWord> GetTestEnglishWordCollection()
         {
-            var englishGroup1 = new EnglishGroup(new EnglishGroupCoreDto() { Id = 1, Name = "Group1" });
+            var englishGroup1 = new EnglishGroup() { Id = 1, Name = "Group1" };
 
-            var englishWord1 = new EnglishWord(
-                new EnglishWordCoreDto()
+            var englishWord1 = new EnglishWord()
                 {
                     Id = 1,
                     Phrase = "phrase1",
@@ -42,12 +39,11 @@ namespace UnitTests.ApplicationCore.Specifications
                     Example = "example1",
                     PictureUri = "pictureUri1",
                     EnglishGroup = englishGroup1
-                });
+                };
 
-            var englishGroup2 = new EnglishGroup(new EnglishGroupCoreDto() { Id = _testEnglishGroupId, Name = "Group2" });
+            var englishGroup2 = new EnglishGroup() { Id = _testEnglishGroupId, Name = "Group2" };
 
-            var englishWord2 = new EnglishWord(
-                new EnglishWordCoreDto()
+            var englishWord2 = new EnglishWord()
                 {
                     Id = _testEnglishWordId,
                     Phrase = "phrase2",
@@ -56,7 +52,7 @@ namespace UnitTests.ApplicationCore.Specifications
                     Example = "example2",
                     PictureUri = "pictureUri2",
                     EnglishGroup = englishGroup2
-                });
+                };
 
             return new List<EnglishWord>()
             {

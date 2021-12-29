@@ -1,8 +1,5 @@
-﻿using ApplicationCore.Entities.Dto;
-using ApplicationCore.Interfaces;
-using System;
+﻿using ApplicationCore.Interfaces;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ApplicationCore.Entities.Seeds
 {
@@ -10,7 +7,7 @@ namespace ApplicationCore.Entities.Seeds
     {
         public static List<EnglishGroup> Seed(ISeed seed)
         {
-            return seed.Seed();
+            return seed.GetEnglishGroups();
         }
     }
 }

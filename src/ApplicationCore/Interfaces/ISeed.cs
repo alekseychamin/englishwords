@@ -7,6 +7,6 @@ namespace ApplicationCore.Interfaces
 {
     public interface ISeed
     {
-        List<EnglishGroup> Seed();
+        List<EnglishGroup> GetEnglishGroups();
     }
 }

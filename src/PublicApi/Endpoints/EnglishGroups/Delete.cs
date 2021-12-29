@@ -1,11 +1,7 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Interfaces;
+﻿using ApplicationCore.Interfaces;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
-using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,11 +11,11 @@ namespace PublicApi.Endpoints.EnglishGroups
         .WithRequest<int>
         .WithActionResult<DeleteEnglishGroupResult>
     {
-        private readonly IRepository<EnglishGroup> _repository;
+        private readonly IEnglishGroupService _englishGroupService;
 
-        public Delete(IRepository<EnglishGroup> repository)
+        public Delete(IEnglishGroupService englishGroupService)
         {
-            _repository = repository;
+            _englishGroupService = englishGroupService;
         }
 
         [HttpDelete("api/[namespace]/{groupId}")]
@@ -31,14 +27,7 @@ namespace PublicApi.Endpoints.EnglishGroups
         ]
         public override async Task<ActionResult<DeleteEnglishGroupResult>> HandleAsync([FromRoute] int groupId, CancellationToken cancellationToken = default)
         {
-            var itemToDelete = await _repository.GetByIdAsync(groupId, cancellationToken);
-
-            if (itemToDelete is null)
-            {
-                throw new KeyNotFoundException($"EnglishGroup with id = {groupId} could not be found.");
-            }
-
-            await _repository.DeleteAsync(itemToDelete, cancellationToken);
+            await _englishGroupService.DeleteAsync(groupId, cancellationToken);
 
             return Ok(new DeleteEnglishGroupResult() { Id = groupId });
         }

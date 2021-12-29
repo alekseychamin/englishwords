@@ -1,49 +1,16 @@
-﻿using ApplicationCore.Entities.Dto;
-using ApplicationCore.Interfaces;
-using Ardalis.GuardClauses;
-using Newtonsoft.Json;
+﻿using ApplicationCore.Interfaces;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ApplicationCore.Entities
 {
-    public class EnglishGroup : BaseEntity<EnglishGroupCoreDto>, IAggregateRoot
+    public class EnglishGroup : BaseEntity, IAggregateRoot
     {
-        private readonly List<EnglishWord> _englishWords = new List<EnglishWord>();
+        public string Name { get; set; }
         
-        public string Name { get; private set; }
-        
-        public IReadOnlyCollection<EnglishWord> EnglishWords => _englishWords.AsReadOnly();
+        public ICollection<EnglishWord> EnglishWords { get; set; }
 
-        private EnglishGroup()
-        {
-
-        }
-
-        public EnglishGroup(EnglishGroupCoreDto entityDto)
-        {
-            Guard.Against.Null(entityDto, nameof(entityDto));
-            Guard.Against.NullOrEmpty(entityDto.Name, nameof(entityDto.Name));
-
-            SetProperties(entityDto);
-        }
-
-        public void AddItem(EnglishWord englishWord)
-        {
-            _englishWords.Add(englishWord);
-        }
-
-        public override void Update(EnglishGroupCoreDto entityDto)
-        {
-            Guard.Against.Null(entityDto, nameof(entityDto));
-            Guard.Against.NullOrEmpty(entityDto.Name, nameof(entityDto.Name));
-
-            SetProperties(entityDto);
-        }
-
-        protected override void SetProperties(EnglishGroupCoreDto entityDto)
-        {
-            Id = entityDto.Id;
-            Name = entityDto.Name;
-        }
+        [NotMapped]
+        public int CountWords { get; set; }
     }
 }

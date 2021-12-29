@@ -1,6 +1,10 @@
 ﻿using ApplicationCore.Interfaces;
+using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
 using Infrastructure.DataAccess;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Infrastructure.Data
 {
@@ -9,6 +13,30 @@ namespace Infrastructure.Data
         public Repository(EnglishWordDbContext dbContext) : base(dbContext)
         {
 
+        }
+        
+        public async Task<T> GetByIdAsync<TId>(TId id, string notFoundMessage, CancellationToken cancellationToken = default) where TId : notnull
+        {
+            var item = await GetByIdAsync(id, cancellationToken);
+
+            if (item is null)
+            {
+                throw new KeyNotFoundException(notFoundMessage);
+            }
+
+            return item;
+        }
+
+        public async Task<T> GetBySpecAsync<Spec>(Spec specification, string notFoundMessage, CancellationToken cancellationToken = default) where Spec : ISingleResultSpecification, ISpecification<T>
+        {
+            var item = await GetBySpecAsync(specification, cancellationToken);
+
+            if (item is null)
+            {
+                throw new KeyNotFoundException(notFoundMessage);
+            }
+
+            return item;
         }
     }
 }

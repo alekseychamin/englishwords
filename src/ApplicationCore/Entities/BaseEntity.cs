@@ -1,16 +1,10 @@
-﻿using ApplicationCore.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Newtonsoft.Json;
 
 namespace ApplicationCore.Entities
 {
-    public abstract class BaseEntity<T> where T : IBaseCoreDto
+    public abstract class BaseEntity
     {
-        public virtual int Id { get; protected set; }
-
-        public abstract void Update(T entityDto);
-
-        protected abstract void SetProperties(T entityDto);
+        [JsonIgnore]
+        public virtual int Id { get; set; }
     }
 }

@@ -1,13 +1,8 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Entities.Dto;
-using ApplicationCore.Interfaces;
+﻿using ApplicationCore.Interfaces;
 using Ardalis.ApiEndpoints;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
-using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,12 +12,12 @@ namespace PublicApi.Endpoints.EnglishGroups
         .WithRequest<UpdateEnglishGroupRequest>
         .WithActionResult<UpdateEnglishGroupResult>
     {
-        private readonly IRepository<EnglishGroup> _repository;
+        private readonly IEnglishGroupService _englishGroupService;
         private readonly IMapper _mapper;
 
-        public Update(IRepository<EnglishGroup> repository, IMapper mapper)
+        public Update(IEnglishGroupService englishGroupService, IMapper mapper)
         {
-            _repository = repository;
+            _englishGroupService = englishGroupService;
             _mapper = mapper;
         }
 
@@ -35,16 +30,16 @@ namespace PublicApi.Endpoints.EnglishGroups
         ]
         public override async Task<ActionResult<UpdateEnglishGroupResult>> HandleAsync(UpdateEnglishGroupRequest request, CancellationToken cancellationToken = default)
         {
-            var group = await _repository.GetByIdAsync(request.Id, cancellationToken);
-
-            if (group is null)
+            if (ModelState.IsValid == false)
             {
-                throw new KeyNotFoundException($"EnglishGroup with id = {request.Id} could not be found.");
+                return BadRequest(ModelState);
             }
 
-            group.Update(_mapper.Map<EnglishGroupCoreDto>(request));
+            var group = await _englishGroupService.GetByIdAsync(request.Id, cancellationToken);
 
-            await _repository.UpdateAsync(group, cancellationToken);
+            _mapper.Map(request, group);
+
+            await _englishGroupService.UpdateAsync(group, cancellationToken);
 
             return Ok(_mapper.Map<UpdateEnglishGroupResult>(group));
         }

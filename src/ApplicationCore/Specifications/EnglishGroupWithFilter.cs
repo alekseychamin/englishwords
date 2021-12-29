@@ -1,10 +1,6 @@
 ﻿using ApplicationCore.Entities;
-using ApplicationCore.Entities.Dto;
 using ApplicationCore.Specifications.Filter;
 using Ardalis.Specification;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ApplicationCore.Specifications
 {

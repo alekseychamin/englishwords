@@ -1,7 +1,10 @@
-﻿namespace PublicApi.Endpoints.EnglishWords
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PublicApi.Endpoints.EnglishWords
 {
     public class CreateEnglishWordRequest
     {
+        [Required]
         public string Phrase { get; set; }
 
         public string Transcription { get; set; }

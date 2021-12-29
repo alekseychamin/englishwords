@@ -1,11 +1,8 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Interfaces;
-using ApplicationCore.Specifications;
+﻿using ApplicationCore.Interfaces;
 using ApplicationCore.Specifications.Filter;
 using Ardalis.ApiEndpoints;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using PublicApi.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
@@ -16,14 +13,14 @@ namespace PublicApi.Endpoints.EnglishGroups
 {
     public class List : EndpointBaseAsync
         .WithRequest<EnglishGroupFilterRequest>
-        .WithActionResult<EnglishGroupListResult>
+        .WithActionResult<List<EnglishGroupDto>>
     {
-        private readonly IRepository<EnglishGroup> _repository;
+        private readonly IEnglishGroupService _englishGroupService;
         private readonly IMapper _mapper;
 
-        public List(IRepository<EnglishGroup> repository, IMapper mapper)
+        public List(IEnglishGroupService englishGroupService, IMapper mapper)
         {
-            _repository = repository;
+            _englishGroupService = englishGroupService;
             _mapper = mapper;
         }
         
@@ -34,18 +31,14 @@ namespace PublicApi.Endpoints.EnglishGroups
             OperationId = "englishgroups.list",
             Tags = new[] { "EnglishGroups" })
         ]
-        public override async Task<ActionResult<EnglishGroupListResult>> HandleAsync([FromQuery] EnglishGroupFilterRequest request, 
+        public override async Task<ActionResult<List<EnglishGroupDto>>> HandleAsync([FromQuery] EnglishGroupFilterRequest request, 
             CancellationToken cancellationToken = default)
         {
-            var spec = new EnglishGroupWithFilter(_mapper.Map<EnglishGroupFilter>(request));
-            var englishGroups = await _repository.ListAsync(spec, cancellationToken);
+            var filter = _mapper.Map<EnglishGroupFilter>(request);
 
-            var result = new EnglishGroupListResult()
-            {
-                EnglishGroups = _mapper.Map<List<EnglishGroupDto>>(englishGroups)
-            };
+            var englishGroups = await _englishGroupService.ListAsync(filter, cancellationToken);
             
-            return Ok(result);
+            return Ok(_mapper.Map<List<EnglishGroupDto>>(englishGroups));
         }
     }
 }

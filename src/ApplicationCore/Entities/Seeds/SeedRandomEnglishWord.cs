@@ -1,5 +1,4 @@
-﻿using ApplicationCore.Entities.Dto;
-using ApplicationCore.Interfaces;
+﻿using ApplicationCore.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,7 +9,7 @@ namespace ApplicationCore.Entities.Seeds
     {
         private readonly Random _random = new Random();
 
-        public List<EnglishGroup> Seed()
+        public List<EnglishGroup> GetEnglishGroups()
         {
             var countGroup = 25;
             var result = new List<EnglishGroup>();
@@ -25,11 +24,11 @@ namespace ApplicationCore.Entities.Seeds
 
         private EnglishGroup CreateEnglishGroup(string groupName, int wordCount)
         {
-            var group = new EnglishGroup(new EnglishGroupCoreDto() { Name = groupName });
+            var group = new EnglishGroup(){ Name = groupName };
 
             for (int i = 0; i < wordCount; i++)
             {
-                group.AddItem(CreateRandomEnglishWord(group));
+                group.EnglishWords.Add(CreateRandomEnglishWord(group));
             }
 
             return group;
@@ -37,7 +36,7 @@ namespace ApplicationCore.Entities.Seeds
 
         private EnglishWord CreateRandomEnglishWord(EnglishGroup group)
         {
-            return new EnglishWord(new EnglishWordCoreDto()
+            return new EnglishWord()
             {
                 Phrase = GetRandomString(10),
                 Transcription = GetRandomString(15),
@@ -45,7 +44,7 @@ namespace ApplicationCore.Entities.Seeds
                 Example = GetRandomString(30),
                 PictureUri = GetRandomString(30),
                 EnglishGroup = group
-            });
+            };
         }
 
         private string GetRandomString(int charCount)

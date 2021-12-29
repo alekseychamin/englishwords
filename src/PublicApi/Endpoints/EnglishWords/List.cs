@@ -1,16 +1,11 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Interfaces;
-using ApplicationCore.Specifications;
+﻿using ApplicationCore.Interfaces;
 using ApplicationCore.Specifications.Filter;
 using Ardalis.ApiEndpoints;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using PublicApi.Models;
 using Swashbuckle.AspNetCore.Annotations;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,17 +13,15 @@ namespace PublicApi.Endpoints.EnglishWords
 {
     public class List : EndpointBaseAsync
         .WithRequest<EnglishWordFilterRequest>
-        .WithActionResult<EnglishWordListResult>
+        .WithActionResult<List<EnglishWordDto>>
     {
-        private readonly IRepository<EnglishWord> _repository;
+        private readonly IEnglishWordService _englishWordService;
         private readonly IMapper _mapper;
-        private readonly ILogger<List> _logger;
 
-        public List(IRepository<EnglishWord> repository, IMapper mapper, ILogger<List> logger)
+        public List(IEnglishWordService englishWordService, IMapper mapper)
         {
-            _repository = repository;
+            _englishWordService = englishWordService;
             _mapper = mapper;
-            _logger = logger;
         }
         
         [HttpGet("api/[namespace]")]
@@ -38,18 +31,14 @@ namespace PublicApi.Endpoints.EnglishWords
             OperationId = "englishwords.list",
             Tags = new[] { "EnglishWords" })
         ]
-        public override async Task<ActionResult<EnglishWordListResult>> HandleAsync([FromQuery] EnglishWordFilterRequest request, 
+        public override async Task<ActionResult<List<EnglishWordDto>>> HandleAsync([FromQuery] EnglishWordFilterRequest request, 
             CancellationToken cancellationToken = default)
         {
-            var spec = new EnglishWordWithFilter(_mapper.Map<EnglishWordFilter>(request));
-            var englishWords = await _repository.ListAsync(spec, cancellationToken);
+            var filter = _mapper.Map<EnglishWordFilter>(request);
 
-            var result = new EnglishWordListResult()
-            {
-                EnglishWords = _mapper.Map<List<EnglishWordDto>>(englishWords)
-            };
+            var englishWords = await _englishWordService.ListAsync(filter, cancellationToken);
 
-            return Ok(result);
+            return Ok(_mapper.Map<List<EnglishWordDto>>(englishWords));
         }
     }
 }

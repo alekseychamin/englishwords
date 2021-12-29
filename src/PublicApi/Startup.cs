@@ -1,4 +1,5 @@
 using ApplicationCore.Interfaces;
+using ApplicationCore.Services;
 using Infrastructure.Data;
 using Infrastructure.DataAccess;
 using Microsoft.AspNetCore.Builder;
@@ -32,6 +33,9 @@ namespace PublicAPI
 
             services.AddAutoMapper(typeof(AutomapperMaps));
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            
+            services.AddScoped<IEnglishWordService, EnglishWordService>();
+            services.AddScoped<IEnglishGroupService, EnglishGroupService>();
 
             services.AddControllers(options => options.UseNamespaceRouteToken());
             services.AddSwaggerGen(c =>
