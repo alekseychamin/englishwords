@@ -9,6 +9,9 @@ namespace ApplicationCore.Interfaces
 {
     public interface IRepository<T> : IRepositoryBase<T> where T : class, IAggregateRoot
     {
+        string GroupNotFoundMessage { get; }
+        string WordNotFoundMessage { get; }
+        
         /// <summary>
         /// Throws KeyNotFoundException if item wtih id doesn't exist otherwise return an item
         /// </summary>

@@ -14,7 +14,11 @@ namespace Infrastructure.Data
         {
 
         }
-        
+
+        public string GroupNotFoundMessage => groupNotFoundMessage;
+
+        public string WordNotFoundMessage => wordNotFoundMessage;
+
         public async Task<T> GetByIdAsync<TId>(TId id, string notFoundMessage, CancellationToken cancellationToken = default) where TId : notnull
         {
             var item = await GetByIdAsync(id, cancellationToken);
@@ -38,5 +42,8 @@ namespace Infrastructure.Data
 
             return item;
         }
+
+        private const string groupNotFoundMessage = "EnglishGroup with id = {0} not found.";
+        private const string wordNotFoundMessage = "EnglishWord with id = {0} not found.";
     }
 }

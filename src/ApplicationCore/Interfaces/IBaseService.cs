@@ -10,7 +10,7 @@ namespace ApplicationCore.Interfaces
 {
     public interface IBaseService<T>
     {
-        Task<T> AddAsync(T entity, CancellationToken cancellationToken);
+        Task<T> AddAsync(T entity, CancellationToken cancellationToken = default);
 
         Task<T> GetByIdAsync(int id, CancellationToken cancellationToken = default);
 

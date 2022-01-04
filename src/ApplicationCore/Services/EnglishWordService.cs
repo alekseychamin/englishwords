@@ -2,9 +2,7 @@
 using ApplicationCore.Interfaces;
 using ApplicationCore.Specifications;
 using ApplicationCore.Specifications.Filter;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,17 +13,18 @@ namespace ApplicationCore.Services
         private readonly IRepository<EnglishWord> _wordRepository;
         private readonly IRepository<EnglishGroup> _groupRepository;
 
-        public EnglishWordService(IRepository<EnglishWord> wordRepository, IRepository<EnglishGroup> groupRepository)
+        public EnglishWordService(IRepository<EnglishGroup> groupRepository, IRepository<EnglishWord> wordRepository)
         {
             _wordRepository = wordRepository;
             _groupRepository = groupRepository;
         }
 
-        public async Task<EnglishWord> AddAsync(EnglishWord entity, CancellationToken cancellationToken)
+        public async Task<EnglishWord> AddAsync(EnglishWord entity, CancellationToken cancellationToken = default)
         {
             if (entity.EnglishGroupId.HasValue)
             {
-                await _groupRepository.GetByIdAsync(entity.EnglishGroupId, $"EnglishGroup with id = {entity.EnglishGroupId} not found.", cancellationToken);
+                await _groupRepository.GetByIdAsync(entity.EnglishGroupId, 
+                    string.Format(_groupRepository.GroupNotFoundMessage, entity.EnglishGroupId), cancellationToken);
             }
 
             return await _wordRepository.AddAsync(entity, cancellationToken);
@@ -33,7 +32,7 @@ namespace ApplicationCore.Services
 
         public async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
         {
-            var entity = await _wordRepository.GetByIdAsync(id, $"EnglishWord with id = {id} not found.", cancellationToken);
+            var entity = await _wordRepository.GetByIdAsync(id, string.Format(_wordRepository.WordNotFoundMessage, id), cancellationToken);
 
             await _wordRepository.DeleteAsync(entity, cancellationToken);
         }
@@ -42,7 +41,7 @@ namespace ApplicationCore.Services
         {
             var spec = new EnglishWordWithGroup(id);
 
-            return await _wordRepository.GetBySpecAsync(spec, $"EnglishWord with id = {id} not found.", cancellationToken);
+            return await _wordRepository.GetBySpecAsync(spec, string.Format(_wordRepository.WordNotFoundMessage, id), cancellationToken);
         }
 
         public async Task<List<EnglishWord>> ListAsync(EnglishWordFilter filter, CancellationToken cancellationToken = default)
@@ -57,8 +56,10 @@ namespace ApplicationCore.Services
             if (entity.EnglishGroupId.HasValue)
             {
                 await _groupRepository.GetByIdAsync(entity.EnglishGroupId,
-                    $"EnglishGroup with id = {entity.EnglishGroupId} not found.", cancellationToken);
+                    string.Format(_groupRepository.GroupNotFoundMessage, entity.EnglishGroupId), cancellationToken);
             }
+
+            await _wordRepository.GetByIdAsync(entity.Id, string.Format(_wordRepository.WordNotFoundMessage, entity.Id), cancellationToken);
 
             await _wordRepository.UpdateAsync(entity, cancellationToken);
         }

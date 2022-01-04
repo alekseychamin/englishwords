@@ -8,7 +8,7 @@ namespace ApplicationCore.Specifications.Filter
     {
         public int? EnglishGroupId { get; set; }
 
-        public bool SearchingAllGroups { get; set; } = false;
+        public bool SearchingAllGroups { get; set; } = true;
         
         public string Phrase { get; set; }
         

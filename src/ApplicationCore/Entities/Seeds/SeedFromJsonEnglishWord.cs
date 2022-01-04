@@ -1,5 +1,5 @@
-﻿using ApplicationCore.Interfaces;
-using Newtonsoft.Json;
+﻿using ApplicationCore.Extensions;
+using ApplicationCore.Interfaces;
 using System.Collections.Generic;
 using System.IO;
 
@@ -18,7 +18,7 @@ namespace ApplicationCore.Entities.Seeds
         {
             var json = File.ReadAllText(_fileName);
             
-            return JsonConvert.DeserializeObject<List<EnglishGroup>>(json);
+            return json.FromJson<List<EnglishGroup>>();
         }
     }
 }
