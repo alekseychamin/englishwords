@@ -3,13 +3,11 @@
 # Add steps that publish symbols, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
 
+variables:
+- group: EnglishWordGroup
+
 trigger:
 - master
-
-variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
 
 stages:
 - stage: CreateAzureResources
@@ -32,6 +30,12 @@ stages:
   - job: BuildAndTest
     pool:
       vmImage: 'windows-latest'
+    
+    variables:
+      solution: '**/*.sln'
+      buildPlatform: 'Any CPU'
+      buildConfiguration: 'Release'
+    
     steps:
     - task: NuGetToolInstaller@1
 
