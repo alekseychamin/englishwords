@@ -13,11 +13,10 @@ variables:
 
 stages:
 - stage: CreateAzureResources
-  pool:
-    vmImage: 'windows-latest'
   jobs:
-  - job: CreaateAzureResources
-    
+  - job: CreateAzureResources
+    pool:
+      vmImage: 'windows-latest'
     steps:
     - task: AzureCLI@2
       inputs:
@@ -28,6 +27,12 @@ stages:
           # create a resource group
           az group create -l 'westeurope' -n 'testgroup'
 
+- stage: BuildAndTest
+  jobs:
+  - job: BuildAndTest
+    pool:
+      vmImage: 'windows-latest'
+    steps:
     - task: NuGetToolInstaller@1
 
     - task: NuGetCommand@2
