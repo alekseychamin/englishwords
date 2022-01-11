@@ -23,7 +23,10 @@ stages:
         scriptLocation: 'inlineScript'
         inlineScript: |
           # create a resource group
-          az group create -l 'westeurope' -n 'englishwords'
+          az group create -l $(GROUPLOCATION) -n $(RESOURCEGROUPNAME)
+
+          #create and configure an Azure SQL server and Azure SQL database
+          az sql server create -l $(GROUPLOCATION) -g $(RESOURCEGROUPNAME) -n $(SQLSRVNAME) -u $(SQLUSERNAME) -p $(SQLPASSWORD)
 
 - stage: BuildAndTest
   jobs:
