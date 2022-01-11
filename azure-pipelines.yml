@@ -25,7 +25,7 @@ stages:
         scriptLocation: 'inlineScript'
         inlineScript: |
           # create a resource group
-          az group create -l 'westeurope' -n 'testgroup'
+          az group create -l 'westeurope' -n 'englishwords'
 
 - stage: BuildAndTest
   jobs:
