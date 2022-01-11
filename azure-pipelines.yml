@@ -7,7 +7,7 @@ variables:
 - group: EnglishWordGroup
 
 trigger:
-- master
+- none
 
 stages:
 - stage: CreateAzureResources
