@@ -29,7 +29,7 @@ stages:
           az sql server create -l $(GROUPLOCATION) -g $(RESOURCEGROUPNAME) -n $(SQLSRVNAME) -u $(SQLUSERNAME) -p $(SQLPASSWORD)
 
           # create and configure an Azure App Service plan and an Azure web app
-          az appservice plan create -g $(RESOURCEGROUPNAME) -n $(APIPLANNAME) --l $(WEBAPILOCATION) --sku FREE
+          az appservice plan create -g $(RESOURCEGROUPNAME) -n $(APIPLANNAME) --l $(APILOCATION) --sku FREE
           az webapp create -g $(RESOURCEGROUPNAME) -p $(APIPLANNAME) -n $(APIAPPNAME)
 
 - stage: BuildAndTest
