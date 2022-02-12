@@ -28,6 +28,10 @@ stages:
           #create and configure an Azure SQL server and Azure SQL database
           az sql server create -l $(GROUPLOCATION) -g $(RESOURCEGROUPNAME) -n $(SQLSRVNAME) -u $(SQLUSERNAME) -p $(SQLPASSWORD)
 
+          # create and configure an Azure App Service plan and an Azure web app
+          az appservice plan create -g $(RESOURCEGROUPNAME) -n $(WEBAPIPLANNAME) --l $(WEBAPILOCATION) --sku FREE
+          az webapp create -g $(RESOURCEGROUPNAME) -p $(APIPLANNAME) -n $(APIAPPNAME)
+
 - stage: BuildAndTest
   jobs:
   - job: BuildAndTest
@@ -57,3 +61,33 @@ stages:
       inputs:
         platform: '$(buildPlatform)'
         configuration: '$(buildConfiguration)'
+    
+    - task: FileTransform@1
+      displayName: 'File transformation: appsettings.json'
+      inputs:
+        folderPath: '$(Build.ArtifactStagingDirectory)'
+        fileType: 'json'
+        targetFiles: |
+          **/appsettings.Development.json
+          **/appsettings.json
+    
+    - task: AzureCLI@2
+      inputs:
+          azureSubscription: 'Visual Studio Professional Subscription(0d01fa01-e307-4b38-b278-cca4bd1ec828)'
+          scriptType: 'pscore'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+            # create keys in webapps
+            $settings = 
+              "ASPNETCORE_ENVIRONMENT=Development"
+            
+            az webapp config appsettings set -g $(RESOURCEGROUPNAME) -n $(APIAPPNAME) --settings $settings
+
+            az webapp config connection-string set -g $(RESOURCEGROUPNAME) -n $(APIAPPNAME) -t SQLAzure --settings CatalogConnection='Server=tcp:$(SQLSRVNAME).database.windows.net,1433;Initial Catalog=$(DBNAME);Persist Security Info=False;User ID=$(USERNAME);Password=$(PASSWORD);MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
+    
+    - task: AzureWebApp@1
+      inputs:
+        azureSubscription: 'Visual Studio Professional Subscription(0d01fa01-e307-4b38-b278-cca4bd1ec828)'
+        appType: 'webApp'
+        appName: '$(APIAPPNAME)'
+        package: '$(Build.ArtifactStagingDirectory)'
