@@ -65,7 +65,7 @@ stages:
     - task: FileTransform@1
       displayName: 'File transformation: appsettings.json'
       inputs:
-        folderPath: '$(Build.ArtifactStagingDirectory)'
+        folderPath: '$(Build.ArtifactStagingDirectory)/PublicApi'
         fileType: 'json'
         targetFiles: |
           **/appsettings.Development.json
