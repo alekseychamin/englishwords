@@ -50,13 +50,15 @@ stages:
       inputs:
         restoreSolution: '$(solution)'
 
-    - task: VSBuild@1
+    - task: DotNetCoreCLI@2
       inputs:
-        solution: '$(solution)'
-        msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-        platform: '$(buildPlatform)'
-        configuration: '$(buildConfiguration)'
-
+        command: publish
+        publishWebProjects: False
+        projects: '$(solution)'
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/PublicApi'
+        zipAfterPublish: False
+        modifyOutputPath: False
+    
     - task: VSTest@2
       inputs:
         platform: '$(buildPlatform)'
@@ -65,7 +67,7 @@ stages:
     - task: FileTransform@1
       displayName: 'File transformation: appsettings.json'
       inputs:
-        folderPath: '$(Build.ArtifactStagingDirectory)/src/PublicApi'
+        folderPath: '$(Build.ArtifactStagingDirectory)/PublicApi'
         fileType: 'json'
         targetFiles: |
           **/appsettings.Development.json
