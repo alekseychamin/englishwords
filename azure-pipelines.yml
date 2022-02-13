@@ -27,6 +27,7 @@ stages:
 
           #create and configure an Azure SQL server and Azure SQL database
           az sql server create -l $(GROUPLOCATION) -g $(RESOURCEGROUPNAME) -n $(SQLSRVNAME) -u $(SQLUSERNAME) -p $(SQLPASSWORD)
+          az sql db create -g $(RESOURCEGROUPNAME) -s $(SQLSRVNAME) -n $(DBNAME) --service-objective Basic
 
           # create and configure an Azure App Service plan and an Azure web app
           az appservice plan create -g $(RESOURCEGROUPNAME) -n $(APIPLANNAME) --l $(APILOCATION) --sku FREE
@@ -85,7 +86,7 @@ stages:
             
             az webapp config appsettings set -g $(RESOURCEGROUPNAME) -n $(APIAPPNAME) --settings $settings
 
-            az webapp config connection-string set -g $(RESOURCEGROUPNAME) -n $(APIAPPNAME) -t SQLAzure --settings CatalogConnection='Server=tcp:$(SQLSRVNAME).database.windows.net,1433;Initial Catalog=$(DBNAME);Persist Security Info=False;User ID=$(SQLUSERNAME);Password=$(SQLPASSWORD);MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
+            az webapp config connection-string set -g $(RESOURCEGROUPNAME) -n $(APIAPPNAME) -t SQLAzure --settings CatalogConnection='Server=tcp:$(SQLSRVNAME).database.windows.net,1433;Initial Catalog=$(DBNAME);Persist Security Info=False;User ID=$(DBUSERNAME);Password=$(DBPASSWORD);MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
     
     - task: AzureWebApp@1
       inputs:
