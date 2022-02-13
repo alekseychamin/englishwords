@@ -86,7 +86,7 @@ stages:
             
             az webapp config appsettings set -g $(RESOURCEGROUPNAME) -n $(APIAPPNAME) --settings $settings
 
-            az webapp config connection-string set -g $(RESOURCEGROUPNAME) -n $(APIAPPNAME) -t SQLAzure --settings CatalogConnection='Server=tcp:$(SQLSRVNAME).database.windows.net,1433;Initial Catalog=$(DBNAME);Persist Security Info=False;User ID=$(DBUSERNAME);Password=$(DBPASSWORD);MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
+            az webapp config connection-string set -g $(RESOURCEGROUPNAME) -n $(APIAPPNAME) -t SQLAzure --settings CatalogConnection='Server=tcp:$(SQLSRVNAME).database.windows.net,1433;Initial Catalog=$(DBNAME);Persist Security Info=False;User ID=$(SQLUSERNAME);Password=$(SQLPASSWORD);MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
     
     - task: AzureWebApp@1
       inputs:
