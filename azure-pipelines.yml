@@ -53,7 +53,7 @@ stages:
     - task: VSBuild@1
       inputs:
         solution: '$(solution)'
-        msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+        msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)/PublicApi"'
         platform: '$(buildPlatform)'
         configuration: '$(buildConfiguration)'
 
@@ -90,4 +90,4 @@ stages:
         azureSubscription: 'Visual Studio Professional Subscription(0d01fa01-e307-4b38-b278-cca4bd1ec828)'
         appType: 'webApp'
         appName: '$(APIAPPNAME)'
-        package: '$(Build.ArtifactStagingDirectory)'
+        package: '$(Build.ArtifactStagingDirectory)/PublicApi'
