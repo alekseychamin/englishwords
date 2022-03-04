@@ -46,13 +46,15 @@ stages:
       buildConfiguration: 'Release'
     
     steps:
-    - task: NuGetToolInstaller@1
+    #- task: NuGetToolInstaller@1
 
     - task: NuGetCommand@2
+      displayName: Restore
       inputs:
         restoreSolution: '$(solution)'
 
     - task: DotNetCoreCLI@2
+      displayName: Publish
       inputs:
         command: publish
         publishWebProjects: False
@@ -62,6 +64,7 @@ stages:
         modifyOutputPath: False
     
     - task: DotNetCoreCLI@2
+      displayName: Test
       inputs:
         command: test
         projects: '$(solution)'
