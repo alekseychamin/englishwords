@@ -18,7 +18,7 @@ namespace UnitTests.ApplicationCore.Specifications
 
             var result = GetTestEnglishWordCollection()
                 .AsQueryable()
-                .Where(spec.WhereExpressions.FirstOrDefault())
+                .Where(spec.WhereExpressions.FirstOrDefault().Filter)
                 .FirstOrDefault();
 
             Assert.NotNull(result);

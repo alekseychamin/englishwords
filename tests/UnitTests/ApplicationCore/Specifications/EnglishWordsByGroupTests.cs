@@ -20,10 +20,10 @@ namespace UnitTests.ApplicationCore.Specifications
             // Arrange
             var spec = new EnglishWordsByGroup(_testEnglishGroupId);
 
-            // Act
+            // Act            
             var result = GetTestEnglishWordCollection()
                 .AsQueryable()
-                .Where(spec.WhereExpressions.FirstOrDefault())
+                .Where(spec.WhereExpressions.FirstOrDefault().Filter)
                 .ToList();
 
             // Assert
