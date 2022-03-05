@@ -14,7 +14,7 @@ stages:
   jobs:
   - job: CreateAzureResources
     pool:
-      vmImage: 'windows-latest'
+      vmImage: 'windows-2022'
     steps:
     - task: AzureCLI@2
       inputs:
@@ -38,7 +38,7 @@ stages:
   jobs:
   - job: BuildAndTest
     pool:
-      vmImage: 'windows-latest'
+      vmImage: 'windows-2022'
     
     variables:
       solution: '**/*.sln'
@@ -47,12 +47,20 @@ stages:
     
     steps:
     - task: NuGetToolInstaller@1
+    
+    - task: UseDotNet@2
+      displayName: Use .NET 6.0
+      inputs:
+        packageType: 'sdk'
+        version: '6.0.x'
 
     - task: NuGetCommand@2
+      displayName: Restore
       inputs:
         restoreSolution: '$(solution)'
 
     - task: DotNetCoreCLI@2
+      displayName: Publish
       inputs:
         command: publish
         publishWebProjects: False
@@ -61,10 +69,11 @@ stages:
         zipAfterPublish: False
         modifyOutputPath: False
     
-    - task: VSTest@2
+    - task: DotNetCoreCLI@2
+      displayName: Test
       inputs:
-        platform: '$(buildPlatform)'
-        configuration: '$(buildConfiguration)'
+        command: test
+        projects: '$(solution)'
     
     - task: FileTransform@1
       displayName: 'File transformation: appsettings.json'
