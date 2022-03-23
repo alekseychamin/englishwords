@@ -22,13 +22,16 @@ stages:
         scriptType: 'pscore'
         scriptLocation: 'inlineScript'
         inlineScript: |
-          # create a resource group
+          #create a resource group
           az group create -l $(GROUPLOCATION) -n $(RESOURCEGROUPNAME)
 
-          #create and configure an Azure SQL server and Azure SQL database
+          #create and configure an Azure SQL server
           az sql server create -l $(GROUPLOCATION) -g $(RESOURCEGROUPNAME) -n $(SQLSRVNAME) -u $(SQLUSERNAME) -p $(SQLPASSWORD)
-          az sql db create -g $(RESOURCEGROUPNAME) -s $(SQLSRVNAME) -n $(DBNAME) --service-objective Basic
           az sql server firewall-rule create -g $(RESOURCEGROUPNAME) -s $(SQLSRVNAME) -n allowazure --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
+          
+          #create and configure Azure SQL database
+          az sql db create -g $(RESOURCEGROUPNAME) -s $(SQLSRVNAME) -n $(DBNAME) --service-objective Basic
+          az sql db create -g $(RESOURCEGROUPNAME) -s $(SQLSRVNAME) -n $(DBTESTNAME) --service-objective Basic
 
           # create and configure an Azure App Service plan and an Azure web app
           az appservice plan create -g $(RESOURCEGROUPNAME) -n $(APIPLANNAME) --l $(APILOCATION) --sku FREE
@@ -60,7 +63,7 @@ stages:
         restoreSolution: '$(solution)'
 
     - task: DotNetCoreCLI@2
-      displayName: Publish
+      displayName: Publish Public API
       inputs:
         command: publish
         publishWebProjects: False
@@ -70,10 +73,14 @@ stages:
         modifyOutputPath: False
     
     - task: DotNetCoreCLI@2
-      displayName: Test
+      displayName: Build Tests
       inputs:
-        command: test
+        command: build
+        publishWebProjects: False
         projects: '$(solution)'
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Tests'
+        zipAfterPublish: False
+        modifyOutputPath: False
     
     - task: FileTransform@1
       displayName: 'File transformation: appsettings.json'
