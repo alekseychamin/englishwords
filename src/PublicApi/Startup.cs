@@ -8,70 +8,88 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using NLog.Web;
 using PublicApi;
 using PublicApi.Middlewares;
-using System;
-using System.IO;
 
 namespace PublicAPI
 {
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+	public static class Startup
+	{
+		public static WebApplication InitializeWebApp(string[] args)
+		{
+			var builder = WebApplication.CreateBuilder(args);
+			ConfigureServices(builder);
 
-        public IConfiguration Configuration { get; }
+			var app = builder.Build();
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            string connection = Configuration.GetConnectionString("EnglishWordDbConnection");
-            services.AddDbContext<EnglishWordDbContext>(options => options.UseSqlServer(connection));
+			app.GetRequiredService<SeedDataFromJson>()
+				.SeedData(app.GetRequiredService<EnglishWordDbContext>(), "englishwords.json");
+			
+			Configure(app);
 
-            services.AddAutoMapper(typeof(AutomapperMaps));
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            
-            services.AddScoped<IEnglishWordService, EnglishWordService>();
-            services.AddScoped<IEnglishGroupService, EnglishGroupService>();
+			return app;
+		}
 
-            services.AddControllers(options => options.UseNamespaceRouteToken());
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "PublicApi", Version = "v1" });
-                c.EnableAnnotations();
-            });
-        }
+		public static void ConfigureServices(WebApplicationBuilder builder)
+		{
+			builder.Logging.ClearProviders();
+			builder.Logging.SetMinimumLevel(LogLevel.Trace);
+			builder.Host.UseNLog();
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                //app.UseExceptionHandler("/error");
-                app.UseMiddleware<ErrorHandlerMiddleware>();
-            }
+			string connection = builder.Configuration.GetConnectionString("EnglishWordDbConnection");
+			builder.Services.AddDbContext<EnglishWordDbContext>(options => options.UseSqlServer(connection));
+			builder.Services.AddTransient(s => new SeedDataFromJson(ensureDeleted: false));
 
-            app.UseHttpsRedirection();
+			builder.Services.AddAutoMapper(typeof(AutomapperMaps));
+			builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
-            app.UseRouting();
+			builder.Services.AddScoped<IEnglishWordService, EnglishWordService>();
+			builder.Services.AddScoped<IEnglishGroupService, EnglishGroupService>();
 
-            app.UseAuthorization();
+			builder.Services.AddControllers(options => options.UseNamespaceRouteToken());
+			builder.Services.AddSwaggerGen(c =>
+			{
+				c.SwaggerDoc("v1", new OpenApiInfo { Title = "PublicApi", Version = "v1" });
+				c.EnableAnnotations();
+			});
+		}
 
-            app.UseSwagger();
-            
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PublicApi v1"));
+		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+		public static void Configure(WebApplication app)
+		{
+			if (app.Environment.IsDevelopment())
+			{
+				app.UseDeveloperExceptionPage();
+			}
+			else
+			{
+				//app.UseExceptionHandler("/error");
+				app.UseMiddleware<ErrorHandlerMiddleware>();
+			}
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-        }
-    }
+			app.UseHttpsRedirection();
+
+			app.UseRouting();
+
+			app.UseAuthorization();
+
+			app.UseSwagger();
+
+			app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PublicApi v1"));
+
+			app.UseEndpoints(endpoints =>
+			{
+				endpoints.MapControllers();
+			});
+		}
+
+		private static T GetRequiredService<T>(this WebApplication app)
+		{
+			var scope = app.Services.CreateScope();
+			return scope.ServiceProvider.GetRequiredService<T>();
+		}
+	}
 }
