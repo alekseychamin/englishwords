@@ -1,70 +1,43 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Infrastructure.DataAccess;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using PublicAPI;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PublicAPI;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Infrastructure.DataAccess;
-using Microsoft.Extensions.Logging;
-using ApplicationCore.Entities.Seeds;
 using System.IO;
+using System.Linq;
 
 namespace FunctionalTests.PublicApi
 {
-    public class ApiTestFixture : WebApplicationFactory<Startup>
-    {
-        protected override void ConfigureWebHost(IWebHostBuilder builder)
-        {
-            builder.UseEnvironment("Testing");
+	public class ApiTestFixture : WebApplicationFactory<Program>
+	{
+		protected override void ConfigureWebHost(IWebHostBuilder builder)
+		{
+			builder.ConfigureServices(configureServices =>
+			{
+				RemoveService(typeof(DbContextOptions<EnglishWordDbContext>), configureServices);
+				RemoveService(typeof(SeedDataFromJson), configureServices);
 
-            builder.ConfigureServices(services => 
-            {
-                services.AddEntityFrameworkInMemoryDatabase();
+				var config = new ConfigurationBuilder()
+					.AddJsonFile(Path.Combine(AppContext.BaseDirectory, "appsettings.json"), false)
+					.Build();
 
-                // Create a new service provider.
-                var provider = services
-                    .AddEntityFrameworkInMemoryDatabase()
-                    .BuildServiceProvider();
+				configureServices.AddDbContext<EnglishWordDbContext>(options =>
+				{
+					options.UseSqlServer(config.GetConnectionString("EnglishWordDbConnection"));
+				});
 
-                // Add a database context (ApplicationDbContext) using an in-memory 
-                // database for testing.
-                services.AddDbContext<EnglishWordDbContext>(options =>
-                {
-                    options.UseInMemoryDatabase("InMemoryDbForTesting");
-                    options.UseInternalServiceProvider(provider);
-                });
+				configureServices.AddTransient(s => new SeedDataFromJson(ensureDeleted: true));
+			});
+		}
 
-                // Build the service provider.
-                var sp = services.BuildServiceProvider();
+		private void RemoveService(Type type, IServiceCollection services)
+		{
+			var descriptor = services.SingleOrDefault(d => d.ServiceType == type);
 
-                using var scope = sp.CreateScope();
-
-                var scopedServices = scope.ServiceProvider;
-                var db = scopedServices.GetRequiredService<EnglishWordDbContext>();
-                var loggerFactory = scopedServices.GetRequiredService<ILoggerFactory>();
-
-                var logger = scopedServices
-                    .GetRequiredService<ILogger<ApiTestFixture>>();
-
-                // Ensure the database is created.
-                db.Database.EnsureCreated();
-
-                try
-                {
-                    var seedJson = new SeedFromJsonEnglishWord(Path.Combine(AppContext.BaseDirectory, "englishwords.json"));
-
-                    new EnglishWordDbContextSeed(db).SeedAsync(seedJson).Wait();
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, $"An error occurred seeding the " +
-                            $"database with test messages. Error: {ex.Message}");
-                }
-            });
-        }
-    }
+			services.Remove(descriptor);
+		}
+	}
 }

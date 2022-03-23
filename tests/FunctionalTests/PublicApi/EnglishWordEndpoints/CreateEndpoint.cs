@@ -1,8 +1,7 @@
 ﻿using ApplicationCore.Extensions;
+using FluentAssertions;
 using PublicApi.Endpoints.EnglishWords;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -11,7 +10,7 @@ using Xunit;
 
 namespace FunctionalTests.PublicApi.EnglishWordEndpoints
 {
-    public class CreateEndpoint : IClassFixture<ApiTestFixture>
+	public class CreateEndpoint : IClassFixture<ApiTestFixture>
     {
         public HttpClient Client { get; }
 
@@ -32,16 +31,20 @@ namespace FunctionalTests.PublicApi.EnglishWordEndpoints
                 Example = "Example 01"
             };
 
-            StringContent content = new StringContent(request.ToJson(), Encoding.UTF8, "application/json");
-
             // Act
+            var content = new StringContent(request.ToJson(), Encoding.UTF8, "application/json");
             var response = await Client.PostAsync("api/EnglishWords", content);
-            response.EnsureSuccessStatusCode();
             
-            var stringResponse = await response.Content.ReadAsStringAsync();
-            
-            // Assert
+            var contentResponse = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            };
+            var result = JsonSerializer.Deserialize<CreateEnglishWordResult>(contentResponse, options);
 
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            result.Should().BeEquivalentTo(request, options => options.ExcludingMissingMembers());
         }
     }
 }
