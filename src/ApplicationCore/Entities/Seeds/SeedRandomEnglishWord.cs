@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ApplicationCore.Entities.Seeds
 {
-    public class SeedRandomEnglishWord : ISeed
+    public class SeedRandomEnglishWord : ISeedEnglihsGroup
     {
         private readonly Random _random = new Random();
 

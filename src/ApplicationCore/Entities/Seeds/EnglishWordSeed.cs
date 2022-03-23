@@ -5,7 +5,7 @@ namespace ApplicationCore.Entities.Seeds
 {
     public class EnglishWordSeed
     {
-        public static List<EnglishGroup> Seed(ISeed seed)
+        public static List<EnglishGroup> SeedEnglishGroups(ISeedEnglihsGroup seed)
         {
             return seed.GetEnglishGroups();
         }

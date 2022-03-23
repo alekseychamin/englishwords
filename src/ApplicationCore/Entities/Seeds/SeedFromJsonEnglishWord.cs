@@ -5,7 +5,7 @@ using System.IO;
 
 namespace ApplicationCore.Entities.Seeds
 {
-    public class SeedFromJsonEnglishWord : ISeed
+    public class SeedFromJsonEnglishWord : ISeedEnglihsGroup
     {
         private readonly string _fileName;
 

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ApplicationCore.Interfaces
 {
-    public interface ISeed
+    public interface ISeedEnglihsGroup
     {
         List<EnglishGroup> GetEnglishGroups();
     }
