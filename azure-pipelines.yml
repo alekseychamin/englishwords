@@ -64,7 +64,7 @@ stages:
     - task: DotNetCoreCLI@2
       displayName: Publish Public API
       inputs:
-        command: build
+        command: publish
         publishWebProjects: False
         projects: |
           **/*.csproj 
