@@ -67,7 +67,9 @@ stages:
       inputs:
         command: publish
         publishWebProjects: False
-        projects: '|**/*.csproj !**/*Test.csproj'
+        projects: |
+          **/*.csproj 
+          !**/*Test.csproj
         arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/PublicApi'
         zipAfterPublish: False
         modifyOutputPath: False
@@ -83,7 +85,8 @@ stages:
       inputs:
         command: test
         publishWebProjects: False
-        projects: '**/*Test.csproj'
+        projects: | 
+          **/*Test.csproj
         arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Tests'
         zipAfterPublish: False
         modifyOutputPath: False
