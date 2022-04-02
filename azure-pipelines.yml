@@ -67,7 +67,7 @@ stages:
       inputs:
         command: publish
         publishWebProjects: False
-        projects: '$(solution)'
+        projects: '|**/*.csproj !**/*Test.csproj'
         arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/PublicApi'
         zipAfterPublish: False
         modifyOutputPath: False
@@ -79,11 +79,11 @@ stages:
         script: 'sqllocaldb start mssqllocaldb'
     
     - task: DotNetCoreCLI@2
-      displayName: Build Tests
+      displayName: Run Tests
       inputs:
         command: test
         publishWebProjects: False
-        projects: '$(solution)'
+        projects: '**/*Test.csproj'
         arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Tests'
         zipAfterPublish: False
         modifyOutputPath: False
