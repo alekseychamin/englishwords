@@ -56,8 +56,7 @@ namespace PublicAPI
 				c.EnableAnnotations();
 			});
 		}
-
-		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+		
 		public static void Configure(WebApplication app)
 		{
 			if (app.Environment.IsDevelopment())
@@ -85,7 +84,6 @@ namespace PublicAPI
 				endpoints.MapControllers();
 			});
 		}
-
 		private static T GetRequiredService<T>(this WebApplication app)
 		{
 			var scope = app.Services.CreateScope();
