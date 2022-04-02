@@ -21,7 +21,7 @@ namespace FunctionalTests.PublicApi
 				RemoveService(typeof(SeedDataFromJson), configureServices);
 
 				var config = new ConfigurationBuilder()
-					.AddJsonFile(Path.Combine(AppContext.BaseDirectory, "appsettings.json"), false)
+					.AddJsonFile(Path.Combine(AppContext.BaseDirectory, "appsettingstests.json"), false)
 					.Build();
 
 				configureServices.AddDbContext<EnglishWordDbContext>(options =>
