@@ -31,7 +31,6 @@ stages:
           
           #create and configure Azure SQL database
           az sql db create -g $(RESOURCEGROUPNAME) -s $(SQLSRVNAME) -n $(DBNAME) --service-objective Basic
-          az sql db create -g $(RESOURCEGROUPNAME) -s $(SQLSRVNAME) -n $(DBTESTNAME) --service-objective Basic
 
           # create and configure an Azure App Service plan and an Azure web app
           az appservice plan create -g $(RESOURCEGROUPNAME) -n $(APIPLANNAME) --l $(APILOCATION) --sku FREE
@@ -86,7 +85,7 @@ stages:
         command: test
         publishWebProjects: False
         projects: | 
-          **/*Test.csproj
+          **/*Tests.csproj
         arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Tests'
         zipAfterPublish: False
         modifyOutputPath: False
