@@ -49,6 +49,7 @@ stages:
     
     steps:
     - task: NuGetToolInstaller@1
+      displayName: Install NuGet
     
     - task: UseDotNet@2
       displayName: Use .NET 6.0
@@ -57,14 +58,14 @@ stages:
         version: '6.0.x'
 
     - task: NuGetCommand@2
-      displayName: Restore
+      displayName: Restore packages
       inputs:
         restoreSolution: '$(solution)'
 
     - task: DotNetCoreCLI@2
       displayName: Publish Public API
       inputs:
-        command: build
+        command: publish
         publishWebProjects: False
         projects: |
           **/*.csproj 
@@ -74,7 +75,7 @@ stages:
         modifyOutputPath: False
     
     - task: PowerShell@2
-      displayName: 'start mssqllocaldb'
+      displayName: Start mssqllocaldb
       inputs:
         targetType: 'inline'
         script: 'sqllocaldb start mssqllocaldb'
@@ -90,16 +91,8 @@ stages:
         zipAfterPublish: False
         modifyOutputPath: False
     
-    - task: FileTransform@1
-      displayName: 'File transformation: appsettings.json'
-      inputs:
-        folderPath: '$(Build.ArtifactStagingDirectory)/PublicApi'
-        fileType: 'json'
-        targetFiles: |
-          **/appsettings.Development.json
-          **/appsettings.json
-    
     - task: AzureCLI@2
+      displayName: Create settings for Web App
       inputs:
           azureSubscription: 'Visual Studio Professional Subscription(0d01fa01-e307-4b38-b278-cca4bd1ec828)'
           scriptType: 'pscore'
@@ -114,6 +107,7 @@ stages:
             az webapp config connection-string set -g $(RESOURCEGROUPNAME) -n $(APIAPPNAME) -t SQLAzure --settings EnglishWordDbConnection='Server=tcp:$(SQLSRVNAME).database.windows.net,1433;Initial Catalog=$(DBNAME);Persist Security Info=False;User ID=$(SQLUSERNAME);Password=$(SQLPASSWORD);MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
     
     - task: AzureWebApp@1
+      displayName: Deploy Web App
       inputs:
         azureSubscription: 'Visual Studio Professional Subscription(0d01fa01-e307-4b38-b278-cca4bd1ec828)'
         appType: 'webApp'
