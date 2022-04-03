@@ -8,13 +8,13 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace FunctionalTests.PublicApi.EnglishWordEndpoints
+namespace FunctionalTests.PublicApi.EnglishWords
 {
-	public class CreateEndpoint : IClassFixture<ApiTestFixture>
+	public class CreateFixture : IClassFixture<ApiTestFixture>
     {
         public HttpClient Client { get; }
 
-        public CreateEndpoint(ApiTestFixture factory)
+        public CreateFixture(ApiTestFixture factory)
         {
             Client = factory.CreateClient();
         }

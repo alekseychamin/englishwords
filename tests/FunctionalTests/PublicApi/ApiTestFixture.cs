@@ -37,7 +37,7 @@ namespace FunctionalTests.PublicApi
 		{
 			var descriptor = services.SingleOrDefault(d => d.ServiceType == type);
 
-			services?.Remove(descriptor);
+			services.Remove(descriptor);
 		}
 	}
 }
