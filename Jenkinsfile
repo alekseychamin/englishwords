@@ -1,10 +1,9 @@
 pipeline {
-    agent any {
-        stages {
-            stage('Print dirs'){
-                steps {
-                    sh 'ls'
-                }
+    agent any 
+    stages {
+        stage('Print dirs'){
+            steps {
+                sh 'ls'
             }
         }
     }
