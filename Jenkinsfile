@@ -1,9 +1,9 @@
 pipeline {
     agent any 
     stages {
-        stage('Print dirs'){
+        stage('Restore Nuget packages'){
             steps {
-                sh 'ls'
+                sh 'dotnet restore'
             }
         }
     }
