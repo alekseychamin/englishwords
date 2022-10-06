@@ -1,9 +1,14 @@
 pipeline {
     agent any 
     stages {
-        stage('Restore Nuget packages'){
+        stage('Run tests'){
             steps {
-                sh 'dotnet restore'
+                sh 'dotnet test'
+            }
+        }
+        stages('Build'){
+            steps {
+                sh 'dotnet build --configuration Release'
             }
         }
     }
