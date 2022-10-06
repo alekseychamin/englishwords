@@ -13,8 +13,8 @@ pipeline {
         }
         stage('Docker build'){
             steps {
-                sh 'docker build -t PublicApi .'
-                sh 'docker run -d -p 8080:80 --name EnglishWordsApi PublicApi'
+                sh 'docker build -t publicapi .'
+                sh 'docker run -d -p 8080:80 --name englishwordsapi publicapi'
             }
         }
     }
