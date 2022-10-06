@@ -1,20 +1,14 @@
 pipeline {
     agent any 
     stages {
-        stage('Clean and checkout'){
+        stage('Build'){
             steps {
-                cleanWs()
-                checkout scm
+                sh 'dotnet build --configuration Release'
             }
         }
         stage('Run tests'){
             steps {
                 sh 'dotnet test'
-            }
-        }
-        stage('Build'){
-            steps {
-                sh 'dotnet build --configuration Release'
             }
         }
     }
