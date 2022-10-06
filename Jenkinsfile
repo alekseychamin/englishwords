@@ -1,9 +1,10 @@
 pipeline {
     agent any 
     stages {
-        stage('Clean'){
+        stage('Clean and checkout'){
             steps {
                 cleanWs()
+                checkout scm
             }
         }
         stage('Run tests'){
