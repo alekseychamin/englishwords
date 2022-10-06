@@ -4,24 +4,24 @@ using System.IO;
 
 namespace Infrastructure.DataAccess
 {
-	public class SeedDataFromJson
-	{
-		readonly bool _ensureDeleted;
+    public class SeedDataFromJson
+    {
+        readonly bool _ensureDeleted;
 
-		public SeedDataFromJson(bool ensureDeleted)
-		{
-			_ensureDeleted = ensureDeleted;
-		}
+        public SeedDataFromJson(bool ensureDeleted)
+        {
+            _ensureDeleted = ensureDeleted;
+        }
 
-		public void SeedData(EnglishWordDbContext context, string fileName)
-		{
-			SeedFromJsonEnglishWord seedJson = new 
-				(Path.Combine(AppContext.BaseDirectory, fileName));
+        public void SeedData(EnglishWordDbContext context, string fileName)
+        {
+            SeedFromJsonEnglishWord seedJson = new 
+                (Path.Combine(AppContext.BaseDirectory, fileName));
 
-			new EnglishWordDbContextSeed(context, seedJson, _ensureDeleted)
-				.SeedAsync()
-				.GetAwaiter()
-				.GetResult();
-		}
-	}
+            new EnglishWordDbContextSeed(context, seedJson, _ensureDeleted)
+                .SeedAsync()
+                .GetAwaiter()
+                .GetResult();
+        }
+    }
 }

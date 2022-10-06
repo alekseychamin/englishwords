@@ -11,33 +11,33 @@ using System.Linq;
 
 namespace FunctionalTests.PublicApi
 {
-	public class ApiTestFixture : WebApplicationFactory<Program>
-	{
-		protected override void ConfigureWebHost(IWebHostBuilder builder)
-		{
-			builder.ConfigureServices(configureServices =>
-			{
-				RemoveService(typeof(DbContextOptions<EnglishWordDbContext>), configureServices);
-				RemoveService(typeof(SeedDataFromJson), configureServices);
+    public class ApiTestFixture : WebApplicationFactory<Program>
+    {
+        protected override void ConfigureWebHost(IWebHostBuilder builder)
+        {
+            builder.ConfigureServices(configureServices =>
+            {
+                RemoveService(typeof(DbContextOptions<EnglishWordDbContext>), configureServices);
+                RemoveService(typeof(SeedDataFromJson), configureServices);
 
-				var config = new ConfigurationBuilder()
-					.AddJsonFile(Path.Combine(AppContext.BaseDirectory, "appsettingstests.json"), false)
-					.Build();
+                var config = new ConfigurationBuilder()
+                    .AddJsonFile(Path.Combine(AppContext.BaseDirectory, "appsettingstests.json"), false)
+                    .Build();
 
-				configureServices.AddDbContext<EnglishWordDbContext>(options =>
-				{
-					options.UseSqlServer(config.GetConnectionString("EnglishWordDbConnection"));
-				});
+                configureServices.AddDbContext<EnglishWordDbContext>(options =>
+                {
+                    options.UseSqlServer(config.GetConnectionString("EnglishWordDbConnection"));
+                });
 
-				configureServices.AddTransient(s => new SeedDataFromJson(ensureDeleted: true));
-			});
-		}
+                configureServices.AddTransient(s => new SeedDataFromJson(ensureDeleted: true));
+            });
+        }
 
-		private void RemoveService(Type type, IServiceCollection services)
-		{
-			var descriptor = services.SingleOrDefault(d => d.ServiceType == type);
+        private void RemoveService(Type type, IServiceCollection services)
+        {
+            var descriptor = services.SingleOrDefault(d => d.ServiceType == type);
 
-			services.Remove(descriptor);
-		}
-	}
+            services.Remove(descriptor);
+        }
+    }
 }
