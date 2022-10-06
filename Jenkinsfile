@@ -11,5 +11,11 @@ pipeline {
                 sh 'dotnet test'
             }
         }
+        stage('Docker build'){
+            steps {
+                sh 'docker build -t PublicApi .'
+                sh 'docker run -d -p 8080:80 --name EnglishWordsApi PublicApi'
+            }
+        }
     }
 }
