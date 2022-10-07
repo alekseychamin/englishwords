@@ -15,7 +15,7 @@
         public string PictureUri { get; set; }
 
         public string CreateDate { get; set; }
-
-        public EnglishGroupDto EnglishGroup { get; set; }
+        
+        public int? EnglishGroupId { get; set; }
     }
 }

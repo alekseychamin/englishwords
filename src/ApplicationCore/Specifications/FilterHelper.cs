@@ -1,10 +1,7 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Interfaces;
-using Ardalis.Specification;
+﻿using Ardalis.Specification;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace ApplicationCore.Specifications
 {
@@ -15,10 +12,10 @@ namespace ApplicationCore.Specifications
 
     public static class FilterHelper
     {
-        private static readonly Dictionary<SearchType, Func<string, string>> processSearchTerms =
+        private static readonly Dictionary<SearchType, Func<string, string>> ProcessSearchTerms =
             new Dictionary<SearchType, Func<string, string>>()
             {
-                { SearchType.Like, (s) => { return $"%{s}%"; } }
+                { SearchType.Like, (s) => $"%{s}%" }
             };
         
         public static void SearchByTerms<T>(ISpecificationBuilder<T> spec, Expression<Func<T, string>> selector, 
@@ -26,7 +23,7 @@ namespace ApplicationCore.Specifications
         {
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                spec.Search<T>(selector, processSearchTerms[type](searchTerm));
+                spec.Search<T>(selector, ProcessSearchTerms[type](searchTerm));
             }
         }
     }
