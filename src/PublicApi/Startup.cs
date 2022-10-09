@@ -55,6 +55,15 @@ namespace PublicAPI
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PublicApi", Version = "v1" });
                 c.EnableAnnotations();
             });
+            
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    policyBuilder => policyBuilder
+                        .AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod());
+            });
         }
         
         public static void Configure(WebApplication app)
@@ -72,6 +81,8 @@ namespace PublicAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            
+            app.UseCors();
 
             app.UseAuthorization();
 
