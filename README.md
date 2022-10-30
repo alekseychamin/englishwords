@@ -1,3 +1,3 @@
 # EnglishWords
 
-WebApp helps in learning English words
+API that helps in learning English words
